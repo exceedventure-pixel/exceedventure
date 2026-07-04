@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.env
+.env.local
+.env.development
+.env.production
+public/media
+/test-results
+/playwright-report
+/blob-report
+tests
+*.log
+.DS_Store
