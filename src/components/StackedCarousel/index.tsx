@@ -112,7 +112,7 @@ export const StackedCarousel = () => {
   }
 
   return (
-    <div className="flex w-full items-center justify-center bg-transparent py-2 md:py-12">
+    <div className="relative isolate z-0 flex w-full items-center justify-center bg-transparent py-2 md:py-12">
       <div
         className="relative flex h-[300px] w-full max-w-5xl items-center justify-center overflow-visible outline-none md:h-[450px]"
         tabIndex={0}
