@@ -14,7 +14,7 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('ventures').catch(() => null)
-  return generatePageMeta({ slug: 'ventures', seoDoc, fallbackTitle: 'Our Ventures' })
+  return generatePageMeta({ slug: 'ventures', seoDoc, fallbackTitle: 'Our Branches' })
 }
 
 const ventures = [
@@ -29,7 +29,7 @@ const ventures = [
     features: ['Company Brochures', 'Pitch Decks', 'Business Documents', 'Corporate Presentations'],
   },
   {
-    name: 'Creata Content',
+    name: 'Create a Content',
     description: 'Visual content and motion creatives that support campaigns, products, and brands.',
     light: '/assets/createacontent.svg',
     dark: '/assets/dark-createacontent.svg',
@@ -61,15 +61,15 @@ export default function VenturesPage() {
       <PageHero
         title={
           <>
-            Our <span className="text-primary">Ventures</span>
+            Our <span className="text-primary">Branches</span>
           </>
         }
-        subtitle="Explore our creative ventures, each specializing in different aspects of digital transformation and content creation."
+        subtitle="Explore our specialized branches, each focused on a different aspect of digital transformation and content creation."
         className="min-h-[45vh] pb-8"
       />
 
-      <div className="px-[5%] pb-20">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="container pb-20">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {ventures.map((venture, index) => {
             const colors = colorClasses[venture.color]
             return (
@@ -92,7 +92,7 @@ export default function VenturesPage() {
                     ))}
                   </div>
                   <div className="mt-auto flex items-center gap-2 font-semibold text-primary transition-all group-hover:gap-3">
-                    Visit Venture <ArrowRight size={18} />
+                    Visit Branch <ArrowRight size={18} />
                   </div>
                 </Link>
               </Reveal>
@@ -101,7 +101,7 @@ export default function VenturesPage() {
         </div>
 
         {/* CTA */}
-        <div className="mx-auto mt-20 max-w-6xl rounded-3xl bg-linear-to-r from-primary to-secondary p-12 text-center text-white">
+        <div className="mt-20 rounded-3xl bg-linear-to-r from-primary to-secondary p-12 text-center text-white">
           <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Want to Work With Us?</h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
             Whether you need corporate documents, creative content, or software solutions, we&apos;ve

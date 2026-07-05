@@ -28,7 +28,7 @@ export default function OurWorksPage() {
         subtitle="A selection of the projects we've delivered for clients worldwide — from websites and web systems to branding and content."
       />
 
-      <div className="px-[5%] pb-24">
+      <div className="container pb-24">
         <Reveal className="mx-auto max-w-3xl rounded-2xl border border-dashed border-border bg-card/50 p-12 text-center">
           <h2 className="mb-3 text-2xl font-bold">Portfolio coming soon</h2>
           <p className="mx-auto mb-8 max-w-xl text-muted-foreground">

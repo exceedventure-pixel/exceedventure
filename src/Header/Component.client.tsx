@@ -38,11 +38,11 @@ export const HeaderClient: React.FC = () => {
           <Logo loading="eager" priority="high" />
         </Link>
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex">
+          <div className="hidden lg:flex">
             <HeaderNav />
           </div>
           <ThemeToggle />
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <MobileMenu />
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { ChevronDown, ChevronRight, SearchIcon } from 'lucide-react'
 import clsx from 'clsx'
@@ -23,7 +24,7 @@ export const HeaderNav: React.FC = () => {
               key={item.href}
               href={item.href}
               className={clsx(
-                'flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-primary',
+                'flex items-center gap-1.5 px-3.5 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted hover:text-primary',
                 isActive ? 'text-primary' : 'text-foreground/80',
               )}
             >
@@ -39,7 +40,7 @@ export const HeaderNav: React.FC = () => {
             {/* Trigger row */}
             <button
               className={clsx(
-                'flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-primary',
+                'flex items-center gap-1.5 px-3.5 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted hover:text-primary',
                 isActive ? 'text-primary' : 'text-foreground/80',
               )}
             >
@@ -73,11 +74,38 @@ export const HeaderNav: React.FC = () => {
                         key={child.href}
                         href={child.href}
                         className={clsx(
-                          'flex items-center px-4 py-2 text-sm transition-colors hover:bg-muted hover:text-primary',
+                          'flex items-center transition-colors hover:bg-muted hover:text-primary',
+                          child.logoLight
+                            ? 'justify-center px-4 py-3'
+                            : 'px-4 py-2 text-base whitespace-nowrap',
                           childActive ? 'text-primary font-medium' : 'text-foreground/80',
                         )}
                       >
-                        {child.label}
+                        {child.logoLight ? (
+                          <>
+                            <Image
+                              src={child.logoLight}
+                              alt={child.label}
+                              width={130}
+                              height={40}
+                              className="h-9 w-auto object-contain dark:hidden"
+                            />
+                            <Image
+                              src={child.logoDark ?? child.logoLight}
+                              alt={child.label}
+                              width={130}
+                              height={40}
+                              className="hidden h-9 w-auto object-contain dark:block"
+                            />
+                          </>
+                        ) : (
+                          <span className="flex items-center gap-2.5">
+                            {child.icon && (
+                              <child.icon className={clsx('w-4 h-4 shrink-0', child.iconColor)} />
+                            )}
+                            {child.label}
+                          </span>
+                        )}
                       </Link>
                     )
                   }

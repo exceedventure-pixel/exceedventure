@@ -25,7 +25,7 @@ export default function TermsOfServicePage() {
         subtitle="Please read these terms and conditions carefully before using our services."
         className="min-h-[45vh] pb-8"
       />
-      <div className="px-[5%] pb-24">
+      <div className="container pb-24">
         <article className="prose prose-lg mx-auto max-w-4xl dark:prose-invert">
           <h3>1. Acceptance of Terms</h3>
           <p>

@@ -13,7 +13,7 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('creata-content').catch(() => null)
-  return generatePageMeta({ slug: 'creata-content', seoDoc, fallbackTitle: 'Creata Content' })
+  return generatePageMeta({ slug: 'creata-content', seoDoc, fallbackTitle: 'Create a Content' })
 }
 
 const cards = [
@@ -35,8 +35,8 @@ export default function CreataContentPage() {
       <div className="mx-auto max-w-7xl px-6">
         <Reveal className="mb-16 space-y-6 text-center">
           <div className="relative mx-auto mb-8 h-24 w-48">
-            <Image src="/assets/createacontent.svg" alt="Creata Content" className="object-contain dark:hidden" fill priority />
-            <Image src="/assets/dark-createacontent.svg" alt="Creata Content" className="hidden object-contain dark:block" fill priority />
+            <Image src="/assets/createacontent.svg" alt="Create a Content" className="object-contain dark:hidden" fill priority />
+            <Image src="/assets/dark-createacontent.svg" alt="Create a Content" className="hidden object-contain dark:block" fill priority />
           </div>
           <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
             Creative <span className="text-secondary">Content Production</span>

@@ -110,7 +110,7 @@ const features: { icon: LucideIcon; title: string; description: string }[] = [
 const ventures = [
   { name: 'Softal Core', light: '/assets/softal-core.svg', dark: '/assets/dark-softal-core.svg', href: 'https://softalcore.exceedventure.com', description: 'Software Solutions' },
   { name: 'Corporate Crafts', light: '/assets/corporate-crafts.svg', dark: '/assets/dark-corporate-crafts.svg', href: 'https://corporatecrafts.exceedventure.com', description: 'Corporate Branding' },
-  { name: 'Creata Content', light: '/assets/createacontent.svg', dark: '/assets/dark-createacontent.svg', href: 'https://createacontent.exceedventure.com', description: 'Content Marketing' },
+  { name: 'Create a Content', light: '/assets/createacontent.svg', dark: '/assets/dark-createacontent.svg', href: 'https://createacontent.exceedventure.com', description: 'Content Marketing' },
 ]
 
 const dashboardItems: { icon: LucideIcon; title: string; desc: string }[] = [
@@ -123,8 +123,8 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen overflow-x-hidden">
       {/* Hero */}
-      <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-[5%] pb-20 pt-32 text-center lg:pb-32 lg:pt-48">
-        <Reveal className="z-10 flex w-full flex-col items-center">
+      <section className="relative flex min-h-[90vh] flex-col items-center justify-center pb-20 pt-32 text-center lg:pb-32 lg:pt-48">
+        <Reveal className="container z-10 flex w-full flex-col items-center">
           <h1 className="mb-8 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
             <span>Building Digital </span>
             <span className="text-primary">Excellence.</span>
@@ -185,8 +185,8 @@ export default function HomeClient() {
       </section>
 
       {/* Stats */}
-      <section className="bg-muted/50 px-[5%] py-20">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 md:grid-cols-4">
+      <section className="bg-muted/50 py-20">
+        <div className="container grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((stat) => (
             <Reveal key={stat.label} className="text-center">
               <div className="mb-2 text-4xl font-bold text-primary sm:text-5xl">
@@ -199,8 +199,8 @@ export default function HomeClient() {
       </section>
 
       {/* Features */}
-      <section className="px-[5%] py-24">
-        <div className="mx-auto max-w-6xl">
+      <section className="py-24">
+        <div className="container">
           <Reveal className="mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Why Choose Us?</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
@@ -229,8 +229,8 @@ export default function HomeClient() {
       </section>
 
       {/* Dashboard */}
-      <section className="bg-linear-to-br from-primary/5 via-transparent to-secondary/5 px-[5%] py-24">
-        <div className="mx-auto max-w-7xl">
+      <section className="bg-linear-to-br from-primary/5 via-transparent to-secondary/5 py-24">
+        <div className="container">
           <Reveal className="mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Powerful Dashboard</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
@@ -267,12 +267,12 @@ export default function HomeClient() {
       </section>
 
       {/* Ventures */}
-      <section className="px-[5%] py-24">
-        <div className="mx-auto max-w-6xl">
+      <section className="py-24">
+        <div className="container">
           <Reveal className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Our Ventures</h2>
+            <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Our Branches</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Specialized brands delivering excellence.
+              Specialized branches delivering excellence.
             </p>
           </Reveal>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -297,8 +297,9 @@ export default function HomeClient() {
       </section>
 
       {/* CTA */}
-      <section className="bg-linear-to-r from-primary to-accent px-[5%] py-24">
-        <div className="mx-auto max-w-4xl text-center">
+      <section className="bg-linear-to-r from-primary to-accent py-24">
+        <div className="container">
+          <div className="mx-auto max-w-4xl text-center">
           <Reveal>
             <h2 className="mb-6 text-3xl font-bold text-white sm:text-5xl">Ready to Exceed Your Goals?</h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80">
@@ -319,6 +320,7 @@ export default function HomeClient() {
               </Link>
             </div>
           </Reveal>
+          </div>
         </div>
       </section>
     </div>

@@ -76,21 +76,22 @@ function FeatureGrid({ section }: { section: ServiceSection }) {
   const c = colorMap[section.color]
   return (
     <section
-      className={cn('relative px-[5%] pb-24 pt-20 lg:px-[10%]', section.muted && 'rounded-t-[3rem] bg-muted/30')}
+      className={cn('relative pb-24 pt-20', section.muted && 'rounded-t-[3rem] bg-muted/30')}
     >
       <div className={cn('absolute left-0 top-0 h-1 w-full bg-linear-to-r from-transparent to-transparent opacity-50', c.divider)} />
-      <div className="mb-16 text-center">
-        {section.badge && (
-          <div className={cn('mb-4 inline-block rounded-full px-4 py-1 text-sm font-bold uppercase tracking-wider', c.badge)}>
-            {section.badge}
-          </div>
-        )}
-        <h2 className="mb-6 text-3xl font-bold sm:text-5xl">{section.title}</h2>
-        <p className="mx-auto max-w-3xl text-lg text-muted-foreground">{section.subtitle}</p>
-      </div>
+      <div className="container">
+        <div className="mb-16 text-center">
+          {section.badge && (
+            <div className={cn('mb-4 inline-block rounded-full px-4 py-1 text-sm font-bold uppercase tracking-wider', c.badge)}>
+              {section.badge}
+            </div>
+          )}
+          <h2 className="mb-6 text-3xl font-bold sm:text-5xl">{section.title}</h2>
+          <p className="mx-auto max-w-3xl text-lg text-muted-foreground">{section.subtitle}</p>
+        </div>
 
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {section.features.map((feature, i) => {
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {section.features.map((feature, i) => {
           const Icon = feature.icon
           return (
             <Reveal
@@ -109,6 +110,7 @@ function FeatureGrid({ section }: { section: ServiceSection }) {
             </Reveal>
           )
         })}
+        </div>
       </div>
     </section>
   )
@@ -127,8 +129,8 @@ export const ServiceDetail: React.FC<ServiceDetailProps> = ({
   return (
     <div className="flex min-h-screen flex-col">
       {/* Hero */}
-      <div className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-[10%] pb-20 pt-24 text-center lg:pt-32">
-        <Reveal className="z-10 flex max-w-6xl flex-col items-center">
+      <div className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden pb-20 pt-24 text-center lg:pt-32">
+        <Reveal className="container z-10 flex flex-col items-center">
           <div className={cn('mb-6 rounded-2xl p-4', c.iconBox)}>
             <Icon size={48} />
           </div>

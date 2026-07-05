@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
         subtitle="We value your privacy. Read about how we collect, use, and protect your personal information."
         className="min-h-[45vh] pb-8"
       />
-      <div className="px-[5%] pb-24">
+      <div className="container pb-24">
         <article className="prose prose-lg mx-auto max-w-4xl dark:prose-invert">
           <h3>1. Introduction</h3>
           <p>

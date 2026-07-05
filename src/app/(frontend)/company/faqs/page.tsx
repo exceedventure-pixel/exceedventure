@@ -68,7 +68,7 @@ export default function FAQsPage() {
         subtitle="Find answers to common questions about our services, pricing, and processes."
       />
 
-      <div className="px-[5%] pb-24">
+      <div className="container pb-24">
         <div className="mx-auto max-w-3xl space-y-4">
           {faqs.map((faq, i) => (
             <Reveal key={faq.question} delay={i * 60}>

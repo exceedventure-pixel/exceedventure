@@ -105,8 +105,8 @@ export default async function ServicesPage() {
       />
 
       {/* Services grid */}
-      <section className="px-[5%] pb-24">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2">
+      <section className="pb-24">
+        <div className="container grid grid-cols-1 gap-8 lg:grid-cols-2">
           {services.map((service, index) => {
             const Icon = service.icon
             const colors = colorClasses[service.color]
@@ -141,8 +141,9 @@ export default async function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-[5%] pb-24">
-        <div className="mx-auto max-w-6xl rounded-3xl bg-linear-to-r from-primary to-secondary p-12 text-center text-white">
+      <section className="pb-24">
+        <div className="container">
+          <div className="rounded-3xl bg-linear-to-r from-primary to-secondary p-12 text-center text-white">
           <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to Get Started?</h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
             Let&apos;s discuss how we can help transform your business with our comprehensive digital
@@ -154,6 +155,7 @@ export default async function ServicesPage() {
           >
             Contact Us <ArrowRight size={18} />
           </Link>
+          </div>
         </div>
       </section>
     </>

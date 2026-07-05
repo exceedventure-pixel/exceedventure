@@ -46,7 +46,7 @@ export default async function AboutPage() {
         subtitle="We are a team of innovators, creators, and strategists dedicated to empowering businesses through technology."
       />
 
-      <div className="px-[5%] pb-24">
+      <div className="container pb-24">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <Reveal className="space-y-6 text-lg text-foreground/80">
             <p>

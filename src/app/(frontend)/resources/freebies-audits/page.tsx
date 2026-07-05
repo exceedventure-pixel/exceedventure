@@ -26,7 +26,7 @@ export default function FreebiesAuditsPage() {
         title="Freebies & Audits"
         subtitle="Get valuable resources for free and request a comprehensive audit of your digital presence."
       />
-      <div className="px-[5%] pb-24">
+      <div className="container pb-24">
         <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2">
           <Reveal className="rounded-2xl border border-border bg-card p-8">
             <div className="mb-4 text-4xl">🎁</div>

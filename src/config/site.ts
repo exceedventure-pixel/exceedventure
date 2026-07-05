@@ -1,4 +1,17 @@
-import { Home, Layers, Briefcase, Boxes, Mail } from 'lucide-react'
+import {
+  Home,
+  Layers,
+  Briefcase,
+  GitBranch,
+  Tag,
+  Users,
+  BookOpen,
+  Mail,
+  Globe,
+  Bot,
+  Megaphone,
+  Palette,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 export type NavGrandchild = {
@@ -10,6 +23,12 @@ export type NavChild = {
   label: string
   href: string
   children?: NavGrandchild[]
+  /** Optional leading icon (e.g. Services dropdown). */
+  icon?: LucideIcon
+  iconColor?: string
+  /** Optional brand logo shown instead of the label (e.g. Branches dropdown). */
+  logoLight?: string
+  logoDark?: string
 }
 
 export type NavLink = {
@@ -98,23 +117,41 @@ const siteConfig: SiteConfig = {
       href: '/services',
       icon: Layers,
       children: [
-        { label: 'Websites & Web Systems', href: '/services/websites-web-systems' },
-        { label: 'Automation & AI Integration', href: '/services/automation-ai' },
-        { label: 'Media Buying & SEO', href: '/services/media-buying-seo' },
-        { label: 'Creative Assets & Branding', href: '/services/creative-assets-branding' },
+        { label: 'Websites & Web Systems', href: '/services/websites-web-systems', icon: Globe, iconColor: 'text-teal-500' },
+        { label: 'Automation & AI Integration', href: '/services/automation-ai', icon: Bot, iconColor: 'text-red-500' },
+        { label: 'Media Buying & SEO', href: '/services/media-buying-seo', icon: Megaphone, iconColor: 'text-blue-500' },
+        { label: 'Creative Assets & Branding', href: '/services/creative-assets-branding', icon: Palette, iconColor: 'text-purple-500' },
+      ],
+    },
+    {
+      label: 'Branches',
+      href: '/ventures',
+      icon: GitBranch,
+      children: [
+        {
+          label: 'Corporate Crafts',
+          href: '/corporate-crafts',
+          logoLight: '/assets/corporate-crafts.svg',
+          logoDark: '/assets/dark-corporate-crafts.svg',
+        },
+        {
+          label: 'Create a Content',
+          href: '/creata-content',
+          logoLight: '/assets/createacontent.svg',
+          logoDark: '/assets/dark-createacontent.svg',
+        },
+        {
+          label: 'Softal Core',
+          href: '/softal-core',
+          logoLight: '/assets/softal-core.svg',
+          logoDark: '/assets/dark-softal-core.svg',
+        },
       ],
     },
     { label: 'Works', href: '/our-works', icon: Briefcase },
-    {
-      label: 'Ventures',
-      href: '/ventures',
-      icon: Boxes,
-      children: [
-        { label: 'Corporate Crafts', href: '/corporate-crafts' },
-        { label: 'Creata Content', href: '/creata-content' },
-        { label: 'Softal Core', href: '/softal-core' },
-      ],
-    },
+    { label: 'Pricing', href: '/pricing', icon: Tag },
+    { label: 'About', href: '/about', icon: Users },
+    { label: 'Blog', href: '/blog', icon: BookOpen },
     { label: 'Contact', href: '/contact', icon: Mail },
   ],
 

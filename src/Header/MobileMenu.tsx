@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { ChevronRight, X } from 'lucide-react'
 import clsx from 'clsx'
@@ -39,11 +40,22 @@ function ServiceRow({ item, onClose }: { item: NavChild; onClose: () => void }) 
         href={item.href}
         onClick={onClose}
         className={clsx(
-          'flex items-center h-11 pl-8 pr-4 border-b border-border text-sm transition-colors hover:bg-muted',
+          'flex items-center gap-2.5 border-b border-border text-sm transition-colors hover:bg-muted',
+          item.logoLight ? 'py-3 pl-8 pr-4' : 'h-11 pl-8 pr-4',
           pathname === item.href ? 'text-primary font-medium' : 'text-foreground/80',
         )}
       >
-        {item.label}
+        {item.logoLight ? (
+          <>
+            <Image src={item.logoLight} alt={item.label} width={120} height={36} className="h-8 w-auto object-contain dark:hidden" />
+            <Image src={item.logoDark ?? item.logoLight} alt={item.label} width={120} height={36} className="hidden h-8 w-auto object-contain dark:block" />
+          </>
+        ) : (
+          <>
+            {item.icon && <item.icon className={clsx('w-4 h-4 shrink-0', item.iconColor)} />}
+            {item.label}
+          </>
+        )}
       </Link>
     )
   }

@@ -30,13 +30,13 @@ export const Logo = ({ className, loading, priority }: Props) => {
       <Image
         {...imgProps}
         src="/assets/sitelogolight.svg"
-        className="h-9 w-auto dark:hidden"
+        className="h-12 w-auto dark:hidden"
       />
       {/* Dark theme */}
       <Image
         {...imgProps}
         src="/assets/sitelogo.svg"
-        className="hidden h-9 w-auto dark:block"
+        className="hidden h-12 w-auto dark:block"
       />
     </span>
   )

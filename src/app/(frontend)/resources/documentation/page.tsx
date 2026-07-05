@@ -21,7 +21,7 @@ export default function DocumentationPage() {
         title="Documentation"
         subtitle="Comprehensive guides, API references, and tutorials to help you get the most out of our services and products."
       />
-      <div className="px-[5%] pb-24">
+      <div className="container pb-24">
         <Reveal className="mx-auto max-w-3xl rounded-2xl border border-border bg-muted/50 p-12 text-center text-muted-foreground">
           <p className="mb-4 text-xl">📚 Documentation Portal</p>
           <p>

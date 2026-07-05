@@ -46,8 +46,8 @@ export default async function ContactPage() {
         subtitle="We'd love to hear from you. Reach out to us for any inquiries or collaborations."
       />
 
-      <div className="px-[5%] pb-24">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-2">
+      <div className="container pb-24">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           {/* Contact info */}
           <Reveal className="flex flex-col gap-8">
             <div>

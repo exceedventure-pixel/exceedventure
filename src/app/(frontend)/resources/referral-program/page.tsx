@@ -32,7 +32,7 @@ export default function ReferralProgramPage() {
         title="Referral Program"
         subtitle="Partner with us and earn rewards. Join our network of successful partners and grow together."
       />
-      <div className="px-[5%] pb-24 text-center">
+      <div className="container pb-24 text-center">
         <Reveal className="mx-auto max-w-2xl rounded-2xl border border-border bg-card p-8">
           <div className="mb-6 text-5xl">🤝</div>
           <h3 className="mb-4 text-2xl font-bold">Join the Program</h3>

@@ -21,127 +21,133 @@ const CAROUSEL_DATA: CarouselItem[] = [
   { id: 7, text: 'Corporate Design', image: '/assets/carousel/image-7.png', description: 'Corporate social media design that aligns with your brand' },
 ]
 
+const AUTOPLAY_MS = 3500
+const DRAG_STEP_PX = 60 // horizontal distance that advances one slide
+const CLICK_TOLERANCE_PX = 6 // movement under this counts as a click, not a drag
+
 export const StackedCarousel = () => {
-  const [activeIndex, setActiveIndex] = useState(0)
   const data = CAROUSEL_DATA
-  const totalItems = data.length
+  const total = data.length
 
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragOffset, setDragOffset] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const [dragDelta, setDragDelta] = useState(0)
+
+  const dragging = useRef(false)
   const startX = useRef(0)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const moved = useRef(false)
 
-  const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % totalItems)
-  }, [totalItems])
-
-  const handlePrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + totalItems) % totalItems)
-  }, [totalItems])
-
-  const handleDragStart = useCallback((clientX: number) => {
-    setIsDragging(true)
-    startX.current = clientX
-    setDragOffset(0)
-  }, [])
-
-  const handleDragMove = useCallback(
-    (clientX: number) => {
-      if (!isDragging) return
-      const diff = clientX - startX.current
-      setDragOffset(-diff * 0.5)
-    },
-    [isDragging],
+  const goTo = useCallback(
+    (index: number) => setActiveIndex(((index % total) + total) % total),
+    [total],
   )
+  const next = useCallback(() => goTo(activeIndex + 1), [goTo, activeIndex])
+  const prev = useCallback(() => goTo(activeIndex - 1), [goTo, activeIndex])
 
-  const handleDragEnd = useCallback(() => {
-    if (!isDragging) return
-    const slidesToMove = Math.round(dragOffset / 50)
-    if (slidesToMove !== 0) {
-      setActiveIndex((prev) => {
-        let newIndex = prev + slidesToMove
-        while (newIndex < 0) newIndex += totalItems
-        while (newIndex >= totalItems) newIndex -= totalItems
-        return newIndex
-      })
-    }
-    setIsDragging(false)
-    setDragOffset(0)
-    startX.current = 0
-  }, [isDragging, dragOffset, totalItems])
+  // Autoplay — restarts whenever activeIndex changes (so a click/drag resets the timer)
+  useEffect(() => {
+    if (paused) return
+    const timer = setTimeout(() => setActiveIndex((i) => (i + 1) % total), AUTOPLAY_MS)
+    return () => clearTimeout(timer)
+  }, [activeIndex, paused, total])
 
-  const handleCardClick = (index: number) => {
-    if (!isDragging) setActiveIndex(index)
+  // Keyboard support when focused
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') prev()
+    else if (e.key === 'ArrowRight') next()
   }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % totalItems)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [totalItems])
+  // Unified pointer drag
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragging.current = true
+    moved.current = false
+    startX.current = e.clientX
+    setPaused(true)
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+  }
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging.current) return
+    const dx = e.clientX - startX.current
+    if (Math.abs(dx) > CLICK_TOLERANCE_PX) moved.current = true
+    setDragDelta(dx)
+  }
+
+  const endDrag = (e: React.PointerEvent) => {
+    if (!dragging.current) return
+    dragging.current = false
+    const dx = e.clientX - startX.current
+    setDragDelta(0)
+    if (Math.abs(dx) > DRAG_STEP_PX) {
+      const steps = Math.round(dx / (DRAG_STEP_PX * 2))
+      goTo(activeIndex - (steps || (dx < 0 ? -1 : 1)))
+    }
+    setPaused(false)
+  }
+
+  const handleCardClick = (index: number) => {
+    if (moved.current) return // it was a drag, not a click
+    goTo(index)
+  }
 
   const getCardStyles = (index: number): React.CSSProperties => {
-    let diff = index - activeIndex
-    if (diff > totalItems / 2) diff -= totalItems
-    if (diff < -totalItems / 2) diff += totalItems
-    diff -= dragOffset / 100
+    let offset = index - activeIndex
+    if (offset > total / 2) offset -= total
+    if (offset < -total / 2) offset += total
+    // live drag influence (300px drag ≈ one slide)
+    const pos = offset - dragDelta / 300
 
-    const absDiff = Math.abs(diff)
-    const scale = 1 - absDiff * 0.15
-    const translateX = diff * 70
-    const zIndex = 10 - Math.floor(absDiff)
-    const opacity = absDiff > 2 ? 0 : 1
+    const abs = Math.abs(pos)
+    const translateX = pos * 55 // percent spacing between cards
+    const scale = Math.max(0.7, 1 - abs * 0.12)
+    const zIndex = 100 - Math.round(abs * 10)
+    const opacity = abs > 2.4 ? 0 : 1
 
     return {
-      transform: `translateX(${translateX}%) scale(${Math.max(0.5, scale)})`,
+      transform: `translateX(${translateX}%) scale(${scale})`,
       zIndex,
       opacity,
-      visibility: absDiff > 2.5 ? 'hidden' : 'visible',
+      visibility: abs > 3 ? 'hidden' : 'visible',
     }
   }
 
   return (
     <div className="flex w-full items-center justify-center bg-transparent py-2 md:py-12">
-      <div className="relative flex h-[300px] w-full max-w-5xl items-center justify-center overflow-visible md:h-[450px]">
+      <div
+        className="relative flex h-[300px] w-full max-w-5xl items-center justify-center overflow-visible outline-none md:h-[450px]"
+        tabIndex={0}
+        role="group"
+        aria-roledescription="carousel"
+        onKeyDown={onKeyDown}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
         <div
-          ref={containerRef}
-          className={`relative flex h-full w-full select-none items-center justify-center ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-          onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
-          onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
-          onTouchEnd={handleDragEnd}
-          onMouseDown={(e) => {
-            e.preventDefault()
-            handleDragStart(e.clientX)
-          }}
-          onMouseMove={(e) => isDragging && handleDragMove(e.clientX)}
-          onMouseUp={handleDragEnd}
-          onMouseLeave={() => isDragging && handleDragEnd()}
+          className={`relative flex h-full w-full touch-pan-y select-none items-center justify-center ${dragging.current ? 'cursor-grabbing' : 'cursor-grab'}`}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
         >
           {data.map((item, index) => {
-            let wrappedDiff = index - activeIndex
-            if (wrappedDiff > totalItems / 2) wrappedDiff -= totalItems
-            if (wrappedDiff < -totalItems / 2) wrappedDiff += totalItems
-            const effectiveDiff = wrappedDiff - dragOffset / 100
-            const isCenterSlide = Math.abs(effectiveDiff) < 0.5
+            let offset = index - activeIndex
+            if (offset > total / 2) offset -= total
+            if (offset < -total / 2) offset += total
+            const isCenter = Math.abs(offset - dragDelta / 300) < 0.5
 
             return (
               <div
                 key={item.id}
-                className={`card-wrapper absolute w-[280px] md:w-[340px] lg:w-[400px] ${!isDragging ? 'transition-all duration-500 ease-in-out' : ''} ${isCenterSlide ? 'center-slide' : ''}`}
+                className={`card-wrapper absolute w-[280px] md:w-[340px] lg:w-[400px] ${dragging.current ? '' : 'transition-all duration-500 ease-out'} ${isCenter ? 'center-slide' : ''}`}
                 style={getCardStyles(index)}
+                aria-hidden={!isCenter}
               >
-                <div
-                  className="card-card group"
-                  draggable={false}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    if (!isDragging && dragOffset === 0) handleCardClick(index)
-                  }}
-                  style={{
-                    pointerEvents: isDragging ? 'none' : 'auto',
-                    transition: isDragging ? 'none' : 'all 400ms ease',
-                  }}
+                <button
+                  type="button"
+                  className="card-card group block w-full appearance-none p-0 text-left"
+                  onClick={() => handleCardClick(index)}
+                  tabIndex={isCenter ? 0 : -1}
+                  aria-label={item.text}
                 >
                   <div className="image-section">
                     <Image
@@ -152,8 +158,8 @@ export const StackedCarousel = () => {
                       fill
                       sizes="(max-width: 768px) 280px, (max-width: 1024px) 340px, 400px"
                     />
-                    {!isCenterSlide && (
-                      <div className="card-overlay" style={{ backgroundColor: 'rgba(0,0,0,0.15)' }} />
+                    {!isCenter && (
+                      <div className="card-overlay" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }} />
                     )}
                   </div>
 
@@ -161,22 +167,37 @@ export const StackedCarousel = () => {
                     <h3 className="text-xl font-bold uppercase tracking-wide text-foreground md:text-2xl">
                       {item.text}
                     </h3>
-                    <div className={`transition-opacity duration-500 ${isCenterSlide ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className={`transition-opacity duration-500 ${isCenter ? 'opacity-100' : 'opacity-0'}`}>
                       <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
-                </div>
+                </button>
               </div>
             )
           })}
         </div>
 
-        <button className="card-button left" onClick={handlePrev} aria-label="Previous">
+        <button className="card-button left" onClick={prev} aria-label="Previous slide">
           <ChevronLeft size={36} className="text-white" strokeWidth={1.5} />
         </button>
-        <button className="card-button right" onClick={handleNext} aria-label="Next">
+        <button className="card-button right" onClick={next} aria-label="Next slide">
           <ChevronRight size={36} className="text-white" strokeWidth={1.5} />
         </button>
+
+        {/* Dots */}
+        <div className="absolute -bottom-8 left-1/2 flex -translate-x-1/2 gap-2">
+          {data.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => goTo(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === activeIndex ? 'w-6 bg-primary' : 'w-2 bg-foreground/20 hover:bg-foreground/40'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
