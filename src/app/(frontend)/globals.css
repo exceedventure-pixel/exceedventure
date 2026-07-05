@@ -93,14 +93,14 @@
   --card-foreground: oklch(14.5% 0 0deg);
   --popover: oklch(100% 0 0deg);
   --popover-foreground: oklch(14.5% 0 0deg);
-  --primary: oklch(20.5% 0 0deg);
-  --primary-foreground: oklch(98.5% 0 0deg);
-  --secondary: oklch(97% 0 0deg);
-  --secondary-foreground: oklch(20.5% 0 0deg);
+  --primary: #15246d;
+  --primary-foreground: oklch(100% 0 0deg);
+  --secondary: #00c2be;
+  --secondary-foreground: oklch(0% 0 0deg);
   --muted: oklch(97% 0 0deg);
-  --muted-foreground: oklch(55.6% 0 0deg);
-  --accent: oklch(97% 0 0deg);
-  --accent-foreground: oklch(20.5% 0 0deg);
+  --muted-foreground: oklch(45% 0.01 285deg);
+  --accent: oklch(51% 0.262 276.966deg);
+  --accent-foreground: oklch(100% 0 0deg);
   --destructive: oklch(57.7% 0.245 27.325deg);
   --destructive-foreground: oklch(57.7% 0.245 27.325deg);
   --border: oklch(92.2% 0 0deg);
@@ -132,14 +132,14 @@
   --card-foreground: oklch(98.5% 0 0deg);
   --popover: oklch(14.5% 0 0deg);
   --popover-foreground: oklch(98.5% 0 0deg);
-  --primary: oklch(98.5% 0 0deg);
-  --primary-foreground: oklch(20.5% 0 0deg);
-  --secondary: oklch(26.9% 0 0deg);
-  --secondary-foreground: oklch(98.5% 0 0deg);
+  --primary: #00c2be;
+  --primary-foreground: oklch(0% 0 0deg);
+  --secondary: #15246d;
+  --secondary-foreground: oklch(100% 0 0deg);
   --muted: oklch(26.9% 0 0deg);
-  --muted-foreground: oklch(70.8% 0 0deg);
-  --accent: oklch(26.9% 0 0deg);
-  --accent-foreground: oklch(98.5% 0 0deg);
+  --muted-foreground: oklch(72% 0 0deg);
+  --accent: oklch(67% 0.167 35.791deg);
+  --accent-foreground: oklch(100% 0 0deg);
   --destructive: oklch(39.6% 0.141 25.723deg);
   --destructive-foreground: oklch(63.7% 0.237 25.331deg);
   --border: oklch(26.9% 0 0deg);
@@ -292,4 +292,126 @@ html {
 html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================
+   StackedCarousel styles
+   ============================ */
+.card-card {
+  transition: all 400ms ease;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 20px;
+  height: 400px;
+  position: relative;
+  background-color: #111;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.image-section {
+  position: relative;
+  height: 70%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.cover-image {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.text-section {
+  height: 30%;
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.center-slide .card-card {
+  border: 2px solid var(--secondary);
+  box-shadow:
+    0 0 20px color-mix(in oklch, var(--secondary) 40%, transparent),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  transition: all 400ms ease;
+  z-index: 1;
+}
+
+.card-wrapper:not(.center-slide) .card-card:hover {
+  transform: scale(1.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-button {
+  position: absolute;
+  top: 43%;
+  width: 44px;
+  height: 44px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.card-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.card-button.left {
+  left: -80px;
+}
+
+.card-button.right {
+  right: -80px;
+}
+
+@media (max-width: 1280px) {
+  .card-button.left {
+    left: 10px;
+  }
+  .card-button.right {
+    right: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-card {
+    height: 280px;
+  }
+  .text-section {
+    padding: 1rem;
+  }
 }

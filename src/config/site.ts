@@ -1,4 +1,4 @@
-import { Home, Layers, Users, BookOpen, Mail } from 'lucide-react'
+import { Home, Layers, Briefcase, Boxes, Mail } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 export type NavGrandchild = {
@@ -28,7 +28,7 @@ export type FooterLinkGroup = {
 export type SocialLink = {
   platform: string
   href: string
-  icon: 'twitter' | 'linkedin' | 'github' | 'instagram' | 'facebook' | 'youtube'
+  icon: 'twitter' | 'linkedin' | 'github' | 'instagram' | 'facebook' | 'youtube' | 'tiktok'
 }
 
 export type SiteConfig = {
@@ -66,26 +66,26 @@ export type SiteConfig = {
 
 const siteConfig: SiteConfig = {
   // ─── Identity ──────────────────────────────────────────────────────────────
-  name: 'Acme Agency',
-  tagline: 'We grow your business.',
+  name: 'Exceed Venture',
+  tagline: 'Building Digital Excellence.',
   description:
-    'Acme Agency delivers world-class digital marketing, SEO, and web design for modern businesses.',
+    'Exceed Venture is a full-service digital agency specializing in web development, media buying, creative content, and AI automation solutions.',
   url: process.env.NEXT_PUBLIC_SERVER_URL ?? 'http://localhost:3000',
 
   // ─── Logo ──────────────────────────────────────────────────────────────────
   logo: {
-    text: 'Acme Agency',
-    // imagePath: '/logo.svg',
+    text: 'Exceed Venture',
+    // Theme-aware SVG logo is rendered directly by the Logo component.
   },
 
   // ─── SEO defaults ──────────────────────────────────────────────────────────
   seo: {
-    titleTemplate: '%s | Acme Agency',
-    defaultTitle: 'Acme Agency — Digital Marketing & Web Design',
+    titleTemplate: '%s | Exceed Venture',
+    defaultTitle: 'Exceed Venture | Digital Agency',
     defaultDescription:
-      'Acme Agency delivers world-class SEO, web design, and paid advertising for modern businesses.',
+      'Exceed Venture is a full-service digital agency specializing in web development, media buying, creative content, and AI automation solutions.',
     defaultOgImage: '/website-template-OG.webp',
-    twitterHandle: '@acme',
+    twitterHandle: '@exceedventure',
     googleVerification: process.env.GOOGLE_SITE_VERIFICATION ?? '',
     bingVerification: process.env.BING_SITE_VERIFICATION ?? '',
   },
@@ -98,99 +98,78 @@ const siteConfig: SiteConfig = {
       href: '/services',
       icon: Layers,
       children: [
-        {
-          label: 'Service 1',
-          href: '/services/service-1',
-          children: [
-            { label: 'Sub Service 1', href: '/services/service-1/sub-service-1' },
-            { label: 'Sub Service 2', href: '/services/service-1/sub-service-2' },
-            { label: 'Sub Service 3', href: '/services/service-1/sub-service-3' },
-          ],
-        },
-        {
-          label: 'Service 2',
-          href: '/services/service-2',
-          children: [
-            { label: 'Sub Service 1', href: '/services/service-2/sub-service-1' },
-            { label: 'Sub Service 2', href: '/services/service-2/sub-service-2' },
-            { label: 'Sub Service 3', href: '/services/service-2/sub-service-3' },
-          ],
-        },
-        {
-          label: 'Service 3',
-          href: '/services/service-3',
-          children: [
-            { label: 'Sub Service 1', href: '/services/service-3/sub-service-1' },
-            { label: 'Sub Service 2', href: '/services/service-3/sub-service-2' },
-            { label: 'Sub Service 3', href: '/services/service-3/sub-service-3' },
-          ],
-        },
-        {
-          label: 'Service 4',
-          href: '/services/service-4',
-          children: [
-            { label: 'Sub Service 1', href: '/services/service-4/sub-service-1' },
-            { label: 'Sub Service 2', href: '/services/service-4/sub-service-2' },
-            { label: 'Sub Service 3', href: '/services/service-4/sub-service-3' },
-          ],
-        },
-        {
-          label: 'Service 5',
-          href: '/services/service-5',
-          children: [
-            { label: 'Sub Service 1', href: '/services/service-5/sub-service-1' },
-            { label: 'Sub Service 2', href: '/services/service-5/sub-service-2' },
-            { label: 'Sub Service 3', href: '/services/service-5/sub-service-3' },
-          ],
-        },
+        { label: 'Websites & Web Systems', href: '/services/websites-web-systems' },
+        { label: 'Automation & AI Integration', href: '/services/automation-ai' },
+        { label: 'Media Buying & SEO', href: '/services/media-buying-seo' },
+        { label: 'Creative Assets & Branding', href: '/services/creative-assets-branding' },
       ],
     },
-    { label: 'About', href: '/about', icon: Users },
-    { label: 'Blog', href: '/blog', icon: BookOpen },
+    { label: 'Works', href: '/our-works', icon: Briefcase },
+    {
+      label: 'Ventures',
+      href: '/ventures',
+      icon: Boxes,
+      children: [
+        { label: 'Corporate Crafts', href: '/corporate-crafts' },
+        { label: 'Creata Content', href: '/creata-content' },
+        { label: 'Softal Core', href: '/softal-core' },
+      ],
+    },
     { label: 'Contact', href: '/contact', icon: Mail },
   ],
 
   // ─── Footer links ──────────────────────────────────────────────────────────
   footerLinks: [
     {
-      heading: 'Company',
+      heading: 'Resources',
       links: [
-        { label: 'About', href: '/about' },
-        { label: 'Services', href: '/services' },
-        { label: 'Careers', href: '/careers' },
-        { label: 'Contact', href: '/contact' },
+        { label: 'Blogs', href: '/blog' },
+        { label: 'Documentation', href: '/resources/documentation' },
+        { label: 'Freebies & Audits', href: '/resources/freebies-audits' },
+        { label: 'Referral Program', href: '/resources/referral-program' },
       ],
     },
     {
-      heading: 'Content',
-      links: [{ label: 'Blog', href: '/blog' }],
+      heading: 'Company',
+      links: [
+        { label: 'FAQs', href: '/company/faqs' },
+        { label: 'Privacy Policy', href: '/company/privacy-policy' },
+        { label: 'Terms of Service', href: '/company/terms-of-service' },
+      ],
     },
     {
-      heading: 'Legal',
+      heading: 'Quick Links',
       links: [
-        { label: 'Privacy Policy', href: '/privacy' },
-        { label: 'Terms of Service', href: '/terms' },
+        { label: 'Home', href: '/' },
+        { label: 'About Us', href: '/about' },
+        { label: 'Services', href: '/services' },
+        { label: 'Contact', href: '/contact' },
       ],
     },
   ],
 
   // ─── Contact ───────────────────────────────────────────────────────────────
   contact: {
-    email: 'hello@acme.com',
-    phone: '+1 (555) 000-0000',
-    address: '123 Main St, San Francisco, CA 94105',
+    email: 'hello@exceedventure.com',
+    address: '',
   },
 
   // ─── Social ────────────────────────────────────────────────────────────────
   social: [
-    { platform: 'Twitter / X', href: 'https://twitter.com/acme', icon: 'twitter' },
-    { platform: 'LinkedIn', href: 'https://linkedin.com/company/acme', icon: 'linkedin' },
-    { platform: 'GitHub', href: 'https://github.com/acme', icon: 'github' },
+    { platform: 'Facebook', href: 'https://www.facebook.com/exceedventure', icon: 'facebook' },
+    { platform: 'Instagram', href: 'https://www.instagram.com/exceed_venture', icon: 'instagram' },
+    {
+      platform: 'LinkedIn',
+      href: 'https://www.linkedin.com/company/exceedventure',
+      icon: 'linkedin',
+    },
+    { platform: 'YouTube', href: 'https://www.youtube.com/@ExceedVenture', icon: 'youtube' },
+    { platform: 'TikTok', href: 'https://www.tiktok.com/@exceedventure', icon: 'tiktok' },
   ],
 
   // ─── Organization (used for JSON-LD structured data) ───────────────────────
   org: {
-    legalName: 'Acme Agency LLC',
+    legalName: 'Exceed Venture',
     foundingYear: 2020,
     areaServed: 'Worldwide',
   },

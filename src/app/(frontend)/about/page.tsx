@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import React from 'react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
 import { jsonLdScript, webPageSchema, breadcrumbSchema } from '@/utilities/jsonld'
 import siteConfig from '@/config/site'
+import { PageHero } from '@/components/PageHero'
+import { Reveal } from '@/components/Reveal'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -40,77 +41,38 @@ export default async function AboutPage() {
         }}
       />
 
-      {/* Page header */}
-      <section className="py-24 bg-muted text-center px-4">
-        <div className="container max-w-2xl">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">About Us</h1>
-          <p className="text-lg text-muted-foreground">
-            We are a team of specialists passionate about helping businesses grow through smart
-            strategy, great design, and cutting-edge technology.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="About Exceed Venture"
+        subtitle="We are a team of innovators, creators, and strategists dedicated to empowering businesses through technology."
+      />
 
-      {/* Story */}
-      <section className="py-24 bg-background">
-        <div className="container max-w-3xl">
-          <h2 className="text-2xl font-bold mb-6">Our Story</h2>
-          <div className="prose dark:prose-invert max-w-none">
+      <div className="px-[5%] pb-24">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+          <Reveal className="space-y-6 text-lg text-foreground/80">
             <p>
-              Founded in {siteConfig.org.foundingYear}, {siteConfig.name} was built on a simple
-              belief: every business deserves world-class digital services, not just the ones with
-              big budgets.
+              At Exceed Venture, we believe in the power of digital transformation. Our mission is
+              to help businesses streamline their operations, reach their target audience, and
+              achieve sustainable growth.
             </p>
             <p>
-              Over the years we have helped hundreds of clients across industries launch products,
-              enter new markets, and build audiences they are proud of. We do not believe in vanity
-              metrics — we measure success by the growth our clients actually see.
+              Founded with a vision to bridge the gap between complex technology and business needs,
+              we specialize in creating custom web solutions, implementing AI automation, and
+              executing data-driven marketing strategies.
             </p>
             <p>
-              Today our team spans strategy, design, engineering, and marketing. We work as true
-              partners — embedded in your goals, accountable to your results.
+              Our team consists of experienced developers, designers, and marketing strategists who
+              work together to deliver comprehensive digital solutions tailored to your unique
+              business needs.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Values */}
-      <section className="py-24 bg-muted">
-        <div className="container">
-          <h2 className="text-2xl font-bold mb-12 text-center">Our Values</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {[
-              { title: 'Transparency', body: 'No hidden agendas. You always know what we are doing and why.' },
-              { title: 'Results First', body: 'We optimise for outcomes, not activity. Every decision maps to a goal.' },
-              { title: 'Long-term Thinking', body: 'We build for durability — foundations that compound over time.' },
-              { title: 'Collaboration', body: 'The best work happens together. We treat every client as a co-creator.' },
-              { title: 'Craft', body: 'We take pride in the details. Quality is not optional.' },
-              { title: 'Continuous Learning', body: 'We stay ahead of what is changing so our clients always have the edge.' },
-            ].map((v) => (
-              <div key={v.title} className="rounded-lg border border-border p-6 bg-background">
-                <h3 className="font-semibold mb-2">{v.title}</h3>
-                <p className="text-sm text-muted-foreground">{v.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-24 bg-primary text-primary-foreground text-center px-4">
-        <div className="max-w-xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Let&apos;s work together</h2>
-          <p className="mb-8 opacity-90">
-            Tell us about your project. We&apos;d love to learn more about your business.
-          </p>
-          <Link
-            href="/contact"
-            className="inline-flex items-center justify-center rounded-md bg-background text-foreground px-6 py-3 font-medium hover:bg-background/90 transition-colors"
+          </Reveal>
+          <Reveal
+            delay={120}
+            className="flex h-[400px] items-center justify-center rounded-2xl border border-border bg-muted/50"
           >
-            Get in Touch
-          </Link>
+            <span className="text-muted-foreground">Team Image / Office Photo</span>
+          </Reveal>
         </div>
-      </section>
+      </div>
     </>
   )
 }

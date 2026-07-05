@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
+import { Globe, Bot, Megaphone, Palette, ArrowRight, type LucideIcon } from 'lucide-react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
 import { jsonLdScript, webPageSchema, breadcrumbSchema } from '@/utilities/jsonld'
 import siteConfig from '@/config/site'
+import { PageHero } from '@/components/PageHero'
+import { Reveal } from '@/components/Reveal'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -15,50 +18,57 @@ export async function generateMetadata(): Promise<Metadata> {
   return generatePageMeta({ slug: 'services', seoDoc, fallbackTitle: 'Services' })
 }
 
-const services = [
+const services: {
+  title: string
+  description: string
+  icon: LucideIcon
+  color: string
+  href: string
+  features: string[]
+}[] = [
   {
-    title: 'Strategy & Consulting',
-    slug: 'strategy',
+    title: 'Websites & Web Systems',
     description:
-      'We work with you to define goals, identify opportunities, and build a roadmap that sets your business up for sustainable growth.',
-    highlights: ['Market research', 'Competitive analysis', 'Growth roadmapping', 'KPI definition'],
+      'Build high-performance digital foundations with professional websites, landing pages, and web applications.',
+    icon: Globe,
+    color: 'teal',
+    href: '/services/websites-web-systems',
+    features: ['Business Websites', 'Landing Pages', 'Web Dashboards', 'Client Portals'],
   },
   {
-    title: 'Web Design & UX',
-    slug: 'design',
+    title: 'Automation & AI Integration',
     description:
-      'Beautiful, conversion-focused design that earns trust and guides users to take action — on every device.',
-    highlights: ['UI/UX design', 'Wireframing', 'Design systems', 'Accessibility'],
+      'Make businesses run smarter with AI integration and intelligent automation solutions.',
+    icon: Bot,
+    color: 'red',
+    href: '/services/automation-ai',
+    features: ['AI Integration', 'Task Automation', 'Business Process Automation', 'Custom Workflows'],
   },
   {
-    title: 'Web Development',
-    slug: 'development',
+    title: 'Media Buying & SEO',
     description:
-      'Fast, secure, and scalable web applications built on modern frameworks with performance baked in from day one.',
-    highlights: ['Next.js / React', 'CMS integration', 'API development', 'Performance optimisation'],
+      'Boost your visibility with strategic media buying and data-driven SEO optimization.',
+    icon: Megaphone,
+    color: 'blue',
+    href: '/services/media-buying-seo',
+    features: ['SEO Strategy', 'Paid Advertising', 'Link Building', 'Performance Analytics'],
   },
   {
-    title: 'Search Engine Optimisation',
-    slug: 'seo',
-    description:
-      'Technical and content SEO that earns lasting organic visibility on the platforms your customers use to find solutions.',
-    highlights: ['Technical audit', 'On-page optimisation', 'Link building', 'Local SEO'],
-  },
-  {
-    title: 'Paid Advertising',
-    slug: 'ads',
-    description:
-      'Data-driven paid campaigns across Google, Meta, and LinkedIn that reach the right audience at the right time.',
-    highlights: ['Google Ads', 'Meta Ads', 'LinkedIn Ads', 'Conversion tracking'],
-  },
-  {
-    title: 'Analytics & Reporting',
-    slug: 'analytics',
-    description:
-      'Clear, actionable reporting so you always know what is working, what is not, and where to invest next.',
-    highlights: ['GA4 setup', 'Custom dashboards', 'Attribution modelling', 'Monthly reviews'],
+    title: 'Creative Assets & Branding',
+    description: 'Elevate your brand with distinctive design and creative assets that resonate.',
+    icon: Palette,
+    color: 'purple',
+    href: '/services/creative-assets-branding',
+    features: ['Brand Identity', 'Graphic Design', 'UI/UX Design', 'Motion Graphics'],
   },
 ]
+
+const colorClasses: Record<string, { bg: string; text: string; border: string }> = {
+  teal: { bg: 'bg-teal-500/10', text: 'text-teal-500', border: 'hover:border-teal-500/50' },
+  red: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'hover:border-red-500/50' },
+  blue: { bg: 'bg-blue-500/10', text: 'text-blue-500', border: 'hover:border-blue-500/50' },
+  purple: { bg: 'bg-purple-500/10', text: 'text-purple-500', border: 'hover:border-purple-500/50' },
+}
 
 export default async function ServicesPage() {
   const seoDoc = await getPageSEO('services').catch(() => null)
@@ -85,61 +95,64 @@ export default async function ServicesPage() {
         }}
       />
 
-      {/* Header */}
-      <section className="py-24 bg-muted text-center px-4">
-        <div className="container max-w-2xl">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Services</h1>
-          <p className="text-lg text-muted-foreground">
-            Everything you need to grow your business online — under one roof.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title={
+          <>
+            Our <span className="text-primary">Services</span>
+          </>
+        }
+        subtitle="We provide comprehensive digital solutions to help businesses thrive in the modern landscape."
+      />
 
-      {/* Services listing */}
-      <section className="py-24 bg-background">
-        <div className="container max-w-5xl">
-          <div className="flex flex-col gap-16">
-            {services.map((service, i) => (
-              <div
-                key={service.slug}
-                className={`grid md:grid-cols-2 gap-10 items-start ${i % 2 !== 0 ? 'md:[&>*:first-child]:order-2' : ''}`}
+      {/* Services grid */}
+      <section className="px-[5%] pb-24">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2">
+          {services.map((service, index) => {
+            const Icon = service.icon
+            const colors = colorClasses[service.color]
+            return (
+              <Reveal
+                key={service.href}
+                delay={index * 80}
+                className={`group rounded-2xl border border-border bg-card p-8 transition-all duration-200 hover:shadow-xl ${colors.border}`}
               >
-                <div>
-                  <h2 className="text-2xl font-bold mb-4">{service.title}</h2>
-                  <p className="text-muted-foreground mb-6">{service.description}</p>
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center justify-center rounded-md border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
-                  >
-                    Enquire about this service
-                  </Link>
+                <div className={`mb-6 w-fit rounded-xl p-4 ${colors.bg} ${colors.text} transition-transform duration-200 group-hover:scale-110`}>
+                  <Icon size={40} />
                 </div>
-                <ul className="rounded-lg border border-border divide-y divide-border">
-                  {service.highlights.map((item) => (
-                    <li key={item} className="px-5 py-3 text-sm flex items-center gap-2">
-                      <span className="text-primary">✓</span> {item}
-                    </li>
+                <h3 className="mb-3 text-2xl font-bold">{service.title}</h3>
+                <p className="mb-6 leading-relaxed text-muted-foreground">{service.description}</p>
+                <div className="mb-6 flex flex-wrap gap-2">
+                  {service.features.map((feature) => (
+                    <span key={feature} className={`rounded-full px-3 py-1 text-sm ${colors.bg} ${colors.text}`}>
+                      {feature}
+                    </span>
                   ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+                </div>
+                <Link
+                  href={service.href}
+                  className={`inline-flex items-center gap-2 font-semibold ${colors.text} transition-all hover:gap-3`}
+                >
+                  Learn More <ArrowRight size={18} />
+                </Link>
+              </Reveal>
+            )
+          })}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-primary text-primary-foreground text-center px-4">
-        <div className="max-w-xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Not sure where to start?</h2>
-          <p className="mb-8 opacity-90">
-            Book a free discovery call. We will listen, ask the right questions, and recommend the
-            best path forward.
+      <section className="px-[5%] pb-24">
+        <div className="mx-auto max-w-6xl rounded-3xl bg-linear-to-r from-primary to-secondary p-12 text-center text-white">
+          <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to Get Started?</h2>
+          <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
+            Let&apos;s discuss how we can help transform your business with our comprehensive digital
+            solutions.
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center rounded-md bg-background text-foreground px-6 py-3 font-medium hover:bg-background/90 transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 font-bold text-primary transition-colors hover:bg-white/90"
           >
-            Book a Free Call
+            Contact Us <ArrowRight size={18} />
           </Link>
         </div>
       </section>

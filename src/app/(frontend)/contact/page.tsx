@@ -5,6 +5,8 @@ import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
 import { jsonLdScript, webPageSchema, breadcrumbSchema } from '@/utilities/jsonld'
 import siteConfig from '@/config/site'
+import { PageHero } from '@/components/PageHero'
+import { Reveal } from '@/components/Reveal'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -39,60 +41,57 @@ export default async function ContactPage() {
         }}
       />
 
-      {/* Header */}
-      <section className="py-24 bg-muted text-center px-4">
-        <div className="container max-w-2xl">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h1>
-          <p className="text-lg text-muted-foreground">
-            Have a project in mind? We&apos;d love to hear about it. Reach out and we will get back
-            to you within one business day.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Contact Us"
+        subtitle="We'd love to hear from you. Reach out to us for any inquiries or collaborations."
+      />
 
-      <section className="py-24 bg-background">
-        <div className="container max-w-5xl grid md:grid-cols-2 gap-16">
-          {/* Contact details */}
-          <div>
-            <h2 className="text-xl font-semibold mb-6">Contact Information</h2>
-            <dl className="flex flex-col gap-5 text-sm">
+      <div className="px-[5%] pb-24">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-2">
+          {/* Contact info */}
+          <Reveal className="flex flex-col gap-8">
+            <div>
+              <h2 className="text-2xl font-bold">Get in Touch</h2>
+              <p className="mt-2 text-muted-foreground">
+                Fill out the form or contact us directly using the information below.
+              </p>
+            </div>
+
+            <div className="mt-2 flex flex-col gap-6">
               {siteConfig.contact.email && (
-                <div>
-                  <dt className="text-muted-foreground mb-1">Email</dt>
-                  <dd>
-                    <a
-                      href={`mailto:${siteConfig.contact.email}`}
-                      className="hover:text-primary transition-colors"
-                    >
+                <div className="flex items-start gap-4">
+                  <div className="rounded-lg bg-primary/10 p-3 text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="mb-1 font-semibold">Email</h3>
+                    <a href={`mailto:${siteConfig.contact.email}`} className="text-muted-foreground transition-colors hover:text-primary">
                       {siteConfig.contact.email}
                     </a>
-                  </dd>
-                </div>
-              )}
-              {siteConfig.contact.phone && (
-                <div>
-                  <dt className="text-muted-foreground mb-1">Phone</dt>
-                  <dd>
-                    <a
-                      href={`tel:${siteConfig.contact.phone.replace(/\s/g, '')}`}
-                      className="hover:text-primary transition-colors"
-                    >
-                      {siteConfig.contact.phone}
-                    </a>
-                  </dd>
+                  </div>
                 </div>
               )}
               {siteConfig.contact.address && (
-                <div>
-                  <dt className="text-muted-foreground mb-1">Address</dt>
-                  <dd className="whitespace-pre-line">{siteConfig.contact.address}</dd>
+                <div className="flex items-start gap-4">
+                  <div className="rounded-lg bg-primary/10 p-3 text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="mb-1 font-semibold">Address</h3>
+                    <p className="whitespace-pre-line text-muted-foreground">{siteConfig.contact.address}</p>
+                  </div>
                 </div>
               )}
-            </dl>
+            </div>
 
             {siteConfig.social.length > 0 && (
-              <div className="mt-10">
-                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">
+              <div>
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Follow Us
                 </h3>
                 <div className="flex flex-wrap gap-3">
@@ -102,7 +101,7 @@ export default async function ContactPage() {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm px-4 py-2 rounded-md border border-border hover:border-primary/50 hover:text-primary transition-colors"
+                      className="rounded-md border border-border px-4 py-2 text-sm transition-colors hover:border-primary/50 hover:text-primary"
                     >
                       {platform}
                     </a>
@@ -110,16 +109,11 @@ export default async function ContactPage() {
                 </div>
               </div>
             )}
-          </div>
+          </Reveal>
 
-          {/* Simple contact form */}
-          <div>
-            <h2 className="text-xl font-semibold mb-6">Send a Message</h2>
-            <form
-              action="/api/contact"
-              method="POST"
-              className="flex flex-col gap-5"
-            >
+          {/* Contact form */}
+          <Reveal delay={120} className="rounded-2xl border border-border bg-card p-8">
+            <form action="/api/contact" method="POST" className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="name" className="text-sm font-medium">
                   Name <span className="text-destructive">*</span>
@@ -130,6 +124,7 @@ export default async function ContactPage() {
                   type="text"
                   required
                   autoComplete="name"
+                  placeholder="Your Name"
                   className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
@@ -143,6 +138,7 @@ export default async function ContactPage() {
                   type="email"
                   required
                   autoComplete="email"
+                  placeholder="your@email.com"
                   className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
@@ -166,19 +162,20 @@ export default async function ContactPage() {
                   name="message"
                   required
                   rows={5}
-                  className="rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-y"
+                  placeholder="How can we help you?"
+                  className="resize-y rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-3 font-medium hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Send Message
               </button>
             </form>
-          </div>
+          </Reveal>
         </div>
-      </section>
+      </div>
     </>
   )
 }

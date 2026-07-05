@@ -22,7 +22,13 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/media/file/**',
       },
+      {
+        pathname: '/assets/**',
+      },
     ],
+    // Our own brand assets include trusted inline SVGs (logos, venture marks).
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
     qualities: [100],
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
