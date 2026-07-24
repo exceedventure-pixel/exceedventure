@@ -123,32 +123,43 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen overflow-x-hidden">
       {/* Hero */}
-      <section className="relative flex min-h-[90vh] flex-col items-center justify-center pb-20 pt-32 text-center lg:pb-32 lg:pt-48">
+      <section className="relative flex flex-col items-center justify-center pb-10 pt-6 text-center lg:pb-14 lg:pt-10">
         <Reveal className="container z-10 flex w-full flex-col items-center">
-          <h1 className="mb-8 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             <span>Building Digital </span>
             <span className="text-primary">Excellence.</span>
           </h1>
-          <p className="mb-12 max-w-3xl text-lg text-muted-foreground sm:text-xl">
+          <p className="mb-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
             Imagine a business where your branding does the talking, your AI handles the paperwork,
             and your content attracts your dream clients.
           </p>
-          <div className="mb-16 flex flex-col gap-4 sm:flex-row">
+        </Reveal>
+
+        {/* Stacked carousel — kept outside the container so it stays full-bleed.
+            The negative margin absorbs most of the carousel's own md:py-12 on
+            larger screens; mobile is left alone since it only has py-2 there. */}
+        <div className="z-10 w-full overflow-visible md:-my-8">
+          <StackedCarousel />
+        </div>
+
+        <Reveal className="container z-10 flex w-full flex-col items-center">
+          {/* mt-10 clears the carousel's dots, which sit below its own box */}
+          <div className="mb-8 mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-3 text-lg font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
             >
-              Start a Project <ArrowRight className="h-5 w-5" />
+              Start a Project <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/our-works"
-              className="inline-flex items-center justify-center rounded-xl border border-border px-8 py-3 text-lg font-medium transition-colors hover:bg-muted"
+              className="inline-flex items-center justify-center rounded-xl border border-border px-6 py-2.5 text-base font-medium transition-colors hover:bg-muted"
             >
               View Our Work
             </Link>
           </div>
 
-          <div className="grid w-full max-w-6xl grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid w-full max-w-5xl grid-cols-2 gap-3 lg:grid-cols-4">
             {services.map((service) => {
               const Icon = service.icon
               const colors = colorClasses[service.color]
@@ -156,15 +167,15 @@ export default function HomeClient() {
                 <Link
                   key={service.title}
                   href={service.href}
-                  className={`group block h-full rounded-2xl border border-border bg-card p-3 text-center transition-all hover:-translate-y-1 sm:p-6 ${colors.hover}`}
+                  className={`group block h-full rounded-xl border border-border bg-card p-3 text-center transition-all hover:-translate-y-1 sm:p-4 ${colors.hover}`}
                 >
-                  <div className={`mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl sm:mb-4 sm:h-12 sm:w-12 ${colors.bg}`}>
-                    <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${colors.text}`} />
+                  <div className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${colors.bg}`}>
+                    <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${colors.text}`} />
                   </div>
-                  <h3 className="text-sm font-bold sm:text-lg">
+                  <h3 className="text-xs font-bold sm:text-base">
                     {service.title}
                     <br />
-                    <span className="text-[10px] font-light opacity-70 sm:text-sm">{service.subtitle}</span>
+                    <span className="text-[10px] font-light opacity-70 sm:text-xs">{service.subtitle}</span>
                   </h3>
                 </Link>
               )
@@ -177,11 +188,6 @@ export default function HomeClient() {
           <div className="absolute right-[-5%] top-[-10%] h-[500px] w-[500px] rounded-full bg-primary/10 blur-[100px]" />
           <div className="absolute bottom-[-10%] left-[-5%] h-[400px] w-[400px] rounded-full bg-secondary/10 blur-[100px]" />
         </div>
-      </section>
-
-      {/* Stacked carousel */}
-      <section className="overflow-visible py-8 md:py-16">
-        <StackedCarousel />
       </section>
 
       {/* Stats */}

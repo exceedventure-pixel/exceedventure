@@ -1,0 +1,12 @@
+# Local-only overrides. Docker Compose merges this on top of docker-compose.yml
+# automatically; it is not used in deployment.
+#
+# This machine already runs native PostgreSQL instances on 5432 and 5433, so the
+# project's Postgres container is published on 5434 to avoid the clash.
+# Keep DATABASE_URL in .env pointed at 127.0.0.1:5434 to match.
+# `!override` replaces the base ports list instead of appending to it, so 5432 is
+# left alone for the native Postgres already using it.
+services:
+  postgres:
+    ports: !override
+      - '5434:5432'
