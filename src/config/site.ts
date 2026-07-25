@@ -11,6 +11,9 @@ import {
   Bot,
   Megaphone,
   Palette,
+  TrendingUp,
+  Target,
+  FileText,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -29,6 +32,10 @@ export type NavChild = {
   /** Optional brand logo shown instead of the label (e.g. Branches dropdown). */
   logoLight?: string
   logoDark?: string
+  /** One-line summary shown under the label in the desktop mega menu. */
+  description?: string
+  /** Accent key — same palette as the homepage solution cards. */
+  color?: 'teal' | 'red' | 'blue' | 'purple' | 'emerald' | 'amber' | 'pink' | 'indigo'
 }
 
 export type NavLink = {
@@ -37,6 +44,11 @@ export type NavLink = {
   external?: boolean
   icon?: LucideIcon
   children?: NavChild[]
+  /**
+   * Keep this item out of the inline header bar. It still appears in the
+   * hamburger drawer, which carries the full menu.
+   */
+  drawerOnly?: boolean
 }
 
 export type FooterLinkGroup = {
@@ -111,16 +123,20 @@ const siteConfig: SiteConfig = {
 
   // ─── Navigation ────────────────────────────────────────────────────────────
   nav: [
-    { label: 'Home', href: '/', icon: Home },
+    { label: 'Home', href: '/', icon: Home, drawerOnly: true },
     {
-      label: 'Services',
-      href: '/services',
+      label: 'Solutions',
+      href: '/solutions',
       icon: Layers,
       children: [
-        { label: 'Websites & Web Systems', href: '/services/websites-web-systems', icon: Globe, iconColor: 'text-teal-500' },
-        { label: 'Automation & AI Integration', href: '/services/automation-ai', icon: Bot, iconColor: 'text-red-500' },
-        { label: 'Media Buying & SEO', href: '/services/media-buying-seo', icon: Megaphone, iconColor: 'text-blue-500' },
-        { label: 'Creative Assets & Branding', href: '/services/creative-assets-branding', icon: Palette, iconColor: 'text-purple-500' },
+        { label: 'Websites & Apps', href: '/solutions/websites-apps', icon: Globe, iconColor: 'text-teal-500', color: 'teal', description: 'High-performance sites and platforms' },
+        { label: 'Automation', href: '/solutions/automation', icon: Bot, iconColor: 'text-red-500', color: 'red', description: 'Put the repetitive work on autopilot' },
+        { label: 'Media Buying', href: '/solutions/media-buying', icon: Megaphone, iconColor: 'text-blue-500', color: 'blue', description: 'Paid campaigns built for ROI' },
+        { label: 'Web Growth (SEO)', href: '/solutions/web-growth-seo', icon: TrendingUp, iconColor: 'text-emerald-500', color: 'emerald', description: 'Compounding organic search growth' },
+        { label: 'Branding', href: '/solutions/branding', icon: Palette, iconColor: 'text-purple-500', color: 'purple', description: 'Identity and design that gets remembered' },
+        { label: 'Marketing', href: '/solutions/marketing', icon: Target, iconColor: 'text-amber-500', color: 'amber', description: 'Full-funnel strategy and campaigns' },
+        { label: 'Content Supply', href: '/solutions/content-supply', icon: FileText, iconColor: 'text-pink-500', color: 'pink', description: 'On-brand content at scale' },
+        { label: 'SMM & VA', href: '/solutions/smm-va', icon: Users, iconColor: 'text-indigo-500', color: 'indigo', description: 'Social management and virtual assistants' },
       ],
     },
     {
@@ -150,9 +166,9 @@ const siteConfig: SiteConfig = {
     },
     { label: 'Works', href: '/our-works', icon: Briefcase },
     { label: 'Pricing', href: '/pricing', icon: Tag },
-    { label: 'About', href: '/about', icon: Users },
-    { label: 'Blog', href: '/blog', icon: BookOpen },
-    { label: 'Contact', href: '/contact', icon: Mail },
+    { label: 'About', href: '/about', icon: Users, drawerOnly: true },
+    { label: 'Blog', href: '/blog', icon: BookOpen, drawerOnly: true },
+    { label: 'Contact', href: '/contact', icon: Mail, drawerOnly: true },
   ],
 
   // ─── Footer links ──────────────────────────────────────────────────────────
@@ -164,6 +180,28 @@ const siteConfig: SiteConfig = {
         { label: 'Documentation', href: '/resources/documentation' },
         { label: 'Freebies & Audits', href: '/resources/freebies-audits' },
         { label: 'Referral Program', href: '/resources/referral-program' },
+      ],
+    },
+    {
+      heading: 'Support',
+      links: [
+        { label: 'Support Center', href: '/support' },
+        { label: 'How to Order', href: '/support/how-to-order' },
+        { label: 'Order Tracking', href: '/support/order-tracking' },
+        { label: 'Payment', href: '/support/payment' },
+        { label: 'Shipping', href: '/support/shipping' },
+        { label: 'FAQ', href: '/company/faqs' },
+      ],
+    },
+    {
+      heading: 'Consumer Policy',
+      links: [
+        { label: 'Happy Return', href: '/consumer-policy/happy-return' },
+        { label: 'Refund Policy', href: '/consumer-policy/refund-policy' },
+        { label: 'Exchange', href: '/consumer-policy/exchange' },
+        { label: 'Cancellation', href: '/consumer-policy/cancellation' },
+        { label: 'Pre-Order', href: '/consumer-policy/pre-order' },
+        { label: 'Extra Discount', href: '/consumer-policy/extra-discount' },
       ],
     },
     {
@@ -179,7 +217,7 @@ const siteConfig: SiteConfig = {
       links: [
         { label: 'Home', href: '/' },
         { label: 'About Us', href: '/about' },
-        { label: 'Services', href: '/services' },
+        { label: 'Solutions', href: '/solutions' },
         { label: 'Contact', href: '/contact' },
       ],
     },

@@ -33,7 +33,15 @@ const getPagesSitemap = unstable_cache(
 
     const hardcodedPages: { slug: string; loc: string; priority: number; changefreq: Changefreq }[] = [
       { slug: 'home', loc: `${SITE_URL}/`, priority: 1.0, changefreq: 'weekly' },
-      { slug: 'services', loc: `${SITE_URL}/services`, priority: 0.9, changefreq: 'monthly' },
+      { slug: 'solutions', loc: `${SITE_URL}/solutions`, priority: 0.9, changefreq: 'monthly' },
+      { slug: 'solutions/websites-apps', loc: `${SITE_URL}/solutions/websites-apps`, priority: 0.8, changefreq: 'monthly' },
+      { slug: 'solutions/automation', loc: `${SITE_URL}/solutions/automation`, priority: 0.8, changefreq: 'monthly' },
+      { slug: 'solutions/media-buying', loc: `${SITE_URL}/solutions/media-buying`, priority: 0.8, changefreq: 'monthly' },
+      { slug: 'solutions/web-growth-seo', loc: `${SITE_URL}/solutions/web-growth-seo`, priority: 0.8, changefreq: 'monthly' },
+      { slug: 'solutions/branding', loc: `${SITE_URL}/solutions/branding`, priority: 0.8, changefreq: 'monthly' },
+      { slug: 'solutions/marketing', loc: `${SITE_URL}/solutions/marketing`, priority: 0.8, changefreq: 'monthly' },
+      { slug: 'solutions/content-supply', loc: `${SITE_URL}/solutions/content-supply`, priority: 0.8, changefreq: 'monthly' },
+      { slug: 'solutions/smm-va', loc: `${SITE_URL}/solutions/smm-va`, priority: 0.8, changefreq: 'monthly' },
       { slug: 'about', loc: `${SITE_URL}/about`, priority: 0.8, changefreq: 'monthly' },
       { slug: 'blog', loc: `${SITE_URL}/blog`, priority: 0.8, changefreq: 'daily' },
       { slug: 'careers', loc: `${SITE_URL}/careers`, priority: 0.6, changefreq: 'monthly' },

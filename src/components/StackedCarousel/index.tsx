@@ -21,93 +21,108 @@ const CAROUSEL_DATA: CarouselItem[] = [
   { id: 7, text: 'Corporate Design', image: '/assets/carousel/image-7.png', description: 'Corporate social media design that aligns with your brand' },
 ]
 
-const AUTOPLAY_MS = 3500
-const DRAG_STEP_PX = 60 // horizontal distance that advances one slide
-const CLICK_TOLERANCE_PX = 6 // movement under this counts as a click, not a drag
+/** Time each slide is held before auto-advancing. */
+const AUTOPLAY_MS = 2200
+/** How long autoplay stays out of the way after a deliberate user action. */
+const RESUME_AFTER_INTERACTION_MS = 6000
+/** Slide transition length. */
+const TRANSITION_MS = 400
 
 export const StackedCarousel = () => {
   const data = CAROUSEL_DATA
   const total = data.length
 
   const [activeIndex, setActiveIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
-  const [dragDelta, setDragDelta] = useState(0)
+  const [hovering, setHovering] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const [cooldown, setCooldown] = useState(false)
+  const [docVisible, setDocVisible] = useState(true)
+  const [reducedMotion, setReducedMotion] = useState(false)
 
-  const dragging = useRef(false)
-  const startX = useRef(0)
-  const moved = useRef(false)
+  const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const goTo = useCallback(
     (index: number) => setActiveIndex(((index % total) + total) % total),
     [total],
   )
-  const next = useCallback(() => goTo(activeIndex + 1), [goTo, activeIndex])
-  const prev = useCallback(() => goTo(activeIndex - 1), [goTo, activeIndex])
 
-  // Autoplay — restarts whenever activeIndex changes (so a click/drag resets the timer)
+  /**
+   * Hold autoplay off for a beat after the user acts, so the carousel follows
+   * their pace instead of yanking to the next slide mid-look.
+   */
+  const noteInteraction = useCallback(() => {
+    setCooldown(true)
+    if (cooldownTimer.current) clearTimeout(cooldownTimer.current)
+    cooldownTimer.current = setTimeout(() => setCooldown(false), RESUME_AFTER_INTERACTION_MS)
+  }, [])
+
+  useEffect(
+    () => () => {
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current)
+    },
+    [],
+  )
+
+  /** Every user-driven move goes through here so the cooldown can never be missed. */
+  const userGoTo = useCallback(
+    (index: number) => {
+      goTo(index)
+      noteInteraction()
+    },
+    [goTo, noteInteraction],
+  )
+
+  const next = useCallback(() => userGoTo(activeIndex + 1), [userGoTo, activeIndex])
+  const prev = useCallback(() => userGoTo(activeIndex - 1), [userGoTo, activeIndex])
+
+  // Respect the OS "reduce motion" setting — an auto-advancing carousel is
+  // exactly the kind of movement that setting exists to stop.
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setReducedMotion(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  // Don't cycle in a tab nobody is looking at.
+  useEffect(() => {
+    const onVisibility = () => setDocVisible(!document.hidden)
+    onVisibility()
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => document.removeEventListener('visibilitychange', onVisibility)
+  }, [])
+
+  const paused = hovering || focused || cooldown || !docVisible || reducedMotion
+
+  // Autoplay. Keyed on activeIndex so any move — auto or manual — restarts the
+  // dwell time rather than leaving a partially elapsed timer to fire early.
   useEffect(() => {
     if (paused) return
     const timer = setTimeout(() => setActiveIndex((i) => (i + 1) % total), AUTOPLAY_MS)
     return () => clearTimeout(timer)
   }, [activeIndex, paused, total])
 
-  // Keyboard support when focused
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') prev()
-    else if (e.key === 'ArrowRight') next()
-  }
-
-  // Unified pointer drag
-  const onPointerDown = (e: React.PointerEvent) => {
-    dragging.current = true
-    moved.current = false
-    startX.current = e.clientX
-    setPaused(true)
-    e.currentTarget.setPointerCapture?.(e.pointerId)
-  }
-
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!dragging.current) return
-    const dx = e.clientX - startX.current
-    if (Math.abs(dx) > CLICK_TOLERANCE_PX) moved.current = true
-    setDragDelta(dx)
-  }
-
-  const endDrag = (e: React.PointerEvent) => {
-    if (!dragging.current) return
-    dragging.current = false
-    const dx = e.clientX - startX.current
-    setDragDelta(0)
-    if (Math.abs(dx) > DRAG_STEP_PX) {
-      const steps = Math.round(dx / (DRAG_STEP_PX * 2))
-      goTo(activeIndex - (steps || (dx < 0 ? -1 : 1)))
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      prev()
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      next()
     }
-    setPaused(false)
   }
 
-  const handleCardClick = (index: number) => {
-    if (moved.current) return // it was a drag, not a click
-    goTo(index)
-  }
-
-  const getCardStyles = (index: number): React.CSSProperties => {
-    let offset = index - activeIndex
-    if (offset > total / 2) offset -= total
-    if (offset < -total / 2) offset += total
-    // live drag influence (300px drag ≈ one slide)
-    const pos = offset - dragDelta / 300
-
-    const abs = Math.abs(pos)
-    const translateX = pos * 55 // percent spacing between cards
-    const scale = Math.max(0.7, 1 - abs * 0.12)
-    const zIndex = 100 - Math.round(abs * 10)
-    const opacity = abs > 2.4 ? 0 : 1
-
+  const getCardStyles = (offset: number): React.CSSProperties => {
+    const abs = Math.abs(offset)
     return {
-      transform: `translateX(${translateX}%) scale(${scale})`,
-      zIndex,
-      opacity,
+      transform: `translateX(${offset * 55}%) scale(${Math.max(0.7, 1 - abs * 0.12)})`,
+      zIndex: 100 - Math.round(abs * 10),
+      opacity: abs > 2.4 ? 0 : 1,
       visibility: abs > 3 ? 'hidden' : 'visible',
+      transition: reducedMotion
+        ? 'none'
+        : `transform ${TRANSITION_MS}ms ease-out, opacity ${TRANSITION_MS}ms ease-out`,
     }
   }
 
@@ -118,34 +133,38 @@ export const StackedCarousel = () => {
         tabIndex={0}
         role="group"
         aria-roledescription="carousel"
+        aria-label="Our work"
         onKeyDown={onKeyDown}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        // Pause for keyboard focus only. A mouse click on an arrow also focuses
+        // it, and without the :focus-visible check that would strand autoplay
+        // paused for good once the pointer moved away.
+        onFocus={(e) => {
+          if (e.target instanceof Element && e.target.matches(':focus-visible')) setFocused(true)
+        }}
+        onBlur={() => setFocused(false)}
+        // Pointer events rather than mouse events, guarded on type: a touch tap
+        // fires enter but often never fires leave, which would strand autoplay.
+        onPointerEnter={(e) => e.pointerType === 'mouse' && setHovering(true)}
+        onPointerLeave={(e) => e.pointerType === 'mouse' && setHovering(false)}
       >
-        <div
-          className={`relative flex h-full w-full touch-pan-y select-none items-center justify-center ${dragging.current ? 'cursor-grabbing' : 'cursor-grab'}`}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-        >
+        <div className="relative flex h-full w-full select-none items-center justify-center">
           {data.map((item, index) => {
             let offset = index - activeIndex
             if (offset > total / 2) offset -= total
             if (offset < -total / 2) offset += total
-            const isCenter = Math.abs(offset - dragDelta / 300) < 0.5
+            const isCenter = offset === 0
 
             return (
               <div
                 key={item.id}
-                className={`card-wrapper absolute w-[280px] md:w-[340px] lg:w-[400px] ${dragging.current ? '' : 'transition-all duration-500 ease-out'} ${isCenter ? 'center-slide' : ''}`}
-                style={getCardStyles(index)}
+                className={`card-wrapper absolute w-[280px] md:w-[340px] lg:w-[400px] ${isCenter ? 'center-slide' : ''}`}
+                style={getCardStyles(offset)}
                 aria-hidden={!isCenter}
               >
                 <button
                   type="button"
                   className="card-card group block w-full appearance-none p-0 text-left"
-                  onClick={() => handleCardClick(index)}
+                  onClick={() => userGoTo(index)}
                   tabIndex={isCenter ? 0 : -1}
                   aria-label={item.text}
                 >
@@ -190,8 +209,9 @@ export const StackedCarousel = () => {
             <button
               key={item.id}
               type="button"
-              onClick={() => goTo(index)}
+              onClick={() => userGoTo(index)}
               aria-label={`Go to slide ${index + 1}`}
+              aria-current={index === activeIndex}
               className={`h-2 rounded-full transition-all duration-300 ${
                 index === activeIndex ? 'w-6 bg-primary' : 'w-2 bg-foreground/20 hover:bg-foreground/40'
               }`}

@@ -212,6 +212,21 @@
   body {
     @apply bg-background text-foreground min-h-[100vh] flex flex-col;
   }
+
+  /* Tailwind v4 preflight no longer sets a pointer cursor on buttons — restore
+     it so clickable controls (nav dropdown triggers, toggles, etc.) feel right. */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* ─── Brand-colored text selection ───────────────────────────────────────────
+   Uses the brand cyan (#00c2be = --secondary in light) with navy text so
+   highlighting any text reads as on-brand in both themes. */
+::selection {
+  background-color: #00c2be;
+  color: #15246d;
 }
 
 /* ─── Mobile push-drawer ─────────────────────────────────────────────────── */

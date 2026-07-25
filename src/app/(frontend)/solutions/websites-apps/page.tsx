@@ -1,6 +1,28 @@
 import type { Metadata } from 'next'
 import React from 'react'
-import { Globe, Layout, MousePointerClick, LayoutDashboard, Users, Database } from 'lucide-react'
+import {
+  Globe,
+  User,
+  Briefcase,
+  ShoppingCart,
+  Building2,
+  LayoutTemplate,
+  ShoppingBag,
+  Triangle,
+  Server,
+  Cloud,
+  HardDrive,
+  Database,
+  Leaf,
+  Boxes,
+  Hexagon,
+  Layers,
+  Store,
+  Shield,
+  Zap,
+  Table2,
+  Workflow,
+} from 'lucide-react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
@@ -10,11 +32,11 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO('services/websites-web-systems').catch(() => null)
+  const seoDoc = await getPageSEO('solutions/websites-apps').catch(() => null)
   return generatePageMeta({
-    slug: 'services/websites-web-systems',
+    slug: 'solutions/websites-apps',
     seoDoc,
-    fallbackTitle: 'Websites & Web Systems',
+    fallbackTitle: 'Websites & Apps',
   })
 }
 
@@ -25,20 +47,86 @@ export default function Page() {
       icon={Globe}
       badge="Core Service"
       titleLead="Websites & "
-      titleAccent="Web Systems"
+      titleAccent="Apps"
       subtitle="Build high-performance digital foundations."
       sections={[
         {
           color: 'teal',
+          cols: 4,
           title: 'What this service is for',
-          subtitle: 'Comprehensive web solutions designed to meet modern business demands.',
+          subtitle:
+            'Websites and apps tailored to every stage — from personal portfolios to enterprise-grade platforms.',
           features: [
-            { title: 'Business Websites', icon: Globe, desc: 'Professional digital presence representing your brand.' },
-            { title: 'Landing Pages', icon: Layout, desc: 'High-converting pages designed for specific campaigns.' },
-            { title: 'Conversion-Focused Websites', icon: MousePointerClick, desc: 'Optimized user journeys to turn visitors into customers.' },
-            { title: 'Web Dashboards', icon: LayoutDashboard, desc: 'Visual interfaces to monitor and manage your data.' },
-            { title: 'Client Portals', icon: Users, desc: 'Secure access areas for your customers and partners.' },
-            { title: 'System-Connected Websites', icon: Database, desc: 'Seamless integration with CRM, forms, and APIs.' },
+            {
+              title: 'Personal',
+              icon: User,
+              desc: 'Polished sites for individuals and professionals.',
+              items: ['Personal portfolios', 'Professional appointment booking', 'Personal brand & landing pages'],
+            },
+            {
+              title: 'Business',
+              icon: Briefcase,
+              desc: 'Marketing sites that turn visitors into customers.',
+              items: ['Business websites', 'Landing pages', 'Booking & lead-gen forms'],
+            },
+            {
+              title: 'E-commerce',
+              icon: ShoppingCart,
+              desc: 'Online stores built to sell.',
+              items: ['Online stores', 'Product catalogs', 'Secure checkout & payments'],
+            },
+            {
+              title: 'Enterprise',
+              icon: Building2,
+              desc: 'Scalable platforms for complex operations.',
+              items: ['Web dashboards', 'Client portals', 'CRM-connected systems'],
+            },
+          ],
+        },
+        {
+          color: 'teal',
+          muted: true,
+          badge: 'Our stack',
+          title: 'Platforms & technology we use',
+          subtitle:
+            'We pick the right tools for the job — from no-code platforms to fully custom builds — so your site stays fast, scalable, and easy to maintain.',
+          groups: [
+            {
+              label: 'CMS / frameworks',
+              features: [
+                { title: 'WordPress', icon: LayoutTemplate, desc: 'Flexible CMS for content-rich sites and blogs.' },
+                { title: 'Shopify', icon: ShoppingBag, desc: 'Hosted e-commerce for fast, reliable online stores.' },
+                { title: 'Next.js', icon: Triangle, desc: 'React framework for fast, SEO-friendly web apps.' },
+              ],
+            },
+            {
+              label: 'Runtime / backends',
+              features: [
+                { title: 'Node.js', icon: Hexagon, desc: 'JavaScript runtime powering our APIs and backends.' },
+                { title: 'Payload', icon: Layers, desc: 'Modern headless CMS for custom content models.' },
+                { title: 'Medusa', icon: Store, desc: 'Headless commerce engine for bespoke storefronts.' },
+              ],
+            },
+            {
+              label: 'Databases / storage',
+              features: [
+                { title: 'PostgreSQL', icon: Database, desc: 'Robust relational database for structured data.' },
+                { title: 'MongoDB', icon: Leaf, desc: 'Flexible NoSQL database for fast-moving data.' },
+                { title: 'SQLite', icon: Table2, desc: 'Lightweight, file-based SQL for small, fast apps.' },
+                { title: 'Redis', icon: Zap, desc: 'In-memory store for caching and real-time speed.' },
+                { title: 'S3 Storage', icon: Boxes, desc: 'Scalable object storage for media and files.' },
+              ],
+            },
+            {
+              label: 'Hosting / infra',
+              features: [
+                { title: 'Contabo', icon: Server, desc: 'Cost-effective cloud servers for scalable hosting.' },
+                { title: 'Hostinger', icon: Cloud, desc: 'Managed web hosting for quick, reliable launches.' },
+                { title: 'VPS', icon: HardDrive, desc: 'Dedicated virtual servers for full control and performance.' },
+                { title: 'Cloudflare', icon: Shield, desc: 'CDN, DNS, and security that keep sites fast and safe.' },
+                { title: 'CI/CD Pipeline', icon: Workflow, desc: 'Automated build, test, and deploy on every push.' },
+              ],
+            },
           ],
         },
       ]}

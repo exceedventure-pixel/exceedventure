@@ -64,9 +64,9 @@ export function Footer() {
     <footer className="mt-auto border-t border-border bg-background">
       <div className="container py-16">
         {/* Top: brand column + link groups */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-14">
+        <div className="grid grid-cols-1 gap-12 mb-14 lg:grid-cols-12">
           {/* Brand column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             <Link href="/" aria-label={siteConfig.name} className="inline-block">
               <Logo />
             </Link>
@@ -117,23 +117,25 @@ export function Footer() {
           </div>
 
           {/* Link groups */}
-          {siteConfig.footerLinks.map((group) => (
-            <div key={group.heading}>
-              <h3 className="font-bold text-lg mb-6 text-foreground">{group.heading}</h3>
-              <ul className="space-y-4">
-                {group.links.map(({ label, href }) => (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">
+            {siteConfig.footerLinks.map((group) => (
+              <div key={group.heading}>
+                <h3 className="font-bold text-lg mb-6 text-foreground">{group.heading}</h3>
+                <ul className="space-y-4">
+                  {group.links.map(({ label, href }) => (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Bottom bar */}

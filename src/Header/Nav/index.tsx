@@ -4,17 +4,19 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { ChevronDown, ChevronRight, SearchIcon } from 'lucide-react'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import clsx from 'clsx'
 import siteConfig from '@/config/site'
+
+/** Home / About / Contact live in the hamburger drawer only — see site config. */
+const inlineNav = siteConfig.nav.filter((item) => !item.drawerOnly)
 
 export const HeaderNav: React.FC = () => {
   const pathname = usePathname()
 
   return (
     <nav className="flex gap-1 items-center">
-      {siteConfig.nav.map((item) => {
-        const Icon = item.icon
+      {inlineNav.map((item) => {
         const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
         const hasChildren = !!item.children?.length
 
@@ -28,7 +30,6 @@ export const HeaderNav: React.FC = () => {
                 isActive ? 'text-primary' : 'text-foreground/80',
               )}
             >
-              {Icon && <Icon className="w-4 h-4" />}
               {item.label}
             </Link>
           )
@@ -44,7 +45,6 @@ export const HeaderNav: React.FC = () => {
                 isActive ? 'text-primary' : 'text-foreground/80',
               )}
             >
-              {Icon && <Icon className="w-4 h-4" />}
               {item.label}
               <ChevronDown className="w-3 h-3 transition-transform duration-200 group-hover/top:rotate-180" />
             </button>
@@ -151,10 +151,6 @@ export const HeaderNav: React.FC = () => {
           </div>
         )
       })}
-
-      <Link href="/search" aria-label="Search" className="p-2 rounded-md hover:bg-muted transition-colors">
-        <SearchIcon className="w-4 h-4 text-primary" />
-      </Link>
     </nav>
   )
 }

@@ -1,15 +1,30 @@
 import React from 'react'
 import Link from 'next/link'
-import type { LucideIcon } from 'lucide-react'
+import { Check, type LucideIcon } from 'lucide-react'
 import { cn } from '@/utilities/ui'
 import { Reveal } from '@/components/Reveal'
 
-export type ServiceColor = 'teal' | 'red' | 'blue' | 'purple'
+export type ServiceColor =
+  | 'teal'
+  | 'red'
+  | 'blue'
+  | 'purple'
+  | 'emerald'
+  | 'amber'
+  | 'pink'
+  | 'indigo'
 
 export interface ServiceFeature {
   title: string
   icon: LucideIcon
   desc: string
+  /** Optional checklist of what's included, rendered under the description. */
+  items?: string[]
+}
+
+export interface ServiceFeatureGroup {
+  label: string
+  features: ServiceFeature[]
 }
 
 export interface ServiceSection {
@@ -17,9 +32,14 @@ export interface ServiceSection {
   badge?: string
   title: string
   subtitle: string
-  features: ServiceFeature[]
+  /** Flat list of cards. Provide this OR `groups`. */
+  features?: ServiceFeature[]
+  /** Cards split into labeled groups, each rendered under a small heading. */
+  groups?: ServiceFeatureGroup[]
   /** Render a subtle muted background band (used for secondary sections). */
   muted?: boolean
+  /** Cards per row on large screens. Defaults to 3. */
+  cols?: 3 | 4
 }
 
 interface ServiceDetailProps {
@@ -70,6 +90,85 @@ const colorMap: Record<ServiceColor, Record<string, string>> = {
     card: 'hover:border-purple-500/50 hover:shadow-purple-500/5',
     cardIcon: 'bg-purple-500/10 text-purple-500',
   },
+  emerald: {
+    iconBox: 'bg-emerald-500/10 text-emerald-500',
+    badge: 'text-emerald-500 bg-emerald-500/10',
+    cta: 'bg-emerald-500 hover:bg-emerald-600 hover:shadow-emerald-500/20',
+    accent: 'text-emerald-500',
+    divider: 'via-emerald-500',
+    card: 'hover:border-emerald-500/50 hover:shadow-emerald-500/5',
+    cardIcon: 'bg-emerald-500/10 text-emerald-500',
+  },
+  amber: {
+    iconBox: 'bg-amber-500/10 text-amber-500',
+    badge: 'text-amber-500 bg-amber-500/10',
+    cta: 'bg-amber-500 hover:bg-amber-600 hover:shadow-amber-500/20',
+    accent: 'text-amber-500',
+    divider: 'via-amber-500',
+    card: 'hover:border-amber-500/50 hover:shadow-amber-500/5',
+    cardIcon: 'bg-amber-500/10 text-amber-500',
+  },
+  pink: {
+    iconBox: 'bg-pink-500/10 text-pink-500',
+    badge: 'text-pink-500 bg-pink-500/10',
+    cta: 'bg-pink-500 hover:bg-pink-600 hover:shadow-pink-500/20',
+    accent: 'text-pink-500',
+    divider: 'via-pink-500',
+    card: 'hover:border-pink-500/50 hover:shadow-pink-500/5',
+    cardIcon: 'bg-pink-500/10 text-pink-500',
+  },
+  indigo: {
+    iconBox: 'bg-indigo-500/10 text-indigo-500',
+    badge: 'text-indigo-500 bg-indigo-500/10',
+    cta: 'bg-indigo-500 hover:bg-indigo-600 hover:shadow-indigo-500/20',
+    accent: 'text-indigo-500',
+    divider: 'via-indigo-500',
+    card: 'hover:border-indigo-500/50 hover:shadow-indigo-500/5',
+    cardIcon: 'bg-indigo-500/10 text-indigo-500',
+  },
+}
+
+const gridClass = (cols?: 3 | 4) =>
+  cols === 4
+    ? 'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'
+    : 'grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'
+
+function FeatureCard({
+  feature,
+  color,
+  index,
+}: {
+  feature: ServiceFeature
+  color: ServiceColor
+  index: number
+}) {
+  const c = colorMap[color]
+  const Icon = feature.icon
+  return (
+    <Reveal
+      delay={index * 60}
+      className={cn(
+        'group rounded-2xl border border-border bg-card p-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl',
+        c.card,
+      )}
+    >
+      <div className={cn('mb-6 w-fit rounded-xl p-4 transition-transform duration-200 group-hover:scale-110', c.cardIcon)}>
+        <Icon size={32} />
+      </div>
+      <h3 className="mb-3 text-xl font-bold">{feature.title}</h3>
+      <p className="leading-relaxed text-muted-foreground">{feature.desc}</p>
+      {feature.items && feature.items.length > 0 && (
+        <ul className="mt-5 space-y-2.5">
+          {feature.items.map((item) => (
+            <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+              <Check className={cn('mt-0.5 h-4 w-4 shrink-0', c.accent)} />
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Reveal>
+  )
 }
 
 function FeatureGrid({ section }: { section: ServiceSection }) {
@@ -90,27 +189,31 @@ function FeatureGrid({ section }: { section: ServiceSection }) {
           <p className="mx-auto max-w-3xl text-lg text-muted-foreground">{section.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {section.features.map((feature, i) => {
-          const Icon = feature.icon
-          return (
-            <Reveal
-              key={feature.title}
-              delay={i * 60}
-              className={cn(
-                'group rounded-2xl border border-border bg-card p-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl',
-                c.card,
-              )}
-            >
-              <div className={cn('mb-6 w-fit rounded-xl p-4 transition-transform duration-200 group-hover:scale-110', c.cardIcon)}>
-                <Icon size={32} />
+        {section.groups ? (
+          <div className="space-y-14">
+            {section.groups.map((group) => (
+              <div key={group.label}>
+                <div className="mb-6 flex items-center gap-4">
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {group.label}
+                  </h3>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <div className={gridClass(section.cols)}>
+                  {group.features.map((feature, i) => (
+                    <FeatureCard key={feature.title} feature={feature} color={section.color} index={i} />
+                  ))}
+                </div>
               </div>
-              <h3 className="mb-3 text-xl font-bold">{feature.title}</h3>
-              <p className="leading-relaxed text-muted-foreground">{feature.desc}</p>
-            </Reveal>
-          )
-        })}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className={gridClass(section.cols)}>
+            {section.features?.map((feature, i) => (
+              <FeatureCard key={feature.title} feature={feature} color={section.color} index={i} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

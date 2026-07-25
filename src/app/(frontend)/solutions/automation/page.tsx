@@ -10,11 +10,11 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO('services/automation-ai').catch(() => null)
+  const seoDoc = await getPageSEO('solutions/automation').catch(() => null)
   return generatePageMeta({
-    slug: 'services/automation-ai',
+    slug: 'solutions/automation',
     seoDoc,
-    fallbackTitle: 'Automation & AI Integration',
+    fallbackTitle: 'Automation',
   })
 }
 
@@ -24,9 +24,9 @@ export default function Page() {
       color="red"
       icon={Bot}
       badge="Core & Strategic Service"
-      titleLead="Automation & "
-      titleAccent="AI Integration"
-      subtitle="Make businesses run smarter with AI."
+      titleLead="Auto"
+      titleAccent="mation"
+      subtitle="Make businesses run smarter with intelligent automation and AI."
       sections={[
         {
           color: 'red',

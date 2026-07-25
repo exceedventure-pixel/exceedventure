@@ -9,6 +9,8 @@ import {
   Bot,
   Megaphone,
   Palette,
+  Target,
+  FileText,
   Rocket,
   Shield,
   Users,
@@ -16,6 +18,9 @@ import {
   BarChart3,
   Brain,
   Workflow,
+  Heart,
+  Clock,
+  Briefcase,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -78,12 +83,40 @@ const AnimatedCounter = ({
   )
 }
 
+/** Fires once when the element scrolls into view — drives the stat bar fills. */
+function useInView<T extends HTMLElement>(threshold = 0.3) {
+  const ref = useRef<T>(null)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          observer.disconnect()
+        }
+      },
+      { threshold },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [threshold])
+
+  return [ref, inView] as const
+}
+
 // ─── Static content ───────────────────────────────────────────────────────────
 const services: { title: string; subtitle: string; icon: LucideIcon; color: string; href: string }[] = [
-  { title: 'WEBSITES', subtitle: '& WEB SYSTEMS', icon: Globe, color: 'teal', href: '/services/websites-web-systems' },
-  { title: 'AUTOMATION', subtitle: '& AI INTEGRATION', icon: Bot, color: 'red', href: '/services/automation-ai' },
-  { title: 'MEDIA BUYING', subtitle: '& SEO', icon: Megaphone, color: 'blue', href: '/services/media-buying-seo' },
-  { title: 'CREATIVE ASSETS', subtitle: '& BRANDING', icon: Palette, color: 'purple', href: '/services/creative-assets-branding' },
+  { title: 'WEBSITES', subtitle: '& APPS', icon: Globe, color: 'teal', href: '/solutions/websites-apps' },
+  { title: 'AUTOMATION', subtitle: 'SMART WORKFLOWS', icon: Bot, color: 'red', href: '/solutions/automation' },
+  { title: 'MEDIA BUYING', subtitle: 'PAID CAMPAIGNS', icon: Megaphone, color: 'blue', href: '/solutions/media-buying' },
+  { title: 'WEB GROWTH', subtitle: '(SEO)', icon: TrendingUp, color: 'emerald', href: '/solutions/web-growth-seo' },
+  { title: 'BRANDING', subtitle: 'IDENTITY & DESIGN', icon: Palette, color: 'purple', href: '/solutions/branding' },
+  { title: 'MARKETING', subtitle: 'FULL-FUNNEL GROWTH', icon: Target, color: 'amber', href: '/solutions/marketing' },
+  { title: 'CONTENT SUPPLY', subtitle: 'CONTENT AT SCALE', icon: FileText, color: 'pink', href: '/solutions/content-supply' },
+  { title: 'SMM & VA', subtitle: 'SOCIAL & SUPPORT', icon: Users, color: 'indigo', href: '/solutions/smm-va' },
 ]
 
 const colorClasses: Record<string, { bg: string; hover: string; text: string }> = {
@@ -91,13 +124,19 @@ const colorClasses: Record<string, { bg: string; hover: string; text: string }> 
   red: { bg: 'bg-red-500/10', hover: 'hover:border-red-500/40', text: 'text-red-500' },
   blue: { bg: 'bg-blue-500/10', hover: 'hover:border-blue-500/40', text: 'text-blue-500' },
   purple: { bg: 'bg-purple-500/10', hover: 'hover:border-purple-500/40', text: 'text-purple-500' },
+  emerald: { bg: 'bg-emerald-500/10', hover: 'hover:border-emerald-500/40', text: 'text-emerald-500' },
+  amber: { bg: 'bg-amber-500/10', hover: 'hover:border-amber-500/40', text: 'text-amber-500' },
+  pink: { bg: 'bg-pink-500/10', hover: 'hover:border-pink-500/40', text: 'text-pink-500' },
+  indigo: { bg: 'bg-indigo-500/10', hover: 'hover:border-indigo-500/40', text: 'text-indigo-500' },
 }
 
-const stats = [
-  { value: 50, suffix: '+', label: 'Projects Delivered' },
-  { value: 98, suffix: '%', label: 'Client Satisfaction' },
-  { value: 24, suffix: '/7', label: 'Support Available' },
-  { value: 10, suffix: '+', label: 'Years Combined Experience' },
+// Breakdown behind the headline "50+ projects" figure. Placeholder split —
+// adjust the counts to the real numbers.
+const projectTypes: { label: string; count: number }[] = [
+  { label: 'Websites & Systems', count: 18 },
+  { label: 'Creative & Branding', count: 14 },
+  { label: 'Media Campaigns', count: 11 },
+  { label: 'Automation & AI', count: 7 },
 ]
 
 const features: { icon: LucideIcon; title: string; description: string }[] = [
@@ -118,6 +157,157 @@ const dashboardItems: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: Brain, title: 'AI Insights', desc: 'Smart recommendations' },
   { icon: Workflow, title: 'Automation', desc: 'Automate repetitive tasks' },
 ]
+
+// ─── Stats bento ──────────────────────────────────────────────────────────────
+
+/** Shared card chrome: solid fill, generous radius, lift on hover. */
+const statCard =
+  'group relative flex flex-col justify-between overflow-hidden rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-6 lg:p-7'
+
+/** Small/large card heights — the bento keeps its shape down to mobile. */
+const cardSm = 'min-h-[148px] sm:min-h-[190px]'
+const cardLg = 'min-h-[320px] sm:min-h-[396px]'
+
+/**
+ * Card fills are the brand hexes rather than the `primary`/`secondary` tokens on
+ * purpose: those two swap places in dark mode, which would reshuffle the bento's
+ * colours between themes. Fixed values keep this section looking identical in both.
+ */
+const NAVY = 'bg-[#15246d]'
+const TEAL = 'bg-[#00c2be]'
+
+const StatsSection: React.FC = () => {
+  const [barsRef, barsInView] = useInView<HTMLDivElement>(0.25)
+  const maxCount = Math.max(...projectTypes.map((p) => p.count))
+  const totalProjects = projectTypes.reduce((sum, p) => sum + p.count, 0)
+
+  return (
+    <section className="bg-muted/30 py-20">
+      <div className="container">
+        <div className="grid gap-3 sm:gap-4 lg:grid-cols-12">
+          {/* ── Left cluster: two small cards over one wide card.
+              grid-cols-2 is unprefixed so the pair stays side by side on mobile. ── */}
+          <div className="grid gap-3 sm:gap-4 lg:col-span-7 lg:grid-rows-2">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              {/* Client satisfaction */}
+              <Reveal>
+                <div className={`${statCard} ${TEAL} ${cardSm} h-full text-black`}>
+                  <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10 transition-transform duration-500 group-hover:scale-150" />
+                  <Heart className="h-5 w-5 opacity-80 sm:h-6 sm:w-6" />
+                  <div>
+                    <div className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                      <AnimatedCounter end={98} suffix="%" />
+                    </div>
+                    <div className="mt-1 text-xs font-medium opacity-80 sm:text-sm">
+                      Client Satisfaction
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+
+              {/* Support */}
+              <Reveal delay={80}>
+                <div className={`${statCard} ${cardSm} h-full bg-emerald-600 text-white`}>
+                  <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10 transition-transform duration-500 group-hover:scale-150" />
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                    </span>
+                    <span className="text-xs font-medium opacity-90">Online now</span>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                      <AnimatedCounter end={24} suffix="/7" />
+                    </div>
+                    <div className="mt-1 text-xs font-medium opacity-80 sm:text-sm">
+                      Support Available
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+
+            {/* Experience — wide card */}
+            <Reveal delay={160}>
+              <div
+                className={`${statCard} ${cardSm} h-full flex-row items-end justify-between gap-4 bg-violet-600 text-white`}
+              >
+                <div className="absolute -bottom-10 -left-6 h-32 w-32 rounded-full bg-white/5 transition-transform duration-500 group-hover:scale-150" />
+                <div className="relative">
+                  <Clock className="mb-3 h-5 w-5 opacity-80 sm:mb-4 sm:h-6 sm:w-6" />
+                  <div className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                    <AnimatedCounter end={10} suffix="+" />
+                  </div>
+                  <div className="mt-1 text-xs font-medium leading-snug opacity-80 sm:text-sm">
+                    Years Combined Experience
+                  </div>
+                </div>
+
+                <div className="relative flex shrink-0 gap-4 sm:gap-6">
+                  <div>
+                    <div className="text-xl font-bold sm:text-2xl">
+                      <AnimatedCounter end={4} />
+                    </div>
+                    <div className="text-[10px] opacity-70 sm:text-xs">Disciplines</div>
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold sm:text-2xl">
+                      <AnimatedCounter end={3} />
+                    </div>
+                    <div className="text-[10px] opacity-70 sm:text-xs">Branches</div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* ── Right: tall card with the project-type breakdown ── */}
+          <Reveal delay={240} className="lg:col-span-5">
+            <div ref={barsRef} className={`${statCard} ${NAVY} ${cardLg} h-full text-white`}>
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/5 transition-transform duration-500 group-hover:scale-125" />
+
+              <div className="relative">
+                <div className="flex items-center gap-2 text-xs font-medium opacity-70">
+                  <Briefcase className="h-4 w-4" />
+                  Delivered to date
+                </div>
+                <div className="mt-3 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+                  <AnimatedCounter end={50} suffix="+" />
+                </div>
+                <div className="mt-1 text-sm font-medium opacity-80">Projects Delivered</div>
+              </div>
+
+              {/* Breakdown by type — bars fill once scrolled into view */}
+              <div className="relative mt-8 space-y-3.5">
+                {projectTypes.map((type, i) => (
+                  <div key={type.label}>
+                    <div className="mb-1.5 flex items-baseline justify-between text-xs">
+                      <span className="font-medium opacity-90">{type.label}</span>
+                      <span className="font-bold tabular-nums opacity-70">{type.count}</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/15">
+                      <div
+                        className={`h-full rounded-full ${TEAL} transition-[width] duration-1000 ease-out`}
+                        style={{
+                          width: barsInView ? `${(type.count / maxCount) * 100}%` : '0%',
+                          transitionDelay: `${i * 120}ms`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <div className="pt-1 text-xs opacity-60">
+                  {totalProjects} tracked across {projectTypes.length} service lines
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function HomeClient() {
   return (
@@ -190,19 +380,9 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-muted/50 py-20">
-        <div className="container grid grid-cols-2 gap-8 md:grid-cols-4">
-          {stats.map((stat) => (
-            <Reveal key={stat.label} className="text-center">
-              <div className="mb-2 text-4xl font-bold text-primary sm:text-5xl">
-                <AnimatedCounter end={stat.value} suffix={stat.suffix} />
-              </div>
-              <div className="text-muted-foreground">{stat.label}</div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      {/* Stats — bento grid: two small cards + a wide one on the left,
+          one tall card on the right carrying the project breakdown. */}
+      <StatsSection />
 
       {/* Features */}
       <section className="py-24">

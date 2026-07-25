@@ -17,9 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const faqs = [
   {
-    question: 'What services do you offer?',
+    question: 'What solutions do you offer?',
     answer:
-      'We offer a wide range of services including Web Development, Automation & AI Integration, Media Buying & SEO Services, and Creative Assets & Branding.',
+      'We offer a wide range of solutions including Websites & Apps, Automation, Media Buying, Web Growth (SEO), Branding, Marketing, Content Supply, and SMM & VA.',
   },
   {
     question: 'How can I get started?',

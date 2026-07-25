@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import React from 'react'
-import { Palette, PenTool, Layout, Layers, Box, Monitor, Brush } from 'lucide-react'
+import { Brush, PenTool, BookOpen, Layers, FileText, Package } from 'lucide-react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
@@ -10,11 +10,11 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO('services/creative-assets-branding').catch(() => null)
+  const seoDoc = await getPageSEO('solutions/branding').catch(() => null)
   return generatePageMeta({
-    slug: 'services/creative-assets-branding',
+    slug: 'solutions/branding',
     seoDoc,
-    fallbackTitle: 'Creative Assets & Branding',
+    fallbackTitle: 'Branding',
   })
 }
 
@@ -24,8 +24,8 @@ export default function Page() {
       color="purple"
       icon={Brush}
       badge="Creative Service"
-      titleLead="Creative Assets & "
-      titleAccent="Branding"
+      titleLead="Bran"
+      titleAccent="ding"
       subtitle="Elevate your brand with distinctive design and creative assets that resonate."
       sections={[
         {
@@ -34,12 +34,11 @@ export default function Page() {
           subtitle:
             'Strategic branding and design solutions that define your identity and captivate your audience.',
           features: [
-            { title: 'Brand Identity', icon: Palette, desc: 'Building a cohesive visual language that sets your brand apart.' },
-            { title: 'Graphic Design', icon: PenTool, desc: 'Stunning visuals for marketing materials, social media, and more.' },
-            { title: 'UI/UX Design', icon: Layout, desc: 'User-centric interface designs that deliver intuitive digital experiences.' },
-            { title: 'Motion Graphics', icon: Layers, desc: 'Engaging animations that bring your stories and ideas to life.' },
-            { title: 'Product Packaging', icon: Box, desc: 'Creative packaging solutions that capture attention on the shelf.' },
-            { title: 'Digital Assets', icon: Monitor, desc: 'Custom illustrations and icons tailored to your digital presence.' },
+            { title: 'Logo Design', icon: PenTool, desc: "Distinctive, versatile logos that capture your brand's essence at any size." },
+            { title: 'Brand Guideline', icon: BookOpen, desc: 'A clear rulebook for colors, type, and usage so your brand stays consistent everywhere.' },
+            { title: 'Brand Materials', icon: Layers, desc: 'Business cards, social templates, and marketing assets that look unmistakably you.' },
+            { title: 'Corporate Documents', icon: FileText, desc: 'Brochures, leaflets, and documentation designed with a polished, professional finish.' },
+            { title: 'Branded Product Supply', icon: Package, desc: "Branded merchandise and physical products that put your identity in customers' hands." },
           ],
         },
       ]}
