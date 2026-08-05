@@ -11,7 +11,15 @@ import siteConfig, { type NavChild } from '@/config/site'
 
 // ─── Sub-service row (level 3) ────────────────────────────────────────────────
 
-function SubServiceRow({ label, href, onClose }: { label: string; href: string; onClose: () => void }) {
+function SubServiceRow({
+  label,
+  href,
+  onClose,
+}: {
+  label: string
+  href: string
+  onClose: () => void
+}) {
   const pathname = usePathname()
   return (
     <Link
@@ -47,8 +55,20 @@ function ServiceRow({ item, onClose }: { item: NavChild; onClose: () => void }) 
       >
         {item.logoLight ? (
           <>
-            <Image src={item.logoLight} alt={item.label} width={120} height={36} className="h-8 w-auto object-contain dark:hidden" />
-            <Image src={item.logoDark ?? item.logoLight} alt={item.label} width={120} height={36} className="hidden h-8 w-auto object-contain dark:block" />
+            <Image
+              src={item.logoLight}
+              alt={item.label}
+              width={120}
+              height={36}
+              className="h-8 w-auto object-contain dark:hidden"
+            />
+            <Image
+              src={item.logoDark ?? item.logoLight}
+              alt={item.label}
+              width={120}
+              height={36}
+              className="hidden h-8 w-auto object-contain dark:block"
+            />
           </>
         ) : (
           <>
@@ -86,13 +106,7 @@ function ServiceRow({ item, onClose }: { item: NavChild; onClose: () => void }) 
 
 // ─── Main nav row (level 1) with icon + optional services accordion ───────────
 
-function NavRow({
-  item,
-  onClose,
-}: {
-  item: (typeof siteConfig.nav)[number]
-  onClose: () => void
-}) {
+function NavRow({ item, onClose }: { item: (typeof siteConfig.nav)[number]; onClose: () => void }) {
   const [expanded, setExpanded] = useState(false)
   const pathname = usePathname()
   const Icon = item.icon

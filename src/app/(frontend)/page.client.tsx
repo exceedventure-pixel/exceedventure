@@ -108,15 +108,35 @@ function useInView<T extends HTMLElement>(threshold = 0.3) {
 }
 
 // ─── Static content ───────────────────────────────────────────────────────────
-const services: { title: string; subtitle: string; icon: LucideIcon; color: string; href: string }[] = [
-  { title: 'WEBSITES', subtitle: '& APPS', icon: Globe, color: 'teal', href: '/solutions/websites-apps' },
-  { title: 'AUTOMATION', subtitle: 'SMART WORKFLOWS', icon: Bot, color: 'red', href: '/solutions/automation' },
-  { title: 'MEDIA BUYING', subtitle: 'PAID CAMPAIGNS', icon: Megaphone, color: 'blue', href: '/solutions/media-buying' },
-  { title: 'WEB GROWTH', subtitle: '(SEO)', icon: TrendingUp, color: 'emerald', href: '/solutions/web-growth-seo' },
-  { title: 'BRANDING', subtitle: 'IDENTITY & DESIGN', icon: Palette, color: 'purple', href: '/solutions/branding' },
-  { title: 'MARKETING', subtitle: 'FULL-FUNNEL GROWTH', icon: Target, color: 'amber', href: '/solutions/marketing' },
-  { title: 'CONTENT SUPPLY', subtitle: 'CONTENT AT SCALE', icon: FileText, color: 'pink', href: '/solutions/content-supply' },
-  { title: 'SMM & VA', subtitle: 'SOCIAL & SUPPORT', icon: Users, color: 'indigo', href: '/solutions/smm-va' },
+const services: {
+  title: string
+  titleAccent: string
+  icon: LucideIcon
+  color: string
+  href: string
+}[] = [
+  {
+    title: 'WEBSITES',
+    titleAccent: '& SOFTWARES',
+    icon: Globe,
+    color: 'teal',
+    href: '/websites-softwares',
+  },
+  {
+    title: 'DIGITAL',
+    titleAccent: 'MARKETING',
+    icon: Megaphone,
+    color: 'blue',
+    href: '/digital-marketing',
+  },
+  { title: 'AUTOMATION', titleAccent: '& AI', icon: Bot, color: 'red', href: '/automation-ai' },
+  {
+    title: 'CREATIVE',
+    titleAccent: '& BRANDING',
+    icon: Palette,
+    color: 'purple',
+    href: '/creative-branding',
+  },
 ]
 
 const colorClasses: Record<string, { bg: string; hover: string; text: string }> = {
@@ -124,7 +144,11 @@ const colorClasses: Record<string, { bg: string; hover: string; text: string }> 
   red: { bg: 'bg-red-500/10', hover: 'hover:border-red-500/40', text: 'text-red-500' },
   blue: { bg: 'bg-blue-500/10', hover: 'hover:border-blue-500/40', text: 'text-blue-500' },
   purple: { bg: 'bg-purple-500/10', hover: 'hover:border-purple-500/40', text: 'text-purple-500' },
-  emerald: { bg: 'bg-emerald-500/10', hover: 'hover:border-emerald-500/40', text: 'text-emerald-500' },
+  emerald: {
+    bg: 'bg-emerald-500/10',
+    hover: 'hover:border-emerald-500/40',
+    text: 'text-emerald-500',
+  },
   amber: { bg: 'bg-amber-500/10', hover: 'hover:border-amber-500/40', text: 'text-amber-500' },
   pink: { bg: 'bg-pink-500/10', hover: 'hover:border-pink-500/40', text: 'text-pink-500' },
   indigo: { bg: 'bg-indigo-500/10', hover: 'hover:border-indigo-500/40', text: 'text-indigo-500' },
@@ -141,15 +165,41 @@ const projectTypes: { label: string; count: number }[] = [
 
 const features: { icon: LucideIcon; title: string; description: string }[] = [
   { icon: Rocket, title: 'Fast Delivery', description: 'We deliver projects on time, every time.' },
-  { icon: Shield, title: 'Secure & Reliable', description: 'Enterprise-grade security for your peace of mind.' },
+  {
+    icon: Shield,
+    title: 'Secure & Reliable',
+    description: 'Enterprise-grade security for your peace of mind.',
+  },
   { icon: Users, title: 'Dedicated Support', description: 'A team that cares about your success.' },
-  { icon: TrendingUp, title: 'Growth Focused', description: 'Solutions designed to help you scale.' },
+  {
+    icon: TrendingUp,
+    title: 'Growth Focused',
+    description: 'Solutions designed to help you scale.',
+  },
 ]
 
 const ventures = [
-  { name: 'Softal Core', light: '/assets/softal-core.svg', dark: '/assets/dark-softal-core.svg', href: 'https://softalcore.exceedventure.com', description: 'Software Solutions' },
-  { name: 'Corporate Crafts', light: '/assets/corporate-crafts.svg', dark: '/assets/dark-corporate-crafts.svg', href: 'https://corporatecrafts.exceedventure.com', description: 'Corporate Branding' },
-  { name: 'Create a Content', light: '/assets/createacontent.svg', dark: '/assets/dark-createacontent.svg', href: 'https://createacontent.exceedventure.com', description: 'Content Marketing' },
+  {
+    name: 'Softal Core',
+    light: '/assets/softal-core.svg',
+    dark: '/assets/dark-softal-core.svg',
+    href: 'https://softalcore.exceedventure.com',
+    description: 'Software Solutions',
+  },
+  {
+    name: 'Corporate Crafts',
+    light: '/assets/corporate-crafts.svg',
+    dark: '/assets/dark-corporate-crafts.svg',
+    href: 'https://corporatecrafts.exceedventure.com',
+    description: 'Corporate Branding',
+  },
+  {
+    name: 'Create a Content',
+    light: '/assets/createacontent.svg',
+    dark: '/assets/dark-createacontent.svg',
+    href: 'https://createacontent.exceedventure.com',
+    description: 'Content Marketing',
+  },
 ]
 
 const dashboardItems: { icon: LucideIcon; title: string; desc: string }[] = [
@@ -313,13 +363,13 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen overflow-x-hidden">
       {/* Hero */}
-      <section className="relative flex flex-col items-center justify-center pb-10 pt-6 text-center lg:pb-14 lg:pt-10">
+      <section className="relative flex flex-col items-center justify-center bg-white pb-10 pt-6 text-center dark:bg-transparent sm:bg-transparent lg:pb-14 lg:pt-10">
         <Reveal className="container z-10 flex w-full flex-col items-center">
           <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             <span>Building Digital </span>
             <span className="text-primary">Excellence.</span>
           </h1>
-          <p className="mb-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
+          <p className="mb-4 hidden max-w-2xl text-base text-muted-foreground sm:block sm:text-lg">
             Imagine a business where your branding does the talking, your AI handles the paperwork,
             and your content attracts your dream clients.
           </p>
@@ -334,7 +384,7 @@ export default function HomeClient() {
 
         <Reveal className="container z-10 flex w-full flex-col items-center">
           {/* mt-10 clears the carousel's dots, which sit below its own box */}
-          <div className="mb-8 mt-10 flex flex-col gap-3 sm:flex-row">
+          <div className="mb-8 mt-10 flex flex-row gap-2 sm:gap-3">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
@@ -359,13 +409,14 @@ export default function HomeClient() {
                   href={service.href}
                   className={`group block h-full rounded-xl border border-border bg-card p-3 text-center transition-all hover:-translate-y-1 sm:p-4 ${colors.hover}`}
                 >
-                  <div className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${colors.bg}`}>
+                  <div
+                    className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${colors.bg}`}
+                  >
                     <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${colors.text}`} />
                   </div>
-                  <h3 className="text-xs font-bold sm:text-base">
-                    {service.title}
-                    <br />
-                    <span className="text-[10px] font-light opacity-70 sm:text-xs">{service.subtitle}</span>
+                  <h3 className="text-xs font-bold leading-tight sm:text-base">
+                    <span className="block">{service.title}</span>
+                    <span className="block font-light opacity-80">{service.titleAccent}</span>
                   </h3>
                 </Link>
               )
@@ -375,8 +426,8 @@ export default function HomeClient() {
 
         {/* Background glow */}
         <div className="pointer-events-none absolute right-0 top-0 -z-10 h-full w-full overflow-hidden">
-          <div className="absolute right-[-5%] top-[-10%] h-[500px] w-[500px] rounded-full bg-primary/10 blur-[100px]" />
-          <div className="absolute bottom-[-10%] left-[-5%] h-[400px] w-[400px] rounded-full bg-secondary/10 blur-[100px]" />
+          <div className="absolute right-[-5%] top-[-10%] h-125 w-125 rounded-full bg-primary/10 blur-[100px]" />
+          <div className="absolute bottom-[-10%] left-[-5%] h-100 w-100 rounded-full bg-secondary/10 blur-[100px]" />
         </div>
       </section>
 
@@ -445,7 +496,13 @@ export default function HomeClient() {
             </Reveal>
             <Reveal delay={120} className="relative">
               <div className="overflow-hidden rounded-2xl border border-border shadow-2xl">
-                <Image src="/assets/home-page-01.svg" alt="Dashboard" className="h-auto w-full" width={600} height={400} />
+                <Image
+                  src="/assets/home-page-01.svg"
+                  alt="Dashboard"
+                  className="h-auto w-full"
+                  width={600}
+                  height={400}
+                />
               </div>
             </Reveal>
           </div>
@@ -471,8 +528,20 @@ export default function HomeClient() {
                   className="group block rounded-2xl border border-border bg-card p-8 text-center transition-all hover:border-primary/30 hover:shadow-xl"
                 >
                   <div className="mb-4 flex h-16 items-center justify-center">
-                    <Image src={venture.light} alt={venture.name} className="h-12 w-auto transition-transform group-hover:scale-105 dark:hidden" width={120} height={48} />
-                    <Image src={venture.dark} alt={venture.name} className="hidden h-12 w-auto transition-transform group-hover:scale-105 dark:block" width={120} height={48} />
+                    <Image
+                      src={venture.light}
+                      alt={venture.name}
+                      className="h-12 w-auto transition-transform group-hover:scale-105 dark:hidden"
+                      width={120}
+                      height={48}
+                    />
+                    <Image
+                      src={venture.dark}
+                      alt={venture.name}
+                      className="hidden h-12 w-auto transition-transform group-hover:scale-105 dark:block"
+                      width={120}
+                      height={48}
+                    />
                   </div>
                   <p className="text-sm text-muted-foreground">{venture.description}</p>
                 </a>
@@ -486,26 +555,28 @@ export default function HomeClient() {
       <section className="bg-linear-to-r from-primary to-accent py-24">
         <div className="container">
           <div className="mx-auto max-w-4xl text-center">
-          <Reveal>
-            <h2 className="mb-6 text-3xl font-bold text-white sm:text-5xl">Ready to Exceed Your Goals?</h2>
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80">
-              Let us work together to build something amazing.
-            </p>
-            <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-lg font-medium text-primary shadow-lg transition-colors hover:bg-white/90"
-              >
-                Get Started <ArrowRight className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/about"
-                className="inline-flex items-center justify-center rounded-xl border border-white px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-white/10"
-              >
-                Learn More
-              </Link>
-            </div>
-          </Reveal>
+            <Reveal>
+              <h2 className="mb-6 text-3xl font-bold text-white sm:text-5xl">
+                Ready to Exceed Your Goals?
+              </h2>
+              <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80">
+                Let us work together to build something amazing.
+              </p>
+              <div className="flex flex-col justify-center gap-4 sm:flex-row">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-lg font-medium text-primary shadow-lg transition-colors hover:bg-white/90"
+                >
+                  Get Started <ArrowRight className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="/about"
+                  className="inline-flex items-center justify-center rounded-xl border border-white px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-white/10"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
