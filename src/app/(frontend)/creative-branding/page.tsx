@@ -31,11 +31,27 @@ export default function Page() {
         {
           color: 'purple',
           title: 'What this service is for',
-          subtitle: 'Creative direction and branding support for businesses that want stronger identity and presence.',
+          subtitle:
+            'Creative direction and branding support for businesses that want stronger identity and presence.',
           features: [
-            { title: 'Brand Design', icon: BrushCleaning, desc: 'Create visual systems that communicate your brand clearly and consistently.', items: ['Identity systems', 'Visual direction', 'Brand consistency'] },
-            { title: 'Content Supply', icon: FileText, desc: 'Produce on-brand content that supports growth across channels.', items: ['Copywriting', 'Marketing content', 'Content pipelines'] },
-            { title: 'Brand Materials', icon: Sparkles, desc: 'Develop the assets your business needs to present itself professionally.', items: ['Social visuals', 'Promotional assets', 'Brand toolkit'] },
+            {
+              title: 'Brand Design',
+              icon: BrushCleaning,
+              desc: 'Create visual systems that communicate your brand clearly and consistently.',
+              items: ['Identity systems', 'Visual direction', 'Brand consistency'],
+            },
+            {
+              title: 'Content Supply',
+              icon: FileText,
+              desc: 'Produce on-brand content that supports growth across channels.',
+              items: ['Copywriting', 'Marketing content', 'Content pipelines'],
+            },
+            {
+              title: 'Brand Materials',
+              icon: Sparkles,
+              desc: 'Develop the assets your business needs to present itself professionally.',
+              items: ['Social visuals', 'Promotional assets', 'Brand toolkit'],
+            },
           ],
         },
         {
@@ -43,10 +59,19 @@ export default function Page() {
           muted: true,
           badge: 'Creative Execution',
           title: 'From identity to assets',
-          subtitle: 'A cohesive creative approach that strengthens both perception and performance.',
+          subtitle:
+            'A cohesive creative approach that strengthens both perception and performance.',
           features: [
-            { title: 'Visual Storytelling', icon: PenTool, desc: 'Turn your brand message into visuals that connect with your audience.' },
-            { title: 'Flexible Brand Systems', icon: Layers, desc: 'Create assets that are easy to apply across web, print, and campaigns.' },
+            {
+              title: 'Visual Storytelling',
+              icon: PenTool,
+              desc: 'Turn your brand message into visuals that connect with your audience.',
+            },
+            {
+              title: 'Flexible Brand Systems',
+              icon: Layers,
+              desc: 'Create assets that are easy to apply across web, print, and campaigns.',
+            },
           ],
         },
       ]}

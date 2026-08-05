@@ -21,11 +21,23 @@ const ACCENT: Record<string, { tile: string; icon: string; hover: string }> = {
   teal: { tile: 'bg-teal-500/10', icon: 'text-teal-500', hover: 'hover:border-teal-500/50' },
   red: { tile: 'bg-red-500/10', icon: 'text-red-500', hover: 'hover:border-red-500/50' },
   blue: { tile: 'bg-blue-500/10', icon: 'text-blue-500', hover: 'hover:border-blue-500/50' },
-  purple: { tile: 'bg-purple-500/10', icon: 'text-purple-500', hover: 'hover:border-purple-500/50' },
-  emerald: { tile: 'bg-emerald-500/10', icon: 'text-emerald-500', hover: 'hover:border-emerald-500/50' },
+  purple: {
+    tile: 'bg-purple-500/10',
+    icon: 'text-purple-500',
+    hover: 'hover:border-purple-500/50',
+  },
+  emerald: {
+    tile: 'bg-emerald-500/10',
+    icon: 'text-emerald-500',
+    hover: 'hover:border-emerald-500/50',
+  },
   amber: { tile: 'bg-amber-500/10', icon: 'text-amber-500', hover: 'hover:border-amber-500/50' },
   pink: { tile: 'bg-pink-500/10', icon: 'text-pink-500', hover: 'hover:border-pink-500/50' },
-  indigo: { tile: 'bg-indigo-500/10', icon: 'text-indigo-500', hover: 'hover:border-indigo-500/50' },
+  indigo: {
+    tile: 'bg-indigo-500/10',
+    icon: 'text-indigo-500',
+    hover: 'hover:border-indigo-500/50',
+  },
 }
 const ACCENT_FALLBACK = { tile: 'bg-muted', icon: 'text-primary', hover: 'hover:border-primary/50' }
 
@@ -94,10 +106,14 @@ export const MegaMenu: React.FC<{ open: boolean; onClose: () => void }> = ({ ope
               <div className="container grid grid-cols-1 gap-4 py-8 lg:grid-cols-4">
                 {megaSections.map((section) => {
                   const active =
-                    pathname === section.href || (section.href !== '/' && pathname.startsWith(section.href + '/'))
+                    pathname === section.href ||
+                    (section.href !== '/' && pathname.startsWith(section.href + '/'))
 
                   return (
-                    <div key={section.href} className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
+                    <div
+                      key={section.href}
+                      className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm"
+                    >
                       <div className="mb-3 flex items-center justify-between">
                         <Link
                           href={section.href}
@@ -122,7 +138,9 @@ export const MegaMenu: React.FC<{ open: boolean; onClose: () => void }> = ({ ope
                               href={child.href}
                               className={clsx(
                                 'block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted hover:text-primary',
-                                childActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground',
+                                childActive
+                                  ? 'bg-primary/10 text-primary'
+                                  : 'text-muted-foreground',
                               )}
                             >
                               {child.label}

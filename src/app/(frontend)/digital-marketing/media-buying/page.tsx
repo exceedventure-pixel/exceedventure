@@ -11,7 +11,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('digital-marketing/media-buying').catch(() => null)
-  return generatePageMeta({ slug: 'digital-marketing/media-buying', seoDoc, fallbackTitle: 'Media Buying' })
+  return generatePageMeta({
+    slug: 'digital-marketing/media-buying',
+    seoDoc,
+    fallbackTitle: 'Media Buying',
+  })
 }
 
 export default function Page() {
@@ -27,11 +31,24 @@ export default function Page() {
         {
           color: 'blue',
           title: 'How this service helps',
-          subtitle: 'Paid media support that improves audience targeting, spend efficiency, and campaign performance.',
+          subtitle:
+            'Paid media support that improves audience targeting, spend efficiency, and campaign performance.',
           features: [
-            { title: 'Audience Targeting', icon: Target, desc: 'Focus your budget on the segments that matter most to your business.' },
-            { title: 'Performance Tracking', icon: ChartNoAxesCombined, desc: 'Monitor spend, engagement, and conversions with a clear reporting lens.' },
-            { title: 'Campaign Reliability', icon: ShieldCheck, desc: 'Keep campaigns efficient, accountable, and aligned with your growth goals.' },
+            {
+              title: 'Audience Targeting',
+              icon: Target,
+              desc: 'Focus your budget on the segments that matter most to your business.',
+            },
+            {
+              title: 'Performance Tracking',
+              icon: ChartNoAxesCombined,
+              desc: 'Monitor spend, engagement, and conversions with a clear reporting lens.',
+            },
+            {
+              title: 'Campaign Reliability',
+              icon: ShieldCheck,
+              desc: 'Keep campaigns efficient, accountable, and aligned with your growth goals.',
+            },
           ],
         },
       ]}

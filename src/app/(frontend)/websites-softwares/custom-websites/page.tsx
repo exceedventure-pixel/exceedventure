@@ -11,7 +11,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('websites-softwares/custom-websites').catch(() => null)
-  return generatePageMeta({ slug: 'websites-softwares/custom-websites', seoDoc, fallbackTitle: 'Custom Websites' })
+  return generatePageMeta({
+    slug: 'websites-softwares/custom-websites',
+    seoDoc,
+    fallbackTitle: 'Custom Websites',
+  })
 }
 
 export default function Page() {
@@ -29,9 +33,21 @@ export default function Page() {
           title: 'Built around your needs',
           subtitle: 'Custom solutions for businesses that need more than a standard template.',
           features: [
-            { title: 'Tailored UX', icon: Layers, desc: 'Interfaces designed around your users and the actions you want them to take.' },
-            { title: 'Unique Branding', icon: Palette, desc: 'Create a digital experience that feels unmistakably like your brand.' },
-            { title: 'Advanced Functionality', icon: Zap, desc: 'Support complex flows, dashboards, portals, or interactive experiences.' },
+            {
+              title: 'Tailored UX',
+              icon: Layers,
+              desc: 'Interfaces designed around your users and the actions you want them to take.',
+            },
+            {
+              title: 'Unique Branding',
+              icon: Palette,
+              desc: 'Create a digital experience that feels unmistakably like your brand.',
+            },
+            {
+              title: 'Advanced Functionality',
+              icon: Zap,
+              desc: 'Support complex flows, dashboards, portals, or interactive experiences.',
+            },
           ],
         },
       ]}

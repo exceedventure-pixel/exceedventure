@@ -11,7 +11,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('automation-ai/ai-integration-services').catch(() => null)
-  return generatePageMeta({ slug: 'automation-ai/ai-integration-services', seoDoc, fallbackTitle: 'AI Integration Services' })
+  return generatePageMeta({
+    slug: 'automation-ai/ai-integration-services',
+    seoDoc,
+    fallbackTitle: 'AI Integration Services',
+  })
 }
 
 export default function Page() {
@@ -29,9 +33,21 @@ export default function Page() {
           title: 'How this service helps',
           subtitle: 'Practical integrations that make AI useful in your business operations.',
           features: [
-            { title: 'Tool Integration', icon: PlugZap, desc: 'Connect AI tools to your current stack without unnecessary complexity.' },
-            { title: 'Workflow Setup', icon: Workflow, desc: 'Create reliable processes so the technology fits how your team works.' },
-            { title: 'Reliable Adoption', icon: ShieldCheck, desc: 'Make sure the implementation is useful, stable, and easy for teams to use.' },
+            {
+              title: 'Tool Integration',
+              icon: PlugZap,
+              desc: 'Connect AI tools to your current stack without unnecessary complexity.',
+            },
+            {
+              title: 'Workflow Setup',
+              icon: Workflow,
+              desc: 'Create reliable processes so the technology fits how your team works.',
+            },
+            {
+              title: 'Reliable Adoption',
+              icon: ShieldCheck,
+              desc: 'Make sure the implementation is useful, stable, and easy for teams to use.',
+            },
           ],
         },
       ]}

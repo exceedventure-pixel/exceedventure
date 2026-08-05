@@ -11,7 +11,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('websites-softwares/wordpress').catch(() => null)
-  return generatePageMeta({ slug: 'websites-softwares/wordpress', seoDoc, fallbackTitle: 'WordPress' })
+  return generatePageMeta({
+    slug: 'websites-softwares/wordpress',
+    seoDoc,
+    fallbackTitle: 'WordPress',
+  })
 }
 
 export default function Page() {
@@ -27,11 +31,24 @@ export default function Page() {
         {
           color: 'teal',
           title: 'Why this service works',
-          subtitle: 'A dependable foundation for businesses that need a strong content hub and easy updates.',
+          subtitle:
+            'A dependable foundation for businesses that need a strong content hub and easy updates.',
           features: [
-            { title: 'Business Websites', icon: Smartphone, desc: 'Fast, modern WordPress sites tailored to your brand and goals.' },
-            { title: 'Content-Driven Pages', icon: Search, desc: 'Publish blogs, services, and resources without sacrificing performance.' },
-            { title: 'Scalable Setup', icon: ShieldCheck, desc: 'Grow from a simple website to a larger digital presence with room to expand.' },
+            {
+              title: 'Business Websites',
+              icon: Smartphone,
+              desc: 'Fast, modern WordPress sites tailored to your brand and goals.',
+            },
+            {
+              title: 'Content-Driven Pages',
+              icon: Search,
+              desc: 'Publish blogs, services, and resources without sacrificing performance.',
+            },
+            {
+              title: 'Scalable Setup',
+              icon: ShieldCheck,
+              desc: 'Grow from a simple website to a larger digital presence with room to expand.',
+            },
           ],
         },
       ]}

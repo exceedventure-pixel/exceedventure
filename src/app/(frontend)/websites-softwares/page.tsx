@@ -31,12 +31,33 @@ export default function Page() {
         {
           color: 'teal',
           title: 'What this service is for',
-          subtitle: 'Solutions built for modern brands, service businesses, and growing online stores.',
+          subtitle:
+            'Solutions built for modern brands, service businesses, and growing online stores.',
           features: [
-            { title: 'WordPress', icon: LayoutTemplate, desc: 'Scalable content sites, landing pages, and business websites.', items: ['Content-first websites', 'SEO-ready pages', 'Flexible plugin ecosystem'] },
-            { title: 'E-commerce', icon: ShoppingCart, desc: 'Online stores designed to turn visitors into paying customers.', items: ['Product pages', 'Checkout flow', 'Inventory-ready storefronts'] },
-            { title: 'Custom Websites', icon: Building2, desc: 'Tailor-made websites for unique business needs and brand positioning.', items: ['Fully custom UX', 'Advanced interactions', 'Performance-focused builds'] },
-            { title: 'Pay Monthly Websites', icon: Shield, desc: 'Flexible website solutions with low upfront cost and manageable monthly plans.', items: ['Launch faster', 'Ongoing support', 'Budget-friendly growth'] },
+            {
+              title: 'WordPress',
+              icon: LayoutTemplate,
+              desc: 'Scalable content sites, landing pages, and business websites.',
+              items: ['Content-first websites', 'SEO-ready pages', 'Flexible plugin ecosystem'],
+            },
+            {
+              title: 'E-commerce',
+              icon: ShoppingCart,
+              desc: 'Online stores designed to turn visitors into paying customers.',
+              items: ['Product pages', 'Checkout flow', 'Inventory-ready storefronts'],
+            },
+            {
+              title: 'Custom Websites',
+              icon: Building2,
+              desc: 'Tailor-made websites for unique business needs and brand positioning.',
+              items: ['Fully custom UX', 'Advanced interactions', 'Performance-focused builds'],
+            },
+            {
+              title: 'Pay Monthly Websites',
+              icon: Shield,
+              desc: 'Flexible website solutions with low upfront cost and manageable monthly plans.',
+              items: ['Launch faster', 'Ongoing support', 'Budget-friendly growth'],
+            },
           ],
         },
         {
@@ -46,9 +67,21 @@ export default function Page() {
           title: 'Built for conversion and growth',
           subtitle: 'Every build is shaped around clarity, speed, and a strong user journey.',
           features: [
-            { title: 'Modern UX', icon: Palette, desc: 'Clean, conversion-focused interfaces with clear calls to action.' },
-            { title: 'Fast Performance', icon: Globe, desc: 'Optimized to load quickly and rank better in search.' },
-            { title: 'Scalable Foundations', icon: Building2, desc: 'Create a platform that can grow as your business expands.' },
+            {
+              title: 'Modern UX',
+              icon: Palette,
+              desc: 'Clean, conversion-focused interfaces with clear calls to action.',
+            },
+            {
+              title: 'Fast Performance',
+              icon: Globe,
+              desc: 'Optimized to load quickly and rank better in search.',
+            },
+            {
+              title: 'Scalable Foundations',
+              icon: Building2,
+              desc: 'Create a platform that can grow as your business expands.',
+            },
           ],
         },
       ]}

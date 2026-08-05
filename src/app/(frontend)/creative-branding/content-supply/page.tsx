@@ -11,7 +11,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('creative-branding/content-supply').catch(() => null)
-  return generatePageMeta({ slug: 'creative-branding/content-supply', seoDoc, fallbackTitle: 'Content Supply' })
+  return generatePageMeta({
+    slug: 'creative-branding/content-supply',
+    seoDoc,
+    fallbackTitle: 'Content Supply',
+  })
 }
 
 export default function Page() {
@@ -27,11 +31,24 @@ export default function Page() {
         {
           color: 'purple',
           title: 'What this service supports',
-          subtitle: 'A practical content pipeline for brands that need consistent output without friction.',
+          subtitle:
+            'A practical content pipeline for brands that need consistent output without friction.',
           features: [
-            { title: 'Copywriting', icon: PenTool, desc: 'Create clear, brand-aligned messaging for websites, campaigns, and content pieces.' },
-            { title: 'Content Production', icon: Layers, desc: 'Keep your content calendar moving with structured, repeatable support.' },
-            { title: 'Brand-Aligned Output', icon: Sparkles, desc: 'Create materials that feel consistent, polished, and ready to publish.' },
+            {
+              title: 'Copywriting',
+              icon: PenTool,
+              desc: 'Create clear, brand-aligned messaging for websites, campaigns, and content pieces.',
+            },
+            {
+              title: 'Content Production',
+              icon: Layers,
+              desc: 'Keep your content calendar moving with structured, repeatable support.',
+            },
+            {
+              title: 'Brand-Aligned Output',
+              icon: Sparkles,
+              desc: 'Create materials that feel consistent, polished, and ready to publish.',
+            },
           ],
         },
       ]}

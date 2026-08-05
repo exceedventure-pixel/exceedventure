@@ -11,7 +11,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('creative-branding/brand-materials').catch(() => null)
-  return generatePageMeta({ slug: 'creative-branding/brand-materials', seoDoc, fallbackTitle: 'Brand Materials' })
+  return generatePageMeta({
+    slug: 'creative-branding/brand-materials',
+    seoDoc,
+    fallbackTitle: 'Brand Materials',
+  })
 }
 
 export default function Page() {
@@ -27,11 +31,24 @@ export default function Page() {
         {
           color: 'purple',
           title: 'What this service provides',
-          subtitle: 'A practical set of brand assets that support daily presentation and promotion.',
+          subtitle:
+            'A practical set of brand assets that support daily presentation and promotion.',
           features: [
-            { title: 'Asset Creation', icon: PackageOpen, desc: 'Develop the visual and promotional materials your brand needs in regular use.' },
-            { title: 'Ready-to-Use Content', icon: PenTool, desc: 'Prepare assets that can be shared across campaigns, channels, and internal use.' },
-            { title: 'Consistent Presentation', icon: Layers, desc: 'Keep your brand materials aligned across touchpoints and communication moments.' },
+            {
+              title: 'Asset Creation',
+              icon: PackageOpen,
+              desc: 'Develop the visual and promotional materials your brand needs in regular use.',
+            },
+            {
+              title: 'Ready-to-Use Content',
+              icon: PenTool,
+              desc: 'Prepare assets that can be shared across campaigns, channels, and internal use.',
+            },
+            {
+              title: 'Consistent Presentation',
+              icon: Layers,
+              desc: 'Keep your brand materials aligned across touchpoints and communication moments.',
+            },
           ],
         },
       ]}

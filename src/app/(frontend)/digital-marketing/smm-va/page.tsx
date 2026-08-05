@@ -29,9 +29,21 @@ export default function Page() {
           title: 'What this service supports',
           subtitle: 'Reliable support for daily brand consistency and operational follow-through.',
           features: [
-            { title: 'Social Management', icon: MessageSquare, desc: 'Manage content, engagement, and community presence with consistency.' },
-            { title: 'Administrative Support', icon: CalendarClock, desc: 'Cover recurring tasks that keep your team moving without friction.' },
-            { title: 'Flexible Execution', icon: Sparkles, desc: 'Adapt support to the pace and needs of your business.' },
+            {
+              title: 'Social Management',
+              icon: MessageSquare,
+              desc: 'Manage content, engagement, and community presence with consistency.',
+            },
+            {
+              title: 'Administrative Support',
+              icon: CalendarClock,
+              desc: 'Cover recurring tasks that keep your team moving without friction.',
+            },
+            {
+              title: 'Flexible Execution',
+              icon: Sparkles,
+              desc: 'Adapt support to the pace and needs of your business.',
+            },
           ],
         },
       ]}

@@ -11,7 +11,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('websites-softwares/e-commerce').catch(() => null)
-  return generatePageMeta({ slug: 'websites-softwares/e-commerce', seoDoc, fallbackTitle: 'E-commerce' })
+  return generatePageMeta({
+    slug: 'websites-softwares/e-commerce',
+    seoDoc,
+    fallbackTitle: 'E-commerce',
+  })
 }
 
 export default function Page() {
@@ -27,12 +31,29 @@ export default function Page() {
         {
           color: 'teal',
           title: 'What this service includes',
-          subtitle: 'Commerce experiences that combine product presentation, checkout simplicity, and trust.',
+          subtitle:
+            'Commerce experiences that combine product presentation, checkout simplicity, and trust.',
           features: [
-            { title: 'Storefront Design', icon: ShoppingCart, desc: 'Create clear product experiences that guide visitors toward purchase.' },
-            { title: 'Secure Checkout', icon: CreditCard, desc: 'Offer smooth, reliable checkout flows with payment confidence.' },
-            { title: 'Growth-Oriented UX', icon: TrendingUp, desc: 'Improve conversion through better structure, clarity, and persuasive design.' },
-            { title: 'Reliability & Trust', icon: ShieldCheck, desc: 'Support customer confidence with polished, dependable ecommerce experiences.' },
+            {
+              title: 'Storefront Design',
+              icon: ShoppingCart,
+              desc: 'Create clear product experiences that guide visitors toward purchase.',
+            },
+            {
+              title: 'Secure Checkout',
+              icon: CreditCard,
+              desc: 'Offer smooth, reliable checkout flows with payment confidence.',
+            },
+            {
+              title: 'Growth-Oriented UX',
+              icon: TrendingUp,
+              desc: 'Improve conversion through better structure, clarity, and persuasive design.',
+            },
+            {
+              title: 'Reliability & Trust',
+              icon: ShieldCheck,
+              desc: 'Support customer confidence with polished, dependable ecommerce experiences.',
+            },
           ],
         },
       ]}

@@ -31,12 +31,37 @@ export default function Page() {
         {
           color: 'blue',
           title: 'What this service is for',
-          subtitle: 'Performance-led marketing services for brands that want more reach and better conversions.',
+          subtitle:
+            'Performance-led marketing services for brands that want more reach and better conversions.',
           features: [
-            { title: 'Web Growth SEO', icon: TrendingUp, desc: 'Improve rankings, visibility, and organic traffic with a search-first strategy.', items: ['Audit & strategy', 'Keyword planning', 'Technical SEO improvements'] },
-            { title: 'Media Buying', icon: Megaphone, desc: 'Run paid campaigns that reach the right audience at the right time.', items: ['Meta & Google Ads', 'Audience targeting', 'Campaign optimization'] },
-            { title: 'SMM & VA', icon: Users, desc: 'Support your social presence and daily operations with reliable execution.', items: ['Content scheduling', 'Community management', 'Administrative support'] },
-            { title: 'Niche Marketing', icon: Target, desc: 'Focused campaigns for specific industries, regions, or audience segments.', items: ['Industry targeting', 'Location-based strategy', 'Conversion-focused messaging'] },
+            {
+              title: 'Web Growth SEO',
+              icon: TrendingUp,
+              desc: 'Improve rankings, visibility, and organic traffic with a search-first strategy.',
+              items: ['Audit & strategy', 'Keyword planning', 'Technical SEO improvements'],
+            },
+            {
+              title: 'Media Buying',
+              icon: Megaphone,
+              desc: 'Run paid campaigns that reach the right audience at the right time.',
+              items: ['Meta & Google Ads', 'Audience targeting', 'Campaign optimization'],
+            },
+            {
+              title: 'SMM & VA',
+              icon: Users,
+              desc: 'Support your social presence and daily operations with reliable execution.',
+              items: ['Content scheduling', 'Community management', 'Administrative support'],
+            },
+            {
+              title: 'Niche Marketing',
+              icon: Target,
+              desc: 'Focused campaigns for specific industries, regions, or audience segments.',
+              items: [
+                'Industry targeting',
+                'Location-based strategy',
+                'Conversion-focused messaging',
+              ],
+            },
           ],
         },
         {
@@ -46,8 +71,16 @@ export default function Page() {
           title: 'Data-driven execution',
           subtitle: 'Marketing that is measurable, adaptive, and aligned with business goals.',
           features: [
-            { title: 'Search Visibility', icon: Search, desc: 'Strengthen your brand presence where your audience is actively looking.' },
-            { title: 'Campaign Reporting', icon: BarChart3, desc: 'Track the metrics that matter and turn insights into action.' },
+            {
+              title: 'Search Visibility',
+              icon: Search,
+              desc: 'Strengthen your brand presence where your audience is actively looking.',
+            },
+            {
+              title: 'Campaign Reporting',
+              icon: BarChart3,
+              desc: 'Track the metrics that matter and turn insights into action.',
+            },
           ],
         },
       ]}
