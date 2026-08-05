@@ -46,11 +46,11 @@ export const HeaderClient: React.FC = () => {
       className="sticky top-0 z-30 w-full border-b border-border/40 bg-background/90 backdrop-blur-sm"
       {...(heroTheme ? { 'data-theme': heroTheme } : {})}
     >
-      <div className="container py-4 flex justify-between items-center">
-        <Link href="/">
-          <Logo loading="eager" priority="high" />
+      <div className="container flex items-center justify-between py-3 sm:py-4">
+        <Link href="/" className="flex items-center">
+          <Logo loading="eager" priority="high" className="max-w-30 sm:max-w-none" />
         </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           <div className="hidden lg:flex">
             <HeaderNav />
           </div>
@@ -58,7 +58,7 @@ export const HeaderClient: React.FC = () => {
 
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted sm:px-4 sm:py-2"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-sm font-medium transition-colors hover:bg-muted sm:gap-2 sm:px-4 sm:py-2"
           >
             {/* Pulsing dot — reads as an "available now" status indicator */}
             <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">

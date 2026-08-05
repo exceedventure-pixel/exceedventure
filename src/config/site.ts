@@ -1,8 +1,6 @@
 import {
   Home,
-  Layers,
   Briefcase,
-  GitBranch,
   Tag,
   Users,
   BookOpen,
@@ -11,9 +9,6 @@ import {
   Bot,
   Megaphone,
   Palette,
-  TrendingUp,
-  Target,
-  FileText,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -44,6 +39,8 @@ export type NavLink = {
   external?: boolean
   icon?: LucideIcon
   children?: NavChild[]
+  /** Show this item as a top-level section in the mega menu. */
+  megaSection?: boolean
   /**
    * Keep this item out of the inline header bar. It still appears in the
    * hamburger drawer, which carries the full menu.
@@ -125,47 +122,51 @@ const siteConfig: SiteConfig = {
   nav: [
     { label: 'Home', href: '/', icon: Home, drawerOnly: true },
     {
-      label: 'Solutions',
-      href: '/solutions',
-      icon: Layers,
+      label: 'Websites & Softwares',
+      href: '/websites-softwares',
+      icon: Globe,
+      megaSection: true,
       children: [
-        { label: 'Websites & Apps', href: '/solutions/websites-apps', icon: Globe, iconColor: 'text-teal-500', color: 'teal', description: 'High-performance sites and platforms' },
-        { label: 'Automation', href: '/solutions/automation', icon: Bot, iconColor: 'text-red-500', color: 'red', description: 'Put the repetitive work on autopilot' },
-        { label: 'Media Buying', href: '/solutions/media-buying', icon: Megaphone, iconColor: 'text-blue-500', color: 'blue', description: 'Paid campaigns built for ROI' },
-        { label: 'Web Growth (SEO)', href: '/solutions/web-growth-seo', icon: TrendingUp, iconColor: 'text-emerald-500', color: 'emerald', description: 'Compounding organic search growth' },
-        { label: 'Branding', href: '/solutions/branding', icon: Palette, iconColor: 'text-purple-500', color: 'purple', description: 'Identity and design that gets remembered' },
-        { label: 'Marketing', href: '/solutions/marketing', icon: Target, iconColor: 'text-amber-500', color: 'amber', description: 'Full-funnel strategy and campaigns' },
-        { label: 'Content Supply', href: '/solutions/content-supply', icon: FileText, iconColor: 'text-pink-500', color: 'pink', description: 'On-brand content at scale' },
-        { label: 'SMM & VA', href: '/solutions/smm-va', icon: Users, iconColor: 'text-indigo-500', color: 'indigo', description: 'Social management and virtual assistants' },
+        { label: 'WordPress', href: '/websites-softwares/wordpress' },
+        { label: 'E-commerce', href: '/websites-softwares/e-commerce' },
+        { label: 'Custom Websites', href: '/websites-softwares/custom-websites' },
+        { label: 'Pay Monthly Websites', href: '/websites-softwares/pay-monthly-websites' },
       ],
     },
     {
-      label: 'Branches',
-      href: '/ventures',
-      icon: GitBranch,
+      label: 'Digital Marketing',
+      href: '/digital-marketing',
+      icon: Megaphone,
+      megaSection: true,
       children: [
-        {
-          label: 'Corporate Crafts',
-          href: '/corporate-crafts',
-          logoLight: '/assets/corporate-crafts.svg',
-          logoDark: '/assets/dark-corporate-crafts.svg',
-        },
-        {
-          label: 'Create a Content',
-          href: '/creata-content',
-          logoLight: '/assets/createacontent.svg',
-          logoDark: '/assets/dark-createacontent.svg',
-        },
-        {
-          label: 'Softal Core',
-          href: '/softal-core',
-          logoLight: '/assets/softal-core.svg',
-          logoDark: '/assets/dark-softal-core.svg',
-        },
+        { label: 'Web Growth SEO', href: '/digital-marketing/web-growth-seo' },
+        { label: 'Media Buying', href: '/digital-marketing/media-buying' },
+        { label: 'SMM & VA', href: '/digital-marketing/smm-va' },
+        { label: 'Niche Marketing', href: '/digital-marketing/niche-marketing' },
       ],
     },
-    { label: 'Works', href: '/our-works', icon: Briefcase },
-    { label: 'Pricing', href: '/pricing', icon: Tag },
+    {
+      label: 'Automation & AI',
+      href: '/automation-ai',
+      icon: Bot,
+      megaSection: true,
+      children: [
+        { label: 'AI Consultancy', href: '/automation-ai/ai-consultancy' },
+        { label: 'AI Integration Services', href: '/automation-ai/ai-integration-services' },
+        { label: 'Workflow Automation', href: '/automation-ai/workflow-automation' },
+      ],
+    },
+    {
+      label: 'Creative & Branding',
+      href: '/creative-branding',
+      icon: Palette,
+      megaSection: true,
+      children: [
+        { label: 'Brand Design', href: '/creative-branding/brand-design' },
+        { label: 'Content Supply', href: '/creative-branding/content-supply' },
+        { label: 'Brand Materials', href: '/creative-branding/brand-materials' },
+      ],
+    },
     { label: 'About', href: '/about', icon: Users, drawerOnly: true },
     { label: 'Blog', href: '/blog', icon: BookOpen, drawerOnly: true },
     { label: 'Contact', href: '/contact', icon: Mail, drawerOnly: true },

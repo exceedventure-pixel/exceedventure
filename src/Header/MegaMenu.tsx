@@ -74,9 +74,8 @@ export const MegaMenu: React.FC<{ open: boolean; onClose: () => void }> = ({ ope
   useEffect(() => setMounted(true), [])
 
   // Driven by the same config as the rest of the nav.
-  const services = siteConfig.nav.find((i) => i.href === '/solutions')
-  const branches = siteConfig.nav.find((i) => i.href === '/ventures')
-  const secondary = siteConfig.nav.filter((i) => !i.children?.length)
+  const megaSections = siteConfig.nav.filter((item) => item.megaSection)
+  const secondary = siteConfig.nav.filter((item) => !item.children?.length && !item.megaSection)
 
   return (
     <>
@@ -92,149 +91,56 @@ export const MegaMenu: React.FC<{ open: boolean; onClose: () => void }> = ({ ope
         >
           <div className={clsx('min-h-0 overflow-hidden', !open && 'pointer-events-none')}>
             <div className="border-t border-border bg-background">
-              <div className="container grid grid-cols-12 gap-6 py-8">
-                {/* ── Services: the primary destinations, as cards ── */}
-                {services && (
-                  <div className="col-span-6">
-                    <SectionLabel>{services.label}</SectionLabel>
+              <div className="container grid grid-cols-1 gap-4 py-8 lg:grid-cols-4">
+                {megaSections.map((section) => {
+                  const active =
+                    pathname === section.href || (section.href !== '/' && pathname.startsWith(section.href + '/'))
 
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {services.children!.map((child) => {
-                        const a = (child.color && ACCENT[child.color]) || ACCENT_FALLBACK
-                        const active = pathname === child.href
-                        return (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className={clsx(
-                              'group/card flex items-center gap-3 rounded-xl border bg-card p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md',
-                              active ? 'border-primary/50' : 'border-border/60',
-                              a.hover,
-                            )}
-                          >
-                            <span
+                  return (
+                    <div key={section.href} className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
+                      <div className="mb-3 flex items-center justify-between">
+                        <Link
+                          href={section.href}
+                          className={clsx(
+                            'text-sm font-semibold transition-colors hover:text-primary',
+                            active ? 'text-primary' : 'text-foreground',
+                          )}
+                        >
+                          {section.label}
+                        </Link>
+                        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+                      </div>
+
+                      <div className="space-y-2">
+                        {section.children?.map((child) => {
+                          const childActive =
+                            pathname === child.href || pathname.startsWith(child.href + '/')
+
+                          return (
+                            <Link
+                              key={child.href}
+                              href={child.href}
                               className={clsx(
-                                'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-transform duration-200 group-hover/card:scale-110',
-                                a.tile,
+                                'block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted hover:text-primary',
+                                childActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground',
                               )}
                             >
-                              {child.icon && <child.icon className={clsx('h-5 w-5', a.icon)} />}
-                            </span>
+                              {child.label}
+                            </Link>
+                          )
+                        })}
+                      </div>
 
-                            <span className="text-sm font-semibold leading-tight">{child.label}</span>
-                          </Link>
-                        )
-                      })}
-                    </div>
-
-                    <Link
-                      href={services.href}
-                      className="group/all mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
-                    >
-                      View all solutions
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover/all:translate-x-1" />
-                    </Link>
-                  </div>
-                )}
-
-                {/* ── Branches: logo tiles ── */}
-                {branches && (
-                  <div className="col-span-3">
-                    <SectionLabel>{branches.label}</SectionLabel>
-
-                    <div className="space-y-2.5">
-                      {branches.children!.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="flex items-center justify-center rounded-xl border border-border/60 bg-card px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md"
-                        >
-                          {child.logoLight ? (
-                            <>
-                              <Image
-                                src={child.logoLight}
-                                alt={child.label}
-                                width={130}
-                                height={40}
-                                className="h-9 w-auto object-contain dark:hidden"
-                              />
-                              <Image
-                                src={child.logoDark ?? child.logoLight}
-                                alt={child.label}
-                                width={130}
-                                height={40}
-                                className="hidden h-9 w-auto object-contain dark:block"
-                              />
-                            </>
-                          ) : (
-                            <span className="text-sm font-medium">{child.label}</span>
-                          )}
-                        </Link>
-                      ))}
-                    </div>
-
-                    <Link
-                      href={branches.href}
-                      className="group/all mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
-                    >
-                      View all branches
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover/all:translate-x-1" />
-                    </Link>
-
-                    {/* Blogs card — sits beneath the branches list */}
-                    <Link
-                      href="/blog"
-                      className="group/blog mt-4 flex items-center gap-3 rounded-xl border border-border/60 bg-card p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md"
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                        <BookOpen className="h-5 w-5 text-primary" />
-                      </span>
-                      <span className="flex items-center gap-1 text-sm font-semibold leading-tight">
-                        Blogs
-                        <ArrowUpRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all duration-200 group-hover/blog:translate-x-0 group-hover/blog:opacity-100" />
-                      </span>
-                    </Link>
-                  </div>
-                )}
-
-                {/* ── CTA ── */}
-                <div className="col-span-3">
-                  <div className="flex h-full flex-col rounded-2xl border border-border/60 bg-linear-to-br from-primary/5 via-transparent to-secondary/10 p-5">
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
-                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                      </span>
-                      <span className="text-xs font-medium text-muted-foreground">
-                        Available for new projects
-                      </span>
-                    </div>
-
-                    <p className="text-lg font-semibold leading-snug">{siteConfig.tagline}</p>
-                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                      Tell us what you&apos;re building and we&apos;ll come back to you within one
-                      business day.
-                    </p>
-
-                    <div className="mt-auto pt-4">
                       <Link
-                        href="/contact"
-                        className="group/cta mb-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                        href={section.href}
+                        className="group/all mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary"
                       >
-                        Start a Project
-                        <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/cta:translate-x-1" />
+                        View all
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover/all:translate-x-1" />
                       </Link>
-
-                      <a
-                        href={`mailto:${siteConfig.contact.email}`}
-                        className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-primary"
-                      >
-                        <Mail className="h-3.5 w-3.5 shrink-0" />
-                        {siteConfig.contact.email}
-                      </a>
                     </div>
-                  </div>
-                </div>
+                  )
+                })}
               </div>
 
               {/* ── Secondary strip: quiet by design, so it can't read as a column of links ── */}
