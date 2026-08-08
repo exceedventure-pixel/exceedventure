@@ -5,6 +5,7 @@ import { Sparkles, PlugZap, Workflow, ShieldCheck } from 'lucide-react'
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
 import { ServiceDetail } from '@/components/ServiceDetail'
+import { SubServiceGrid } from '@/components/SubServiceGrid'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -20,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Page() {
   return (
+    <>
     <ServiceDetail
       color="red"
       icon={Sparkles}
@@ -52,5 +54,7 @@ export default function Page() {
         },
       ]}
     />
+      <SubServiceGrid parentHref="/automation-ai/ai-integration-services" />
+    </>
   )
 }

@@ -9,98 +9,50 @@ import { ChevronRight, X } from 'lucide-react'
 import clsx from 'clsx'
 import siteConfig, { type NavChild } from '@/config/site'
 
-// ─── Sub-service row (level 3) ────────────────────────────────────────────────
+// ─── Service row (level 2) ────────────────────────────────────────────────────
 
-function SubServiceRow({
-  label,
-  href,
-  onClose,
-}: {
-  label: string
-  href: string
-  onClose: () => void
-}) {
+/**
+ * The drawer stops at level two. Third-level pages exist and are in the sitemap,
+ * but they surface as cards on their parent's page rather than as menu entries —
+ * so this stays a short, scannable list on a phone.
+ */
+function ServiceRow({ item, onClose }: { item: NavChild; onClose: () => void }) {
   const pathname = usePathname()
+
   return (
     <Link
-      href={href}
+      href={item.href}
       onClick={onClose}
       className={clsx(
-        'flex items-center h-10 pl-12 pr-4 border-b border-border text-sm transition-colors hover:bg-muted',
-        pathname === href ? 'text-primary font-medium' : 'text-muted-foreground',
+        'flex items-center gap-2.5 border-b border-border text-sm transition-colors hover:bg-muted',
+        item.logoLight ? 'py-3 pl-8 pr-4' : 'h-11 pl-8 pr-4',
+        pathname === item.href ? 'text-primary font-medium' : 'text-foreground/80',
       )}
     >
-      {label}
+      {item.logoLight ? (
+        <>
+          <Image
+            src={item.logoLight}
+            alt={item.label}
+            width={120}
+            height={36}
+            className="h-8 w-auto object-contain dark:hidden"
+          />
+          <Image
+            src={item.logoDark ?? item.logoLight}
+            alt={item.label}
+            width={120}
+            height={36}
+            className="hidden h-8 w-auto object-contain dark:block"
+          />
+        </>
+      ) : (
+        <>
+          {item.icon && <item.icon className={clsx('w-4 h-4 shrink-0', item.iconColor)} />}
+          {item.label}
+        </>
+      )}
     </Link>
-  )
-}
-
-// ─── Service row (level 2) with optional sub-service accordion ────────────────
-
-function ServiceRow({ item, onClose }: { item: NavChild; onClose: () => void }) {
-  const [expanded, setExpanded] = useState(false)
-  const pathname = usePathname()
-  const hasChildren = !!item.children?.length
-
-  if (!hasChildren) {
-    return (
-      <Link
-        href={item.href}
-        onClick={onClose}
-        className={clsx(
-          'flex items-center gap-2.5 border-b border-border text-sm transition-colors hover:bg-muted',
-          item.logoLight ? 'py-3 pl-8 pr-4' : 'h-11 pl-8 pr-4',
-          pathname === item.href ? 'text-primary font-medium' : 'text-foreground/80',
-        )}
-      >
-        {item.logoLight ? (
-          <>
-            <Image
-              src={item.logoLight}
-              alt={item.label}
-              width={120}
-              height={36}
-              className="h-8 w-auto object-contain dark:hidden"
-            />
-            <Image
-              src={item.logoDark ?? item.logoLight}
-              alt={item.label}
-              width={120}
-              height={36}
-              className="hidden h-8 w-auto object-contain dark:block"
-            />
-          </>
-        ) : (
-          <>
-            {item.icon && <item.icon className={clsx('w-4 h-4 shrink-0', item.iconColor)} />}
-            {item.label}
-          </>
-        )}
-      </Link>
-    )
-  }
-
-  return (
-    <>
-      <button
-        className="flex items-center justify-between h-11 pl-8 pr-4 border-b border-border text-sm text-foreground/80 hover:bg-muted transition-colors w-full text-left"
-        aria-expanded={expanded}
-        onClick={() => setExpanded((p) => !p)}
-      >
-        {item.label}
-        <ChevronRight
-          className={clsx(
-            'w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200',
-            expanded ? 'rotate-90' : '',
-          )}
-        />
-      </button>
-
-      {expanded &&
-        item.children!.map((sub) => (
-          <SubServiceRow key={sub.href} label={sub.label} href={sub.href} onClose={onClose} />
-        ))}
-    </>
   )
 }
 

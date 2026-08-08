@@ -5,6 +5,7 @@ import { Megaphone, Target, ChartNoAxesCombined, ShieldCheck } from 'lucide-reac
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
 import { ServiceDetail } from '@/components/ServiceDetail'
+import { SubServiceGrid } from '@/components/SubServiceGrid'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -20,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Page() {
   return (
+    <>
     <ServiceDetail
       color="blue"
       icon={Megaphone}
@@ -53,5 +55,7 @@ export default function Page() {
         },
       ]}
     />
+      <SubServiceGrid parentHref="/digital-marketing/media-buying" />
+    </>
   )
 }

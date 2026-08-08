@@ -5,9 +5,7 @@ import { unstable_cache } from 'next/cache'
 import siteConfig from '@/config/site'
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SERVER_URL ||
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-  siteConfig.url
+  process.env.NEXT_PUBLIC_SERVER_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || siteConfig.url
 
 const getPagesSitemap = unstable_cache(
   async () => {
@@ -30,31 +28,51 @@ const getPagesSitemap = unstable_cache(
     }
 
     type Changefreq = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never'
+    type Entry = { slug: string; priority: number; changefreq: Changefreq }
 
-    const hardcodedPages: { slug: string; loc: string; priority: number; changefreq: Changefreq }[] = [
-      { slug: 'home', loc: `${SITE_URL}/`, priority: 1.0, changefreq: 'weekly' },
-      { slug: 'solutions', loc: `${SITE_URL}/solutions`, priority: 0.9, changefreq: 'monthly' },
-      { slug: 'solutions/websites-apps', loc: `${SITE_URL}/solutions/websites-apps`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'solutions/automation', loc: `${SITE_URL}/solutions/automation`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'solutions/media-buying', loc: `${SITE_URL}/solutions/media-buying`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'solutions/web-growth-seo', loc: `${SITE_URL}/solutions/web-growth-seo`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'solutions/branding', loc: `${SITE_URL}/solutions/branding`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'solutions/marketing', loc: `${SITE_URL}/solutions/marketing`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'solutions/content-supply', loc: `${SITE_URL}/solutions/content-supply`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'solutions/smm-va', loc: `${SITE_URL}/solutions/smm-va`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'about', loc: `${SITE_URL}/about`, priority: 0.8, changefreq: 'monthly' },
-      { slug: 'blog', loc: `${SITE_URL}/blog`, priority: 0.8, changefreq: 'daily' },
-      { slug: 'careers', loc: `${SITE_URL}/careers`, priority: 0.6, changefreq: 'monthly' },
-      { slug: 'contact', loc: `${SITE_URL}/contact`, priority: 0.7, changefreq: 'yearly' },
-      { slug: 'search', loc: `${SITE_URL}/search`, priority: 0.3, changefreq: 'weekly' },
+    /**
+     * Service URLs are derived from siteConfig.nav rather than listed by hand,
+     * so every level lands in the sitemap automatically. This matters because
+     * the header menus deliberately stop at level two — third-level pages are
+     * reachable for people via their parent's card grid, and for crawlers only
+     * through here. Deriving them means a page can never be published to the
+     * nav config and silently left out of the sitemap.
+     */
+    const serviceEntries: Entry[] = siteConfig.nav
+      .filter((item) => item.children?.length)
+      .flatMap((section) => [
+        { slug: section.href.replace(/^\//, ''), priority: 0.9, changefreq: 'monthly' as const },
+        ...(section.children ?? []).flatMap((child) => [
+          { slug: child.href.replace(/^\//, ''), priority: 0.8, changefreq: 'monthly' as const },
+          ...(child.children ?? []).map((sub) => ({
+            slug: sub.href.replace(/^\//, ''),
+            priority: 0.7,
+            changefreq: 'monthly' as const,
+          })),
+        ]),
+      ])
+
+    const staticEntries: Entry[] = [
+      { slug: 'home', priority: 1.0, changefreq: 'weekly' },
+      { slug: 'about', priority: 0.8, changefreq: 'monthly' },
+      { slug: 'blog', priority: 0.8, changefreq: 'daily' },
+      { slug: 'our-works', priority: 0.7, changefreq: 'monthly' },
+      { slug: 'pricing', priority: 0.7, changefreq: 'monthly' },
+      { slug: 'careers', priority: 0.6, changefreq: 'monthly' },
+      { slug: 'contact', priority: 0.7, changefreq: 'yearly' },
+      { slug: 'search', priority: 0.3, changefreq: 'weekly' },
     ]
 
-    return hardcodedPages.map(({ slug, loc, priority, changefreq }) => ({
-      loc,
-      lastmod: lastmodBySlug[slug] ?? dateFallback,
-      priority,
-      changefreq,
-    }))
+    // Dedupe defensively: a slug reachable two ways must still appear once.
+    const seen = new Set<string>()
+    return [...staticEntries, ...serviceEntries]
+      .filter(({ slug }) => (seen.has(slug) ? false : seen.add(slug)))
+      .map(({ slug, priority, changefreq }) => ({
+        loc: slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${slug}`,
+        lastmod: lastmodBySlug[slug] ?? dateFallback,
+        priority,
+        changefreq,
+      }))
   },
   ['pages-sitemap'],
   { tags: ['pages-sitemap'] },

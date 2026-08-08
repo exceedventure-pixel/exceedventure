@@ -12,13 +12,48 @@ interface CarouselItem {
 }
 
 const CAROUSEL_DATA: CarouselItem[] = [
-  { id: 1, text: 'BUSINESS WEBSITES', image: '/assets/carousel/image-1.png', description: 'Building high-performance websites' },
-  { id: 2, text: 'CREATIVE POSTERS', image: '/assets/carousel/image-2.png', description: 'Engaging content and business growth' },
-  { id: 3, text: 'Web Systems', image: '/assets/carousel/image-3.png', description: 'Scalable and robust web architectures' },
-  { id: 4, text: 'BRAND IDENTITY', image: '/assets/carousel/image-4.png', description: 'Impactful branding that tells your story' },
-  { id: 5, text: 'CORPORATE DOCUMENTS', image: '/assets/carousel/image-5.png', description: 'Impress your clients with professionalism' },
-  { id: 6, text: 'SPECIAL BRANCHES', image: '/assets/carousel/image-6.png', description: 'Streamlining workflows with smart specialized branches' },
-  { id: 7, text: 'Corporate Design', image: '/assets/carousel/image-7.png', description: 'Corporate social media design that aligns with your brand' },
+  {
+    id: 1,
+    text: 'BUSINESS WEBSITES',
+    image: '/assets/carousel/image-1.png',
+    description: 'Building high-performance websites',
+  },
+  {
+    id: 2,
+    text: 'CREATIVE POSTERS',
+    image: '/assets/carousel/image-2.png',
+    description: 'Engaging content and business growth',
+  },
+  {
+    id: 3,
+    text: 'Web Systems',
+    image: '/assets/carousel/image-3.png',
+    description: 'Scalable and robust web architectures',
+  },
+  {
+    id: 4,
+    text: 'BRAND IDENTITY',
+    image: '/assets/carousel/image-4.png',
+    description: 'Impactful branding that tells your story',
+  },
+  {
+    id: 5,
+    text: 'CORPORATE DOCUMENTS',
+    image: '/assets/carousel/image-5.png',
+    description: 'Impress your clients with professionalism',
+  },
+  {
+    id: 6,
+    text: 'SPECIAL BRANCHES',
+    image: '/assets/carousel/image-6.png',
+    description: 'Streamlining workflows with smart specialized branches',
+  },
+  {
+    id: 7,
+    text: 'Corporate Design',
+    image: '/assets/carousel/image-7.png',
+    description: 'Corporate social media design that aligns with your brand',
+  },
 ]
 
 /** Time each slide is held before auto-advancing. */
@@ -127,9 +162,11 @@ export const StackedCarousel = () => {
   }
 
   return (
-    <div className="relative isolate z-0 flex w-full items-center justify-center bg-transparent py-2 md:py-12">
+    <div className="relative isolate z-0 flex w-full items-center justify-center bg-transparent py-2 md:py-8">
+      {/* Track height follows the card height (--carousel-h) plus headroom for
+          the scaled-up centre slide, so the whole hero can fit one screen. */}
       <div
-        className="relative flex h-[300px] w-full max-w-5xl items-center justify-center overflow-visible outline-none md:h-[450px]"
+        className="relative flex h-[calc(var(--carousel-h)+40px)] w-full max-w-5xl items-center justify-center overflow-visible outline-none"
         tabIndex={0}
         role="group"
         aria-roledescription="carousel"
@@ -178,7 +215,10 @@ export const StackedCarousel = () => {
                       sizes="(max-width: 768px) 280px, (max-width: 1024px) 340px, 400px"
                     />
                     {!isCenter && (
-                      <div className="card-overlay" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }} />
+                      <div
+                        className="card-overlay"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}
+                      />
                     )}
                   </div>
 
@@ -186,7 +226,9 @@ export const StackedCarousel = () => {
                     <h3 className="text-xl font-bold uppercase tracking-wide text-foreground md:text-2xl">
                       {item.text}
                     </h3>
-                    <div className={`transition-opacity duration-500 ${isCenter ? 'opacity-100' : 'opacity-0'}`}>
+                    <div
+                      className={`transition-opacity duration-500 ${isCenter ? 'opacity-100' : 'opacity-0'}`}
+                    >
                       <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
@@ -213,7 +255,9 @@ export const StackedCarousel = () => {
               aria-label={`Go to slide ${index + 1}`}
               aria-current={index === activeIndex}
               className={`h-2 rounded-full transition-all duration-300 ${
-                index === activeIndex ? 'w-6 bg-primary' : 'w-2 bg-foreground/20 hover:bg-foreground/40'
+                index === activeIndex
+                  ? 'w-6 bg-primary'
+                  : 'w-2 bg-foreground/20 hover:bg-foreground/40'
               }`}
             />
           ))}

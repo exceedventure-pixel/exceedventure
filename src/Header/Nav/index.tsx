@@ -1,153 +1,310 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react'
 import clsx from 'clsx'
-import siteConfig from '@/config/site'
+import siteConfig, { type NavChild } from '@/config/site'
+
+/**
+ * Desktop nav. Dropdowns open on **click**, not hover, and the open trigger
+ * shares its background with the panel below it — so the panel reads as an
+ * extension of the menu item rather than a card floating near it. The panel is
+ * borderless — the seam is made by squaring the two corners where they meet, and
+ * a concave fillet rounds the inside corner on the open side.
+ *
+ * The menu deliberately stops at level two. Third-level pages exist and are in
+ * the sitemap, but they surface as cards on their parent's page (SubServiceGrid)
+ * rather than as menu entries — so the menu stays scannable while every page
+ * stays crawlable.
+ */
 
 /** Home / About / Contact live in the hamburger drawer only — see site config. */
 const inlineNav = siteConfig.nav.filter((item) => !item.drawerOnly)
 
-export const HeaderNav: React.FC = () => {
-  const pathname = usePathname()
+// ─── One service row inside a dropdown ───────────────────────────────────────
+
+const DropdownRow: React.FC<{ child: NavChild; active: boolean; onNavigate: () => void }> = ({
+  child,
+  active,
+  onNavigate,
+}) => {
+  const Icon = child.icon
 
   return (
-    <nav className="flex gap-1 items-center">
-      {inlineNav.map((item) => {
-        const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-        const hasChildren = !!item.children?.length
+    <div
+      className={clsx(
+        'rounded-xl transition-colors duration-200',
+        active ? 'bg-(--menu-surface-hover)' : 'hover:bg-(--menu-surface-hover)',
+      )}
+    >
+      <Link
+        href={child.href}
+        onClick={onNavigate}
+        className="group/row flex items-start gap-3 px-2.5 py-2.5"
+      >
+        <span
+          className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-background"
+          aria-hidden="true"
+        >
+          {Icon ? (
+            <Icon
+              className={clsx(
+                'h-4 w-4',
+                active
+                  ? 'text-foreground'
+                  : 'text-muted-foreground group-hover/row:text-foreground',
+              )}
+            />
+          ) : (
+            <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+          )}
+        </span>
 
-        if (!hasChildren) {
+        <span className="min-w-0 flex-1">
+          {child.logoLight ? (
+            <>
+              <Image
+                src={child.logoLight}
+                alt={child.label}
+                width={130}
+                height={40}
+                className="h-8 w-auto object-contain dark:hidden"
+              />
+              <Image
+                src={child.logoDark ?? child.logoLight}
+                alt={child.label}
+                width={130}
+                height={40}
+                className="hidden h-8 w-auto object-contain dark:block"
+              />
+            </>
+          ) : (
+            <span
+              className={clsx(
+                'flex items-center gap-1.5 text-sm font-semibold transition-colors',
+                active ? 'text-primary' : 'text-foreground group-hover/row:text-primary',
+              )}
+            >
+              {child.label}
+              <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all duration-200 group-hover/row:translate-x-0 group-hover/row:opacity-100" />
+            </span>
+          )}
+
+          {child.description && (
+            <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">
+              {child.description}
+            </span>
+          )}
+        </span>
+      </Link>
+    </div>
+  )
+}
+
+// ─── Header nav ──────────────────────────────────────────────────────────────
+
+export const HeaderNav: React.FC = () => {
+  const pathname = usePathname()
+  const [openHref, setOpenHref] = useState<string | null>(null)
+  const navRef = useRef<HTMLElement | null>(null)
+  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const idBase = useId()
+
+  const close = useCallback(() => setOpenHref(null), [])
+
+  // Navigating away closes whatever was open.
+  useEffect(() => {
+    setOpenHref(null)
+  }, [pathname])
+
+  // A click anywhere outside the nav, or Escape, dismisses the panel.
+  useEffect(() => {
+    if (!openHref) return
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (!navRef.current?.contains(e.target as Node)) setOpenHref(null)
+    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      triggerRefs.current[openHref]?.focus()
+      setOpenHref(null)
+    }
+
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [openHref])
+
+  return (
+    <nav ref={navRef} className="flex items-center gap-1">
+      {inlineNav.map((item, index) => {
+        const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+        const children = item.children ?? []
+
+        if (!children.length) {
           return (
             <Link
               key={item.href}
               href={item.href}
               className={clsx(
-                'flex items-center gap-1.5 px-3.5 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted hover:text-primary',
+                'flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[17px] font-semibold transition-colors duration-200 hover:bg-(--menu-surface) hover:text-primary',
                 isActive ? 'text-primary' : 'text-foreground/80',
               )}
             >
-              {item.label}
+              {item.shortLabel ?? item.label}
             </Link>
           )
         }
 
-        // Item with children — hover dropdown + flyout sub-menu
+        const isOpen = openHref === item.href
+        const panelId = `${idBase}-panel-${index}`
+        const triggerId = `${idBase}-trigger-${index}`
+        // Items past the midpoint hang from their right edge so wide panels
+        // stay inside the viewport.
+        const alignEnd = index >= inlineNav.length / 2
+
         return (
-          <div key={item.href} className="relative group/top">
-            {/* Trigger row */}
+          <div key={item.href} className={clsx('relative', isOpen && 'z-50')}>
             <button
+              type="button"
+              id={triggerId}
+              ref={(el) => {
+                triggerRefs.current[item.href] = el
+              }}
+              aria-haspopup="true"
+              aria-expanded={isOpen}
+              aria-controls={isOpen ? panelId : undefined}
+              onClick={() => setOpenHref(isOpen ? null : item.href)}
+              onKeyDown={(e) => {
+                if (e.key === 'ArrowDown') {
+                  e.preventDefault()
+                  setOpenHref(item.href)
+                }
+              }}
+              // No transitions anywhere on the trigger: the fill and the panel
+              // must land on the same frame, so the menu reads as instant.
               className={clsx(
-                'flex items-center gap-1.5 px-3.5 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted hover:text-primary',
-                isActive ? 'text-primary' : 'text-foreground/80',
+                'flex flex-col items-start gap-0.5 px-3.5',
+                isOpen
+                  ? // Open: square off the bottom and run the fill to the very
+                    // edge, so it meets the panel below with no seam.
+                    'rounded-t-xl py-2 bg-(--menu-surface) text-primary'
+                  : clsx(
+                      // Closed: trade 4px of padding for 4px of margin. Same row
+                      // height, but the hover fill stops short of the open
+                      // panel's top edge instead of merging into it.
+                      'my-1 rounded-xl py-1 hover:bg-(--menu-surface) hover:text-primary',
+                      isActive ? 'text-primary' : 'text-foreground/80',
+                    ),
               )}
             >
-              {item.label}
-              <ChevronDown className="w-3 h-3 transition-transform duration-200 group-hover/top:rotate-180" />
+              {/* Inherits the trigger's colour, so it tracks hover/open state. */}
+              {item.overline && (
+                <span className="text-[9px] font-medium uppercase leading-none tracking-[0.14em] opacity-45">
+                  {item.overline}
+                </span>
+              )}
+              <span className="flex items-center gap-1.5 text-[17px] font-semibold leading-tight">
+                {item.shortLabel ?? item.label}
+                <ChevronDown
+                  className={clsx('h-3.5 w-3.5', isOpen && 'rotate-180')}
+                  aria-hidden="true"
+                />
+              </span>
             </button>
 
-            {/* Dropdown panel — bridge gap with pt-1 */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-full hidden group-hover/top:block z-50 pt-1">
-              <div className="bg-background border border-border rounded-lg shadow-lg min-w-44 py-1">
-                {/* "All Services" link */}
-                <Link
-                  href={item.href}
+            {isOpen && (
+              <>
+                {/* Concave fillet: rounds the inside corner where the trigger's
+                    edge meets the panel's top edge. A transparent box whose own
+                    rounded corner is a quarter-disc, with the surface colour
+                    painted *outside* it by a spread-only shadow and clipped to
+                    the corner — so it curves without ever repainting the header
+                    behind it. */}
+                <span
+                  aria-hidden="true"
                   className={clsx(
-                    'flex items-center px-4 py-2 text-sm transition-colors hover:bg-muted hover:text-primary border-b border-border mb-1',
-                    pathname === item.href ? 'text-primary font-medium' : 'text-foreground/80',
+                    'pointer-events-none absolute bottom-0 h-3 w-3 overflow-hidden',
+                    alignEnd ? 'right-full' : 'left-full',
                   )}
                 >
-                  All {item.label}
-                </Link>
+                  <span
+                    className={clsx(
+                      'block h-3 w-3 shadow-[0_0_0_12px_var(--menu-surface)]',
+                      alignEnd ? 'rounded-br-[12px]' : 'rounded-bl-[12px]',
+                    )}
+                  />
+                </span>
 
-                {item.children!.map((child) => {
-                  const childActive =
-                    pathname === child.href || pathname.startsWith(child.href + '/')
-                  const hasGrandchildren = !!child.children?.length
+                <div
+                  id={panelId}
+                  aria-labelledby={triggerId}
+                  className={clsx(
+                    // Borderless: the shared surface plus a layered shadow carries
+                    // the edge, so nothing outlines the join with the trigger.
+                    'absolute top-full w-92 overflow-hidden rounded-b-xl bg-(--menu-surface) shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_12px_28px_-8px_rgba(0,0,0,0.16),0_28px_60px_-24px_rgba(0,0,0,0.35)]',
+                    alignEnd ? 'right-0 rounded-tl-xl' : 'left-0 rounded-tr-xl',
+                  )}
+                >
+                  {/* Section header doubles as the "everything in here" link. */}
+                  <Link
+                    href={item.href}
+                    onClick={close}
+                    className="group/all flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-(--menu-surface-hover)"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      {item.icon && (
+                        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-background">
+                          <item.icon
+                            className="h-3.5 w-3.5 text-muted-foreground group-hover/all:text-foreground"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      )}
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover/all:text-primary">
+                        All {item.label}
+                      </span>
+                    </span>
+                    <ArrowUpRight
+                      className="h-4 w-4 text-muted-foreground transition-all duration-200 group-hover/all:-translate-y-0.5 group-hover/all:translate-x-0.5 group-hover/all:text-primary"
+                      aria-hidden="true"
+                    />
+                  </Link>
 
-                  if (!hasGrandchildren) {
-                    return (
-                      <Link
+                  <div className="space-y-0.5 p-2">
+                    {children.map((child) => (
+                      <DropdownRow
                         key={child.href}
-                        href={child.href}
-                        className={clsx(
-                          'flex items-center transition-colors hover:bg-muted hover:text-primary',
-                          child.logoLight
-                            ? 'justify-center px-4 py-3'
-                            : 'px-4 py-2 text-base whitespace-nowrap',
-                          childActive ? 'text-primary font-medium' : 'text-foreground/80',
-                        )}
-                      >
-                        {child.logoLight ? (
-                          <>
-                            <Image
-                              src={child.logoLight}
-                              alt={child.label}
-                              width={130}
-                              height={40}
-                              className="h-9 w-auto object-contain dark:hidden"
-                            />
-                            <Image
-                              src={child.logoDark ?? child.logoLight}
-                              alt={child.label}
-                              width={130}
-                              height={40}
-                              className="hidden h-9 w-auto object-contain dark:block"
-                            />
-                          </>
-                        ) : (
-                          <span className="flex items-center gap-2.5">
-                            {child.icon && (
-                              <child.icon className={clsx('w-4 h-4 shrink-0', child.iconColor)} />
-                            )}
-                            {child.label}
-                          </span>
-                        )}
-                      </Link>
-                    )
-                  }
+                        child={child}
+                        active={pathname === child.href || pathname.startsWith(child.href + '/')}
+                        onNavigate={close}
+                      />
+                    ))}
+                  </div>
 
-                  // Child with grandchildren — flyout to the right
-                  return (
-                    <div key={child.href} className="relative group/child">
-                      <Link
-                        href={child.href}
-                        className={clsx(
-                          'flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-muted hover:text-primary',
-                          childActive ? 'text-primary font-medium' : 'text-foreground/80',
-                        )}
-                      >
-                        {child.label}
-                        <ChevronRight className="w-3 h-3 text-muted-foreground ml-2 shrink-0" />
-                      </Link>
-
-                      {/* Flyout panel */}
-                      <div className="absolute left-full top-0 hidden group-hover/child:block z-50 pl-1">
-                        <div className="bg-background border border-border rounded-lg shadow-lg min-w-44 py-1">
-                          {child.children!.map((sub) => (
-                            <Link
-                              key={sub.href}
-                              href={sub.href}
-                              className={clsx(
-                                'flex items-center px-4 py-2 text-sm transition-colors hover:bg-muted hover:text-primary',
-                                pathname === sub.href
-                                  ? 'text-primary font-medium'
-                                  : 'text-foreground/80',
-                              )}
-                            >
-                              {sub.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
+                  <div className="flex items-center justify-between gap-3 bg-(--menu-surface-hover) px-4 py-2.5">
+                    <span className="text-xs text-muted-foreground">Not sure where to start?</span>
+                    <Link
+                      href="/contact"
+                      onClick={close}
+                      className="group/cta inline-flex items-center gap-1 text-xs font-semibold text-primary"
+                    >
+                      Talk to us
+                      <ArrowRight
+                        className="h-3.5 w-3.5 transition-transform duration-200 group-hover/cta:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )
       })}

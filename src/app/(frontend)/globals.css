@@ -123,6 +123,14 @@
   --success: oklch(78% 0.08 200deg);
   --warning: oklch(89% 0.1 75deg);
   --error: oklch(75% 0.15 25deg);
+
+  /* Header dropdown surface — the open trigger and its panel share this colour
+     so the panel reads as an extension of the menu item, not a floating card.
+     Deliberately neutral (zero chroma): tinting these with the navy --primary
+     mixed to a mauve cast in oklch. */
+  --menu-surface: oklch(97% 0 0deg);
+  --menu-surface-hover: oklch(93.5% 0 0deg);
+  --menu-border: oklch(90% 0 0deg);
 }
 
 [data-theme='dark'] {
@@ -161,6 +169,12 @@
   --success: oklch(28% 0.1 200deg);
   --warning: oklch(35% 0.08 70deg);
   --error: oklch(45% 0.1 25deg);
+
+  /* Dark mode lifts off the near-black background so the panel still separates
+     from the page behind it. Neutral, same reasoning as light. */
+  --menu-surface: oklch(20.5% 0 0deg);
+  --menu-surface-hover: oklch(26.5% 0 0deg);
+  --menu-border: oklch(30% 0 0deg);
 }
 
 @theme inline {
@@ -227,6 +241,22 @@
 ::selection {
   background-color: #00c2be;
   color: #15246d;
+}
+
+/* ─── Hero sizing ─────────────────────────────────────────────────────────────
+   The whole hero (carousel, heading, CTAs, service cards) has to land inside a
+   single screen on first visit. The carousel is the biggest block, so its height
+   is derived from the viewport rather than fixed — the clamp keeps it sensible
+   on very short and very tall screens. --header-h matches the sticky header so
+   the hero can subtract it. */
+:root {
+  --header-h: 65px;
+  --carousel-h: clamp(180px, 30vh, 400px);
+}
+@media (width >= 64rem) {
+  :root {
+    --header-h: 81px;
+  }
 }
 
 /* ─── Mobile push-drawer ─────────────────────────────────────────────────── */
@@ -328,7 +358,7 @@ html[data-theme='light'] {
   cursor: pointer;
   width: 100%;
   border-radius: 20px;
-  height: 400px;
+  height: var(--carousel-h);
   position: relative;
   background-color: #111;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -380,7 +410,9 @@ html[data-theme='light'] {
 .card-wrapper:not(.center-slide) .card-card:hover {
   transform: scale(1.05);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 15px rgba(255, 255, 255, 0.1),
+    0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .card-button {
@@ -423,9 +455,6 @@ html[data-theme='light'] {
 }
 
 @media (max-width: 768px) {
-  .card-card {
-    height: 280px;
-  }
   .text-section {
     padding: 1rem;
   }

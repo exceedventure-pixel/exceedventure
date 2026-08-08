@@ -363,18 +363,10 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen overflow-x-hidden">
       {/* Hero */}
-      <section className="relative flex flex-col items-center justify-center bg-white pb-10 pt-6 text-center dark:bg-transparent sm:bg-transparent lg:pb-14 lg:pt-10">
-        <Reveal className="container z-10 flex w-full flex-col items-center">
-          <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-            <span>Building Digital </span>
-            <span className="text-primary">Excellence.</span>
-          </h1>
-          <p className="mb-4 hidden max-w-2xl text-base text-muted-foreground sm:block sm:text-lg">
-            Imagine a business where your branding does the talking, your AI handles the paperwork,
-            and your content attracts your dream clients.
-          </p>
-        </Reveal>
-
+      {/* Sized to one screen: everything from the carousel to the service cards
+          should be visible on first load without scrolling. svh rather than vh
+          so mobile browser chrome doesn't push the cards off. */}
+      <section className="relative flex min-h-[calc(100svh-var(--header-h))] flex-col items-center justify-center bg-white pb-4 pt-2 text-center dark:bg-transparent sm:bg-transparent lg:pb-6 lg:pt-2">
         {/* Stacked carousel — kept outside the container so it stays full-bleed.
             The negative margin absorbs most of the carousel's own md:py-12 on
             larger screens; mobile is left alone since it only has py-2 there. */}
@@ -383,8 +375,18 @@ export default function HomeClient() {
         </div>
 
         <Reveal className="container z-10 flex w-full flex-col items-center">
-          {/* mt-10 clears the carousel's dots, which sit below its own box */}
-          <div className="mb-8 mt-10 flex flex-row gap-2 sm:gap-3">
+          {/* mt-8 clears the carousel's dots, which sit below its own box.
+              Type steps down on short screens so the cards stay above the fold. */}
+          <h1 className="mb-2 mt-8 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl [@media(max-height:850px)]:lg:text-4xl">
+            <span>Building Digital </span>
+            <span className="text-primary">Excellence.</span>
+          </h1>
+          <p className="mb-2 hidden max-w-2xl text-base text-muted-foreground sm:block [@media(max-height:850px)]:text-sm">
+            Imagine a business where your branding does the talking, your AI handles the paperwork,
+            and your content attracts your dream clients.
+          </p>
+
+          <div className="mb-5 mt-3 flex flex-row gap-2 sm:gap-3">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
