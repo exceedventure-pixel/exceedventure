@@ -19,10 +19,31 @@ import type { Payload } from 'payload'
  * Never throws — a failure here must not take the whole app down.
  */
 export const ensureAdminUser = async (payload: Payload): Promise<void> => {
-  const email = process.env.ADMIN_EMAIL?.trim()
-  const password = process.env.ADMIN_PASSWORD
+  const rawEmail = process.env.ADMIN_EMAIL
+  const rawPassword = process.env.ADMIN_PASSWORD
 
-  if (!email || !password) return
+  const email = rawEmail?.trim()
+  // Trimmed deliberately. Deployment UIs and .env files routinely leave a
+  // trailing space, and a password stored as "secret " while you type "secret"
+  // fails with no clue as to why. Warn so the surprise is visible either way.
+  const password = rawPassword?.trim()
+
+  if (!email || !password) {
+    // Only one set is almost always a misconfiguration worth surfacing.
+    if (rawEmail || rawPassword) {
+      payload.logger.warn(
+        'ADMIN_EMAIL and ADMIN_PASSWORD must both be set to manage the primary admin; skipping.',
+      )
+    }
+    return
+  }
+
+  if (rawPassword !== password || rawEmail !== email) {
+    payload.logger.warn(
+      'ADMIN_EMAIL/ADMIN_PASSWORD had surrounding whitespace, which has been trimmed. ' +
+        'Sign in with the trimmed value.',
+    )
+  }
 
   try {
     const existing = await payload.find({
