@@ -24,7 +24,15 @@ COPY . .
 # throwing, but it will never actually be dialled during next build.
 ENV DATABASE_URL=postgresql://build:build@localhost:5432/build
 ENV PAYLOAD_SECRET=build-placeholder-not-used-at-runtime
-ENV NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+
+# NEXT_PUBLIC_* values are inlined into the client bundle by `next build`, so
+# this CANNOT be corrected at runtime — setting it in Dokploy afterwards has no
+# effect on what was already compiled in. It must be passed at build time:
+#   --build-arg NEXT_PUBLIC_SERVER_URL=https://exceedventure.com
+# Leaving it at the default publishes localhost URLs in the sitemap, canonical
+# tags and OG images.
+ARG NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+ENV NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS=--no-deprecation
 
