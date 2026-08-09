@@ -21,16 +21,20 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null): stri
   return fallback
 }
 
+/**
+ * Builds the complete <title>, brand suffix included.
+ *
+ * Callers must return this as `title: { absolute }`. The root layout also sets a
+ * `title.template`, and Next applies that to any plain string a page returns —
+ * which would append the brand a second time ("About | Brand | Brand"). Marking
+ * it absolute opts the page out of the template it has already applied here.
+ */
 const buildTitle = (metaTitle?: string | null): string =>
-  metaTitle
-    ? siteConfig.seo.titleTemplate.replace('%s', metaTitle)
-    : siteConfig.seo.defaultTitle
+  metaTitle ? siteConfig.seo.titleTemplate.replace('%s', metaTitle) : siteConfig.seo.defaultTitle
 
 // ─── For blog posts (from Posts collection) ────────────────────────────────
 
-export const generatePostMeta = async (args: {
-  doc: Partial<Post> | null
-}): Promise<Metadata> => {
+export const generatePostMeta = async (args: { doc: Partial<Post> | null }): Promise<Metadata> => {
   const { doc } = args
 
   const ogImage = getImageURL((doc?.meta as any)?.image)
@@ -39,7 +43,7 @@ export const generatePostMeta = async (args: {
   const url = doc?.slug ? `${getServerSideURL()}/blog/${doc.slug}` : getServerSideURL()
 
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: mergeOpenGraph({
@@ -82,13 +86,12 @@ export const generatePageMeta = async (args: {
   const pageUrl = slug === '/' ? serverUrl : `${serverUrl}/${slug}`
   const canonical = seoDoc?.canonicalUrl || pageUrl
 
-  const robots =
-    seoDoc?.noindex
-      ? { index: false, follow: false, googleBot: { index: false, follow: false } }
-      : { index: true, follow: true, googleBot: { index: true, follow: true } }
+  const robots = seoDoc?.noindex
+    ? { index: false, follow: false, googleBot: { index: false, follow: false } }
+    : { index: true, follow: true, googleBot: { index: true, follow: true } }
 
   return {
-    title,
+    title: { absolute: title },
     description: metaDescription,
     robots,
     alternates: { canonical },

@@ -12,6 +12,8 @@ import { Users } from './collections/Users'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { ensureAdminUser } from './utilities/ensureAdminUser'
+import { ensurePageSeo } from './utilities/ensurePageSeo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -37,10 +39,18 @@ export default buildConfig({
   editor: defaultLexical,
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/payload',
+      connectionString:
+        process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/payload',
     },
   }),
   collections: [PageSEO, Posts, Media, Categories, Users],
+  // Runs on every boot, so a deploy brings the CMS in line with the code:
+  // a guaranteed admin login, and a page-seo record for every page.
+  // Both are idempotent and neither throws.
+  onInit: async (payload) => {
+    await ensureAdminUser(payload)
+    await ensurePageSeo(payload)
+  },
   cors: [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins,
