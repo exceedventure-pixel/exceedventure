@@ -36,6 +36,19 @@ ENV NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS=--no-deprecation
 
+# The s3Storage plugin is conditional on S3_BUCKET (see src/plugins/index.ts) and
+# contributes an admin component that must exist in the import map. If it is
+# missing, EVERY admin view renders blank — with no browser error, only a
+# server-side "PayloadComponent not found in importMap" log. Because the plugin
+# is conditional, the map has to be generated with it ENABLED, which these
+# placeholders do. Nothing is dialled at build time; the real credentials come
+# from the runtime environment.
+ENV S3_BUCKET=placeholder-for-importmap
+ENV S3_ENDPOINT=https://placeholder.r2.cloudflarestorage.com
+ENV S3_ACCESS_KEY_ID=placeholder
+ENV S3_SECRET_ACCESS_KEY=placeholder
+
+RUN pnpm generate:importmap
 RUN pnpm build
 
 # ─── Runner ───────────────────────────────────────────────────────────────────
