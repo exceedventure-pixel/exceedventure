@@ -375,18 +375,20 @@ export default function HomeClient() {
         </div>
 
         <Reveal className="container z-10 flex w-full flex-col items-center">
-          {/* mt-8 clears the carousel's dots, which sit below its own box.
-              Type steps down on short screens so the cards stay above the fold. */}
-          <h1 className="mb-2 mt-8 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl [@media(max-height:850px)]:lg:text-4xl">
+          {/* mt-11 clears the carousel's dots, which hang 32px below its own box —
+              anything less and they collide with this heading. Type is
+              deliberately restrained so the carousel can take the height while
+              everything still lands inside one screen. */}
+          <h1 className="mb-1.5 mt-11 text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl xl:text-5xl [@media(max-height:850px)]:lg:text-3xl">
             <span>Building Digital </span>
             <span className="text-primary">Excellence.</span>
           </h1>
-          <p className="mb-2 hidden max-w-2xl text-base text-muted-foreground sm:block [@media(max-height:850px)]:text-sm">
+          <p className="mb-2 hidden max-w-xl text-sm text-muted-foreground sm:block [@media(max-height:850px)]:text-xs">
             Imagine a business where your branding does the talking, your AI handles the paperwork,
             and your content attracts your dream clients.
           </p>
 
-          <div className="mb-5 mt-3 flex flex-row gap-2 sm:gap-3">
+          <div className="mb-4 mt-2 flex flex-row gap-2 sm:gap-3">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"

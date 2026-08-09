@@ -19,6 +19,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="digital-marketing/smm-va"
       color="blue"
       icon={Users}
       badge="Sub Service"

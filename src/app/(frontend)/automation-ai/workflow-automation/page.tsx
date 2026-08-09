@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="automation-ai/workflow-automation"
       color="red"
       icon={Workflow}
       badge="Sub Service"

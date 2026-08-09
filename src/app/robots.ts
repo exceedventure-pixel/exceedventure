@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: [
+      `${siteConfig.url}/sitemap.xml`,
       `${siteConfig.url}/pages-sitemap.xml`,
       `${siteConfig.url}/posts-sitemap.xml`,
     ],

@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="websites-softwares/wordpress"
       color="teal"
       icon={LayoutTemplate}
       badge="Sub Service"

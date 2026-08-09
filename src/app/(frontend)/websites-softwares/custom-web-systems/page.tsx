@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
       <ServiceDetail
+        slug="websites-softwares/custom-web-systems"
         color="teal"
         icon={Server}
         badge="Sub Service"

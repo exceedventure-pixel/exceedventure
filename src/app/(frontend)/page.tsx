@@ -12,7 +12,11 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('home').catch(() => null)
-  return generatePageMeta({ slug: '/', seoDoc, fallbackTitle: siteConfig.seo.defaultTitle })
+  // A bare title, not seo.defaultTitle — that already contains the brand, and
+  // buildTitle appends the "%s | Exceed Venture" template, which produced
+  // "Exceed Venture | Digital Agency | Exceed Venture". The CMS record for the
+  // 'home' slug overrides this.
+  return generatePageMeta({ slug: '/', seoDoc, fallbackTitle: 'Digital Agency' })
 }
 
 export default async function HomePage() {

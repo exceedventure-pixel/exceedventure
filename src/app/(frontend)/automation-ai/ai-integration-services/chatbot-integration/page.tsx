@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="automation-ai/ai-integration-services/chatbot-integration"
         color="red"
         icon={MessageSquare}
         badge="Specialist Service"

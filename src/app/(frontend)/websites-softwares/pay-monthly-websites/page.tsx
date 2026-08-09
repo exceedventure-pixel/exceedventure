@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="websites-softwares/pay-monthly-websites"
       color="teal"
       icon={CalendarRange}
       badge="Sub Service"

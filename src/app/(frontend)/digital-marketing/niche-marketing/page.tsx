@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="digital-marketing/niche-marketing"
       color="blue"
       icon={Target}
       badge="Sub Service"

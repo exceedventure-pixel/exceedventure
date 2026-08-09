@@ -14,6 +14,8 @@ import { BlogFilterButton } from './components/BlogFilterButton'
 import { Pagination } from '@/components/Pagination'
 import { jsonLdScript, webPageSchema, breadcrumbSchema } from '@/utilities/jsonld'
 import type { Category } from '@/payload-types'
+import { getPageSEO } from '@/utilities/getPageSEO'
+import { generatePageMeta } from '@/utilities/generateMeta'
 
 export const dynamic = 'force-dynamic'
 
@@ -65,7 +67,10 @@ export default async function BlogPage() {
               description: `Read the latest articles, insights and updates from ${siteConfig.name}.`,
               url: `${siteConfig.url}/blog`,
             }),
-            breadcrumbSchema([{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog' }]),
+            breadcrumbSchema([
+              { name: 'Home', href: '/' },
+              { name: 'Blog', href: '/blog' },
+            ]),
           ]),
         }}
       />
@@ -112,7 +117,8 @@ export default async function BlogPage() {
                   fill
                   imgClassName="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-              ) : (featuredPost.meta as any)?.image && typeof (featuredPost.meta as any).image !== 'string' ? (
+              ) : (featuredPost.meta as any)?.image &&
+                typeof (featuredPost.meta as any).image !== 'string' ? (
                 <Media
                   resource={(featuredPost.meta as any).image}
                   fill
@@ -149,7 +155,10 @@ export default async function BlogPage() {
               )}
               <div className="flex items-center justify-between pt-2 border-t border-border/50">
                 {featuredPost.publishedAt && (
-                  <time className="text-sm text-muted-foreground" dateTime={featuredPost.publishedAt}>
+                  <time
+                    className="text-sm text-muted-foreground"
+                    dateTime={featuredPost.publishedAt}
+                  >
                     {formatDateTime(featuredPost.publishedAt)}
                   </time>
                 )}
@@ -167,7 +176,9 @@ export default async function BlogPage() {
         {gridPosts.length === 0 && !featuredPost ? (
           <div className="py-16 text-center text-muted-foreground">
             <p className="text-lg font-medium mb-2">No posts yet</p>
-            <p className="text-sm">Run <code className="bg-muted px-1 rounded">pnpm seed</code> to add demo content.</p>
+            <p className="text-sm">
+              Run <code className="bg-muted px-1 rounded">pnpm seed</code> to add demo content.
+            </p>
           </div>
         ) : gridPosts.length === 0 ? null : (
           <>
@@ -191,19 +202,15 @@ export default async function BlogPage() {
   )
 }
 
-export function generateMetadata(): Metadata {
-  const title = `Blog | ${siteConfig.name}`
-  const description = `Read the latest articles, insights and updates from ${siteConfig.name}.`
-  const url = `${siteConfig.url}/blog`
-  return {
-    title,
-    description,
-    alternates: { canonical: url },
-    openGraph: {
-      title,
-      description,
-      url,
-      type: 'website',
-    },
-  }
+export async function generateMetadata(): Promise<Metadata> {
+  // Routed through generatePageMeta like every other page: gives this page a
+  // CMS-editable record, a robots directive it previously lacked, and the
+  // brand suffix applied once rather than twice.
+  const seoDoc = await getPageSEO('blog').catch(() => null)
+  return generatePageMeta({
+    slug: 'blog',
+    seoDoc,
+    fallbackTitle: 'Blog',
+    fallbackDescription: `Read the latest articles, insights and updates from ${siteConfig.name}.`,
+  })
 }

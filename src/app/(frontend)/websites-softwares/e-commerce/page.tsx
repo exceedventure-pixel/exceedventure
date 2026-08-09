@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="websites-softwares/e-commerce"
       color="teal"
       icon={ShoppingCart}
       badge="Sub Service"

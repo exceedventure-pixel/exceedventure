@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="websites-softwares/wordpress/wordpress-ecommerce"
         color="teal"
         icon={ShoppingCart}
         badge="Specialist Service"

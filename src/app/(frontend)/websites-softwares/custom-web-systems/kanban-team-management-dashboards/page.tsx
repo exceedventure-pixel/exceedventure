@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="websites-softwares/custom-web-systems/kanban-team-management-dashboards"
         color="teal"
         icon={Kanban}
         badge="Specialist Service"

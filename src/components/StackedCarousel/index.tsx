@@ -213,6 +213,10 @@ export const StackedCarousel = () => {
                       draggable={false}
                       fill
                       sizes="(max-width: 768px) 280px, (max-width: 1024px) 340px, 400px"
+                      // The centre slide is the page's LCP element — the carousel
+                      // sits above the hero heading — so it must not be lazy.
+                      // Off-centre slides stay lazy.
+                      priority={isCenter}
                     />
                     {!isCenter && (
                       <div
@@ -223,9 +227,12 @@ export const StackedCarousel = () => {
                   </div>
 
                   <div className="text-section bg-background">
-                    <h3 className="text-xl font-bold uppercase tracking-wide text-foreground md:text-2xl">
+                    {/* A slide label, not document structure. As an <h3> these
+                        preceded the page's <h1> (the hero heading sits below the
+                        carousel), giving the homepage an H3-before-H1 outline. */}
+                    <div className="text-xl font-bold uppercase tracking-wide text-foreground md:text-2xl">
                       {item.text}
-                    </h3>
+                    </div>
                     <div
                       className={`transition-opacity duration-500 ${isCenter ? 'opacity-100' : 'opacity-0'}`}
                     >

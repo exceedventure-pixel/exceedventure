@@ -3,16 +3,10 @@ import Link from 'next/link'
 import { Check, type LucideIcon } from 'lucide-react'
 import { cn } from '@/utilities/ui'
 import { Reveal } from '@/components/Reveal'
+import { ServiceSchema } from './ServiceSchema'
 
 export type ServiceColor =
-  | 'teal'
-  | 'red'
-  | 'blue'
-  | 'purple'
-  | 'emerald'
-  | 'amber'
-  | 'pink'
-  | 'indigo'
+  'teal' | 'red' | 'blue' | 'purple' | 'emerald' | 'amber' | 'pink' | 'indigo'
 
 export interface ServiceFeature {
   title: string
@@ -50,6 +44,12 @@ interface ServiceDetailProps {
   titleAccent: string
   subtitle: string
   sections: ServiceSection[]
+  /**
+   * URL path without the leading slash, e.g. 'websites-softwares/wordpress'.
+   * Drives the breadcrumb trail and the page-level JSON-LD. Optional so the
+   * component still renders if a page has not been given one yet.
+   */
+  slug?: string
 }
 
 // Literal class strings so Tailwind's JIT keeps them.
@@ -152,7 +152,12 @@ function FeatureCard({
         c.card,
       )}
     >
-      <div className={cn('mb-6 w-fit rounded-xl p-4 transition-transform duration-200 group-hover:scale-110', c.cardIcon)}>
+      <div
+        className={cn(
+          'mb-6 w-fit rounded-xl p-4 transition-transform duration-200 group-hover:scale-110',
+          c.cardIcon,
+        )}
+      >
         <Icon size={32} />
       </div>
       <h3 className="mb-3 text-xl font-bold">{feature.title}</h3>
@@ -177,11 +182,21 @@ function FeatureGrid({ section }: { section: ServiceSection }) {
     <section
       className={cn('relative pb-24 pt-20', section.muted && 'rounded-t-[3rem] bg-muted/30')}
     >
-      <div className={cn('absolute left-0 top-0 h-1 w-full bg-linear-to-r from-transparent to-transparent opacity-50', c.divider)} />
+      <div
+        className={cn(
+          'absolute left-0 top-0 h-1 w-full bg-linear-to-r from-transparent to-transparent opacity-50',
+          c.divider,
+        )}
+      />
       <div className="container">
         <div className="mb-16 text-center">
           {section.badge && (
-            <div className={cn('mb-4 inline-block rounded-full px-4 py-1 text-sm font-bold uppercase tracking-wider', c.badge)}>
+            <div
+              className={cn(
+                'mb-4 inline-block rounded-full px-4 py-1 text-sm font-bold uppercase tracking-wider',
+                c.badge,
+              )}
+            >
               {section.badge}
             </div>
           )}
@@ -201,7 +216,12 @@ function FeatureGrid({ section }: { section: ServiceSection }) {
                 </div>
                 <div className={gridClass(section.cols)}>
                   {group.features.map((feature, i) => (
-                    <FeatureCard key={feature.title} feature={feature} color={section.color} index={i} />
+                    <FeatureCard
+                      key={feature.title}
+                      feature={feature}
+                      color={section.color}
+                      index={i}
+                    />
                   ))}
                 </div>
               </div>
@@ -227,17 +247,28 @@ export const ServiceDetail: React.FC<ServiceDetailProps> = ({
   titleAccent,
   subtitle,
   sections,
+  slug,
 }) => {
   const c = colorMap[color]
   return (
     <div className="flex min-h-screen flex-col">
+      {/* Breadcrumb trail + WebPage/Service/BreadcrumbList JSON-LD */}
+      {slug && (
+        <ServiceSchema slug={slug} title={`${titleLead}${titleAccent}`} description={subtitle} />
+      )}
+
       {/* Hero */}
       <div className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden pb-20 pt-24 text-center lg:pt-32">
         <Reveal className="container z-10 flex flex-col items-center">
           <div className={cn('mb-6 rounded-2xl p-4', c.iconBox)}>
             <Icon size={48} />
           </div>
-          <div className={cn('mb-4 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-wider', c.badge)}>
+          <div
+            className={cn(
+              'mb-4 rounded-full px-4 py-2 text-sm font-bold uppercase tracking-wider',
+              c.badge,
+            )}
+          >
             {badge}
           </div>
           <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight sm:mb-8 sm:text-7xl lg:text-8xl">

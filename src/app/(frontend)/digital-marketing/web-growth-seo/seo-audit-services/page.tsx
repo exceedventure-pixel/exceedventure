@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="digital-marketing/web-growth-seo/seo-audit-services"
         color="blue"
         icon={FileSearch}
         badge="Specialist Service"

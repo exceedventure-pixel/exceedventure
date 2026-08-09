@@ -43,6 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="solutions/websites-apps"
       color="teal"
       icon={Globe}
       badge="Core Service"

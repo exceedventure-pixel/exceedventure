@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
       <ServiceDetail
+        slug="websites-softwares/shopify"
         color="teal"
         icon={ShoppingBag}
         badge="Sub Service"

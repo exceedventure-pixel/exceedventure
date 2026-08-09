@@ -7,6 +7,9 @@ import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
+import { getPageSEO } from '@/utilities/getPageSEO'
+import { generatePageMeta } from '@/utilities/generateMeta'
+import siteConfig from '@/config/site'
 
 type Args = {
   searchParams: Promise<{
@@ -81,8 +84,15 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   )
 }
 
-export function generateMetadata(): Metadata {
-  return {
-    title: `Payload Website Template Search`,
-  }
+export async function generateMetadata(): Promise<Metadata> {
+  // Was still the starter template's placeholder title. Search result pages are
+  // usually worth excluding from the index — the CMS record's "No Index"
+  // checkbox on the 'search' slug controls that without a code change.
+  const seoDoc = await getPageSEO('search').catch(() => null)
+  return generatePageMeta({
+    slug: 'search',
+    seoDoc,
+    fallbackTitle: 'Search',
+    fallbackDescription: `Search articles and resources from ${siteConfig.name}.`,
+  })
 }

@@ -37,6 +37,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="creative-branding/content-supply"
       color="purple"
       icon={FileText}
       badge="Production Service"

@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="websites-softwares/custom-websites/nextjs-react-development"
         color="teal"
         icon={Code2}
         badge="Specialist Service"

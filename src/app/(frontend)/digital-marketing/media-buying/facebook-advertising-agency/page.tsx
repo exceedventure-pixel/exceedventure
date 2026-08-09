@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="digital-marketing/media-buying/facebook-advertising-agency"
         color="blue"
         icon={Facebook}
         badge="Specialist Service"

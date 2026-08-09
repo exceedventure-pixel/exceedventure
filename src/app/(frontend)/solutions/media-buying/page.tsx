@@ -35,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="solutions/media-buying"
       color="blue"
       icon={Megaphone}
       badge="Performance Service"

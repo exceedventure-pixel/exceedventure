@@ -251,7 +251,7 @@
    the hero can subtract it. */
 :root {
   --header-h: 65px;
-  --carousel-h: clamp(180px, 30vh, 400px);
+  --carousel-h: clamp(215px, 37vh, 460px);
 }
 @media (width >= 64rem) {
   :root {

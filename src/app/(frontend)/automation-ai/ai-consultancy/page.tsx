@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="automation-ai/ai-consultancy"
       color="red"
       icon={Cpu}
       badge="Sub Service"

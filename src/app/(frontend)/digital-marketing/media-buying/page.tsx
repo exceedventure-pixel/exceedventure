@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="digital-marketing/media-buying"
       color="blue"
       icon={Megaphone}
       badge="Sub Service"

@@ -23,6 +23,7 @@ export default function Page() {
   return (
     <>
     <ServiceDetail
+        slug="creative-branding/brand-design"
       color="purple"
       icon={BrushCleaning}
       badge="Sub Service"

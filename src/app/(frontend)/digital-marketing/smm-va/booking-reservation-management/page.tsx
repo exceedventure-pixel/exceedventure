@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <ServiceDetail
+        slug="digital-marketing/smm-va/booking-reservation-management"
         color="blue"
         icon={CalendarCheck}
         badge="Specialist Service"

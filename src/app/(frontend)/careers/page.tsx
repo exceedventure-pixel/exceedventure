@@ -4,6 +4,8 @@ import React from 'react'
 
 import { jsonLdScript, webPageSchema, breadcrumbSchema } from '@/utilities/jsonld'
 import siteConfig from '@/config/site'
+import { getPageSEO } from '@/utilities/getPageSEO'
+import { generatePageMeta } from '@/utilities/generateMeta'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -12,11 +14,14 @@ const title = `Careers | ${siteConfig.name}`
 const description = `Join the ${siteConfig.name} team. We are always looking for talented people who are passionate about helping businesses grow.`
 const url = `${siteConfig.url}/careers`
 
-export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical: url },
-  openGraph: { title, description, url, type: 'website' },
+export async function generateMetadata(): Promise<Metadata> {
+  const seoDoc = await getPageSEO('careers').catch(() => null)
+  return generatePageMeta({
+    slug: 'careers',
+    seoDoc,
+    fallbackTitle: 'Careers',
+    fallbackDescription: description,
+  })
 }
 
 const openRoles = [
@@ -78,12 +83,30 @@ export default function CareersPage() {
           <h2 className="text-2xl font-bold mb-12 text-center">Why {siteConfig.name}?</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: 'Remote-first', body: 'Work from anywhere. We trust our team to deliver regardless of location or timezone.' },
-              { title: 'Meaningful work', body: 'Every project has a real client with real goals — no busy work or throwaway features.' },
-              { title: 'Growth culture', body: 'We invest in learning budgets, conference attendance, and internal knowledge-sharing.' },
-              { title: 'Competitive pay', body: 'Salaries benchmarked against top-quartile market rates plus performance bonuses.' },
-              { title: 'Ownership', body: 'You will own your domain fully. We hire people we trust and give them the autonomy to prove it.' },
-              { title: 'Flexible hours', body: 'Core collaboration hours with flexible start and finish times that work around your life.' },
+              {
+                title: 'Remote-first',
+                body: 'Work from anywhere. We trust our team to deliver regardless of location or timezone.',
+              },
+              {
+                title: 'Meaningful work',
+                body: 'Every project has a real client with real goals — no busy work or throwaway features.',
+              },
+              {
+                title: 'Growth culture',
+                body: 'We invest in learning budgets, conference attendance, and internal knowledge-sharing.',
+              },
+              {
+                title: 'Competitive pay',
+                body: 'Salaries benchmarked against top-quartile market rates plus performance bonuses.',
+              },
+              {
+                title: 'Ownership',
+                body: 'You will own your domain fully. We hire people we trust and give them the autonomy to prove it.',
+              },
+              {
+                title: 'Flexible hours',
+                body: 'Core collaboration hours with flexible start and finish times that work around your life.',
+              },
             ].map((item) => (
               <div key={item.title} className="rounded-lg border border-border p-6 bg-background">
                 <h3 className="font-semibold mb-2">{item.title}</h3>
@@ -126,7 +149,8 @@ export default function CareersPage() {
         <div className="max-w-xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Don&apos;t see a fit?</h2>
           <p className="mb-8 opacity-90">
-            We are always happy to hear from exceptional people. Send us a note and we will keep you in mind for future openings.
+            We are always happy to hear from exceptional people. Send us a note and we will keep you
+            in mind for future openings.
           </p>
           <Link
             href="/contact"

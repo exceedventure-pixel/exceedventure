@@ -73,6 +73,16 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "Connect the tools you already use so work moves without copy-paste.",
   },
   {
+    pageSlug: "blog",
+    title: "Blog",
+    description: "",
+  },
+  {
+    pageSlug: "careers",
+    title: "Careers",
+    description: "",
+  },
+  {
     pageSlug: "company/faqs",
     title: "FAQs",
     description: "Find answers to common questions about our services, pricing, and processes.",
@@ -279,7 +289,7 @@ export const pageSeoSeed: PageSeoSeed[] = [
   },
   {
     pageSlug: "home",
-    title: "",
+    title: "Digital Agency",
     description: "",
   },
   {
@@ -306,6 +316,11 @@ export const pageSeoSeed: PageSeoSeed[] = [
     pageSlug: "resources/referral-program",
     title: "Referral Program",
     description: "Partner with us and earn rewards. Join our network of successful partners and grow together.",
+  },
+  {
+    pageSlug: "search",
+    title: "Search",
+    description: "",
   },
   {
     pageSlug: "softal-core",
