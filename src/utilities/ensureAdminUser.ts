@@ -60,16 +60,26 @@ export const ensureAdminUser = async (payload: Payload): Promise<void> => {
       await payload.update({
         collection: 'users',
         id: current.id,
-        data: { password },
+        // Role and the env flag are forced too: this is the recovery login, so
+        // it must still work after someone has demoted it.
+        data: { password, role: 'superAdmin', isEnvManaged: true },
         overrideAccess: true,
       })
-      payload.logger.info(`Primary admin "${email}" reconciled from environment.`)
+      payload.logger.info(`Primary admin "" reconciled from environment.`)
       return
     }
 
     await payload.create({
       collection: 'users',
-      data: { email, password, name: process.env.ADMIN_NAME?.trim() || 'Administrator' },
+      data: {
+        email,
+        password,
+        name: process.env.ADMIN_NAME?.trim() || 'Administrator',
+        // The one account that outranks every other, so there is always a way
+        // back in even if the rest of the team locks itself out.
+        role: 'superAdmin',
+        isEnvManaged: true,
+      },
       overrideAccess: true,
     })
     payload.logger.info(`Primary admin "${email}" created from environment.`)

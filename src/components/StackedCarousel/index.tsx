@@ -230,13 +230,15 @@ export const StackedCarousel = () => {
                     {/* A slide label, not document structure. As an <h3> these
                         preceded the page's <h1> (the hero heading sits below the
                         carousel), giving the homepage an H3-before-H1 outline. */}
-                    <div className="text-xl font-bold uppercase tracking-wide text-foreground md:text-2xl">
+                    <div className="truncate text-base font-bold uppercase leading-tight tracking-wide text-foreground md:text-lg">
                       {item.text}
                     </div>
                     <div
                       className={`transition-opacity duration-500 ${isCenter ? 'opacity-100' : 'opacity-0'}`}
                     >
-                      <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                      <p className="mt-0.5 truncate text-xs leading-snug text-muted-foreground">
+                        {item.description}
+                      </p>
                     </div>
                   </div>
                 </button>

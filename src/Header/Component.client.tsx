@@ -10,8 +10,11 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { HeaderNav } from './Nav'
 import { MobileMenu } from './MobileMenu'
 import { MegaMenu, MegaMenuButton } from './MegaMenu'
+import { AccountButton } from './AccountButton'
+import { ContactButton } from './ContactButton'
+import type { ContactChannels } from '@/utilities/getSiteSettings'
 
-export const HeaderClient: React.FC = () => {
+export const HeaderClient: React.FC<{ channels: ContactChannels }> = ({ channels }) => {
   const [heroTheme, setHeroTheme] = useState<string | null>(null)
   const [megaOpen, setMegaOpen] = useState(false)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
@@ -56,17 +59,11 @@ export const HeaderClient: React.FC = () => {
           </div>
           <ThemeToggle />
 
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-sm font-medium transition-colors hover:bg-muted sm:gap-2 sm:px-4 sm:py-2"
-          >
-            {/* Pulsing dot — reads as an "available now" status indicator */}
-            <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-            </span>
-            Contact
-          </Link>
+          {/* Opens a menu — call, WhatsApp, or the full contact page. */}
+          <ContactButton channels={channels} />
+
+          {/* Login for a guest, Dashboard for a signed-in client. */}
+          <AccountButton />
 
           {/* Full menu at every breakpoint — the inline bar is deliberately partial.
               Mobile keeps the slide-in drawer; desktop drops a panel over the site. */}

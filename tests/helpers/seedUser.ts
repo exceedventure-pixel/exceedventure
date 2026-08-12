@@ -4,6 +4,9 @@ import config from '../../src/payload.config.js'
 export const testUser = {
   email: 'dev@payloadcms.com',
   password: 'test',
+  // `role` is required now that CMS accounts are ranked. Seeded as an admin so
+  // the e2e tests can reach the screens an editor is deliberately kept out of.
+  role: 'admin' as const,
 }
 
 /**

@@ -64,6 +64,8 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'crm-accounts': CrmAccountAuthOperations;
+    'client-accounts': ClientAccountAuthOperations;
   };
   blocks: {};
   collections: {
@@ -72,6 +74,20 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    clients: Client;
+    'crm-accounts': CrmAccount;
+    'client-accounts': ClientAccount;
+    contacts: Contact;
+    projects: Project;
+    invoices: Invoice;
+    payments: Payment;
+    tasks: Task;
+    'project-requests': ProjectRequest;
+    conversations: Conversation;
+    messages: Message;
+    resources: Resource;
+    notifications: Notification;
+    enquiries: Enquiry;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -89,6 +105,20 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    clients: ClientsSelect<false> | ClientsSelect<true>;
+    'crm-accounts': CrmAccountsSelect<false> | CrmAccountsSelect<true>;
+    'client-accounts': ClientAccountsSelect<false> | ClientAccountsSelect<true>;
+    contacts: ContactsSelect<false> | ContactsSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    invoices: InvoicesSelect<false> | InvoicesSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
+    tasks: TasksSelect<false> | TasksSelect<true>;
+    'project-requests': ProjectRequestsSelect<false> | ProjectRequestsSelect<true>;
+    conversations: ConversationsSelect<false> | ConversationsSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
+    resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -103,13 +133,17 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | CrmAccount | ClientAccount;
   jobs: {
     tasks: {
       schedulePublish: TaskSchedulePublish;
@@ -122,6 +156,42 @@ export interface Config {
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface CrmAccountAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface ClientAccountAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -344,6 +414,14 @@ export interface Category {
 export interface User {
   id: number;
   name?: string | null;
+  /**
+   * Super admin: everything, and cannot be demoted by an admin. Admin: content, settings and inviting editors. Editor: content only.
+   */
+  role: 'superAdmin' | 'admin' | 'editor';
+  /**
+   * Provisioned from ADMIN_EMAIL. Its password is reset from the environment on every restart, so change it there rather than here.
+   */
+  isEnvManaged?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -362,6 +440,514 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients".
+ */
+export interface Client {
+  id: number;
+  name: string;
+  /**
+   * Generated on create — quote it in email.
+   */
+  code?: string | null;
+  status?: ('lead' | 'proposal' | 'active' | 'onHold' | 'former') | null;
+  /**
+   * Team members who look after this client. A member sees every project of a client they are on.
+   */
+  assignedTo?: (number | CrmAccount)[] | null;
+  website?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+  address?: string | null;
+  /**
+   * Team only — not visible in the client portal.
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "crm-accounts".
+ */
+export interface CrmAccount {
+  id: number;
+  name?: string | null;
+  /**
+   * Admin manages accounts and billing. Manager runs clients and projects. Member sees assigned work.
+   */
+  role: 'admin' | 'manager' | 'member';
+  /**
+   * Provisioned from CRM_ADMIN_EMAIL. Manage its password in the environment.
+   */
+  isEnvManaged?: boolean | null;
+  /**
+   * Suspends the account without deleting it. Enforced in access control, not just hidden in the UI — a paused session can read and write nothing.
+   */
+  isPaused?: boolean | null;
+  /**
+   * Shown next to their name on assignments.
+   */
+  jobTitle?: string | null;
+  /**
+   * For SMS one-time codes (not yet enabled).
+   */
+  phone?: string | null;
+  provider?: ('password' | 'google') | null;
+  /**
+   * Google subject id — binds one Google identity to this account so logins are not re-matched by email each time.
+   */
+  providerAccountId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'crm-accounts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-accounts".
+ */
+export interface ClientAccount {
+  id: number;
+  name?: string | null;
+  /**
+   * The company this dashboard login belongs to.
+   */
+  client: number | Client;
+  /**
+   * Signups start pending and see a waiting screen. Only your team can move an account to active.
+   */
+  approvalStatus: 'pending' | 'active' | 'paused' | 'rejected';
+  jobTitle?: string | null;
+  organization?: string | null;
+  /**
+   * For SMS one-time codes (not yet enabled).
+   */
+  phone?: string | null;
+  whatsapp?: string | null;
+  address?: string | null;
+  bio?: string | null;
+  deletionRequested?: boolean | null;
+  deletionRequestedAt?: string | null;
+  deletionReason?: string | null;
+  provider?: ('password' | 'google') | null;
+  providerAccountId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'client-accounts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts".
+ */
+export interface Contact {
+  id: number;
+  name: string;
+  client: number | Client;
+  email?: string | null;
+  phone?: string | null;
+  jobTitle?: string | null;
+  isPrimary?: boolean | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  name: string;
+  /**
+   * Generated on create — quote it in email.
+   */
+  code?: string | null;
+  client: number | Client;
+  status?:
+    | ('pendingApproval' | 'notStarted' | 'planning' | 'inProgress' | 'review' | 'completed' | 'onHold' | 'cancelled')
+    | null;
+  /**
+   * Team members put on this project. Drives what they can see.
+   */
+  assignedTo?: (number | CrmAccount)[] | null;
+  startDate?: string | null;
+  dueDate?: string | null;
+  /**
+   * Agreed project value, in minor units (e.g. pence).
+   */
+  value?: number | null;
+  summary?: string | null;
+  /**
+   * What is included. Shown to the client on their project page.
+   */
+  scopeOfWork?: string | null;
+  /**
+   * Team only — never rendered in the client portal.
+   */
+  internalNotes?: string | null;
+  /**
+   * Deliverables and attachments. Reuses the existing R2-backed media.
+   */
+  files?: (number | Media)[] | null;
+  /**
+   * Custom columns shown on this project’s task board.
+   */
+  taskColumns?:
+    | {
+        /**
+         * Stable id used to store values. Do not change it once in use.
+         */
+        key: string;
+        label: string;
+        type: 'text' | 'number' | 'dropdown' | 'checkbox' | 'doc' | 'sheet' | 'snap' | 'drive' | 'website';
+        /**
+         * Choices for a dropdown column.
+         */
+        options?:
+          | {
+              value: string;
+              tone?: ('neutral' | 'info' | 'success' | 'warning' | 'danger') | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "invoices".
+ */
+export interface Invoice {
+  id: number;
+  number: string;
+  client: number | Client;
+  project?: (number | null) | Project;
+  status?: ('draft' | 'sent' | 'paid' | 'overdue' | 'void') | null;
+  issueDate?: string | null;
+  dueDate?: string | null;
+  currency?: string | null;
+  lineItems?:
+    | {
+        description: string;
+        quantity: number;
+        /**
+         * In minor units — 12345 means £123.45.
+         */
+        unitAmount: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Percent, e.g. 20.
+   */
+  taxRate?: number | null;
+  subtotal?: number | null;
+  tax?: number | null;
+  total?: number | null;
+  notes?: string | null;
+  /**
+   * Set by Stripe once online payments are enabled.
+   */
+  stripeInvoiceId?: string | null;
+  stripeStatus?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: number;
+  reference?: string | null;
+  invoice: number | Invoice;
+  /**
+   * Denormalised from the invoice so portal access can be filtered in SQL without a join.
+   */
+  client: number | Client;
+  /**
+   * In minor units, matching the invoice currency.
+   */
+  amount: number;
+  paidAt?: string | null;
+  method?: ('bankTransfer' | 'card' | 'cash' | 'other') | null;
+  notes?: string | null;
+  stripePaymentId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tasks".
+ */
+export interface Task {
+  id: number;
+  title: string;
+  project: number | Project;
+  status?: ('todo' | 'inProgress' | 'blocked' | 'done') | null;
+  priority?: ('low' | 'normal' | 'high') | null;
+  assignee?: (number | null) | CrmAccount;
+  dueDate?: string | null;
+  notes?: string | null;
+  /**
+   * Percent complete, for work that is not simply done or not done.
+   */
+  progress?: number | null;
+  links?:
+    | {
+        label: string;
+        url: string;
+        kind?: ('doc' | 'sheet' | 'snap' | 'drive' | 'website') | null;
+        id?: string | null;
+      }[]
+    | null;
+  subtasks?:
+    | {
+        title: string;
+        status?: ('todo' | 'inProgress' | 'blocked' | 'done') | null;
+        priority?: ('low' | 'normal' | 'high') | null;
+        assignee?: (number | null) | CrmAccount;
+        dueDate?: string | null;
+        /**
+         * Values for this project’s custom columns, keyed by column id.
+         */
+        fields?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-requests".
+ */
+export interface ProjectRequest {
+  id: number;
+  title: string;
+  client: number | Client;
+  details?: string | null;
+  status?: ('new' | 'review' | 'accepted' | 'declined') | null;
+  project?: (number | null) | Project;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "conversations".
+ */
+export interface Conversation {
+  id: number;
+  subject: string;
+  /**
+   * Empty for mail from someone without a portal account.
+   */
+  client?: (number | null) | Client;
+  contactName?: string | null;
+  contactEmail?: string | null;
+  mailbox?: ('support' | 'sales' | 'info' | 'billing' | 'contact' | 'other') | null;
+  folder: 'inbox' | 'archived' | 'trash';
+  /**
+   * Unread by your team — cleared when a teammate opens it.
+   */
+  unread?: boolean | null;
+  lastMessageAt?: string | null;
+  lastMessagePreview?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  conversation?: (number | null) | Conversation;
+  /**
+   * Empty for mail from someone with no portal account.
+   */
+  client?: (number | null) | Client;
+  project?: (number | null) | Project;
+  body: string;
+  authorType: 'staff' | 'client';
+  authorName?: string | null;
+  direction?: ('inbound' | 'outbound') | null;
+  fromEmail?: string | null;
+  toEmail?: string | null;
+  /**
+   * The provider's message id, for threading replies.
+   */
+  externalId?: string | null;
+  readByStaff?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources".
+ */
+export interface Resource {
+  id: number;
+  label: string;
+  client: number | Client;
+  project?: (number | null) | Project;
+  kind?: ('link' | 'file' | 'screen' | 'doc' | 'drive' | 'custom') | null;
+  /**
+   * Heading to group under, for the custom kind.
+   */
+  section?: string | null;
+  /**
+   * Shown under a screen preview.
+   */
+  caption?: string | null;
+  url?: string | null;
+  file?: (number | null) | Media;
+  /**
+   * Lower sorts first.
+   */
+  order?: number | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: number;
+  recipientType: 'staff' | 'client';
+  staffRecipient?: (number | null) | CrmAccount;
+  clientRecipient?: (number | null) | ClientAccount;
+  type:
+    | 'general'
+    | 'projectRequested'
+    | 'projectApproved'
+    | 'projectDeclined'
+    | 'projectCreated'
+    | 'projectStatusChanged'
+    | 'taskAdded'
+    | 'taskUpdated'
+    | 'invoiceIssued'
+    | 'invoiceUpdated'
+    | 'paymentRecorded'
+    | 'accessRequested'
+    | 'accessApproved'
+    | 'accessRejected'
+    | 'deletionRequested'
+    | 'messageReceived'
+    | 'resourceShared';
+  title: string;
+  message?: string | null;
+  /**
+   * In-app path the bell sends you to, e.g. /crm/requests.
+   */
+  link?: string | null;
+  read?: boolean | null;
+  /**
+   * Ids and names the notification was built from.
+   */
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  /**
+   * What the visitor was doing. Add a value here when a new form goes live — nothing else needs to change.
+   */
+  kind: 'contact' | 'message' | 'pricing' | 'quote' | 'callback' | 'other';
+  status: 'new' | 'inProgress' | 'responded' | 'won' | 'closed' | 'spam';
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  company?: string | null;
+  subject?: string | null;
+  message?: string | null;
+  /**
+   * Anything a specific form collects beyond the fields above — budget, services, timeline. Kept as JSON so a new form needs no migration.
+   */
+  details?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * The page it was submitted from.
+   */
+  source?: string | null;
+  /**
+   * Who is answering this.
+   */
+  assignedTo?: (number | null) | CrmAccount;
+  /**
+   * Set when an enquiry is turned into a client.
+   */
+  client?: (number | null) | Client;
+  internalNotes?: string | null;
+  respondedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -743,6 +1329,62 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'clients';
+        value: number | Client;
+      } | null)
+    | ({
+        relationTo: 'crm-accounts';
+        value: number | CrmAccount;
+      } | null)
+    | ({
+        relationTo: 'client-accounts';
+        value: number | ClientAccount;
+      } | null)
+    | ({
+        relationTo: 'contacts';
+        value: number | Contact;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'invoices';
+        value: number | Invoice;
+      } | null)
+    | ({
+        relationTo: 'payments';
+        value: number | Payment;
+      } | null)
+    | ({
+        relationTo: 'tasks';
+        value: number | Task;
+      } | null)
+    | ({
+        relationTo: 'project-requests';
+        value: number | ProjectRequest;
+      } | null)
+    | ({
+        relationTo: 'conversations';
+        value: number | Conversation;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: number | Message;
+      } | null)
+    | ({
+        relationTo: 'resources';
+        value: number | Resource;
+      } | null)
+    | ({
+        relationTo: 'notifications';
+        value: number | Notification;
+      } | null)
+    | ({
+        relationTo: 'enquiries';
+        value: number | Enquiry;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -759,10 +1401,19 @@ export interface PayloadLockedDocument {
         value: number | Search;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'crm-accounts';
+        value: number | CrmAccount;
+      }
+    | {
+        relationTo: 'client-accounts';
+        value: number | ClientAccount;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -772,10 +1423,19 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'crm-accounts';
+        value: number | CrmAccount;
+      }
+    | {
+        relationTo: 'client-accounts';
+        value: number | ClientAccount;
+      };
   key?: string | null;
   value?:
     | {
@@ -969,6 +1629,8 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
+  isEnvManaged?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -985,6 +1647,327 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients_select".
+ */
+export interface ClientsSelect<T extends boolean = true> {
+  name?: T;
+  code?: T;
+  status?: T;
+  assignedTo?: T;
+  website?: T;
+  email?: T;
+  phone?: T;
+  whatsapp?: T;
+  address?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "crm-accounts_select".
+ */
+export interface CrmAccountsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  isEnvManaged?: T;
+  isPaused?: T;
+  jobTitle?: T;
+  phone?: T;
+  provider?: T;
+  providerAccountId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-accounts_select".
+ */
+export interface ClientAccountsSelect<T extends boolean = true> {
+  name?: T;
+  client?: T;
+  approvalStatus?: T;
+  jobTitle?: T;
+  organization?: T;
+  phone?: T;
+  whatsapp?: T;
+  address?: T;
+  bio?: T;
+  deletionRequested?: T;
+  deletionRequestedAt?: T;
+  deletionReason?: T;
+  provider?: T;
+  providerAccountId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts_select".
+ */
+export interface ContactsSelect<T extends boolean = true> {
+  name?: T;
+  client?: T;
+  email?: T;
+  phone?: T;
+  jobTitle?: T;
+  isPrimary?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  name?: T;
+  code?: T;
+  client?: T;
+  status?: T;
+  assignedTo?: T;
+  startDate?: T;
+  dueDate?: T;
+  value?: T;
+  summary?: T;
+  scopeOfWork?: T;
+  internalNotes?: T;
+  files?: T;
+  taskColumns?:
+    | T
+    | {
+        key?: T;
+        label?: T;
+        type?: T;
+        options?:
+          | T
+          | {
+              value?: T;
+              tone?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "invoices_select".
+ */
+export interface InvoicesSelect<T extends boolean = true> {
+  number?: T;
+  client?: T;
+  project?: T;
+  status?: T;
+  issueDate?: T;
+  dueDate?: T;
+  currency?: T;
+  lineItems?:
+    | T
+    | {
+        description?: T;
+        quantity?: T;
+        unitAmount?: T;
+        id?: T;
+      };
+  taxRate?: T;
+  subtotal?: T;
+  tax?: T;
+  total?: T;
+  notes?: T;
+  stripeInvoiceId?: T;
+  stripeStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  reference?: T;
+  invoice?: T;
+  client?: T;
+  amount?: T;
+  paidAt?: T;
+  method?: T;
+  notes?: T;
+  stripePaymentId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tasks_select".
+ */
+export interface TasksSelect<T extends boolean = true> {
+  title?: T;
+  project?: T;
+  status?: T;
+  priority?: T;
+  assignee?: T;
+  dueDate?: T;
+  notes?: T;
+  progress?: T;
+  links?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        kind?: T;
+        id?: T;
+      };
+  subtasks?:
+    | T
+    | {
+        title?: T;
+        status?: T;
+        priority?: T;
+        assignee?: T;
+        dueDate?: T;
+        fields?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-requests_select".
+ */
+export interface ProjectRequestsSelect<T extends boolean = true> {
+  title?: T;
+  client?: T;
+  details?: T;
+  status?: T;
+  project?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "conversations_select".
+ */
+export interface ConversationsSelect<T extends boolean = true> {
+  subject?: T;
+  client?: T;
+  contactName?: T;
+  contactEmail?: T;
+  mailbox?: T;
+  folder?: T;
+  unread?: T;
+  lastMessageAt?: T;
+  lastMessagePreview?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  conversation?: T;
+  client?: T;
+  project?: T;
+  body?: T;
+  authorType?: T;
+  authorName?: T;
+  direction?: T;
+  fromEmail?: T;
+  toEmail?: T;
+  externalId?: T;
+  readByStaff?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources_select".
+ */
+export interface ResourcesSelect<T extends boolean = true> {
+  label?: T;
+  client?: T;
+  project?: T;
+  kind?: T;
+  section?: T;
+  caption?: T;
+  url?: T;
+  file?: T;
+  order?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  recipientType?: T;
+  staffRecipient?: T;
+  clientRecipient?: T;
+  type?: T;
+  title?: T;
+  message?: T;
+  link?: T;
+  read?: T;
+  meta?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries_select".
+ */
+export interface EnquiriesSelect<T extends boolean = true> {
+  kind?: T;
+  status?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  company?: T;
+  subject?: T;
+  message?: T;
+  details?: T;
+  source?: T;
+  assignedTo?: T;
+  client?: T;
+  internalNotes?: T;
+  respondedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1248,6 +2231,46 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Contact channels shown in the site header and on the contact page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * Shown as-is and dialled on tap. Write it how you want it read, e.g. +44 20 1234 5678.
+   */
+  phone?: string | null;
+  /**
+   * Full international number, e.g. +44 20 1234 5678. Spaces and symbols are stripped for the link, so type it however you like. Often the same as the phone number, but it does not have to be.
+   */
+  whatsapp?: string | null;
+  /**
+   * Pre-filled in the chat so you know which page they came from. Leave empty for a blank chat.
+   */
+  whatsappMessage?: string | null;
+  /**
+   * Falls back to the address in site config when empty.
+   */
+  email?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  phone?: T;
+  whatsapp?: T;
+  whatsappMessage?: T;
+  email?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

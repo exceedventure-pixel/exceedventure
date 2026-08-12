@@ -67,21 +67,15 @@
     }
   }
 
+  /* Desktop (lg and up) uses 80% of the viewport rather than a fixed max-width,
+     so the layout scales with the monitor instead of capping at 86rem.
+     Floored at --breakpoint-lg: at 1024px wide a plain 80% leaves only ~819px,
+     which is not enough for the header (the nav alone needs 535px) and squashes
+     the logo. So 80% applies from ~1280px up, and smaller laptops keep the full
+     width they had before. Phones and tablets are unaffected. */
   @variant lg {
     .container {
-      max-width: var(--breakpoint-lg);
-    }
-  }
-
-  @variant xl {
-    .container {
-      max-width: var(--breakpoint-xl);
-    }
-  }
-
-  @variant 2xl {
-    .container {
-      max-width: var(--breakpoint-2xl);
+      max-width: max(80%, var(--breakpoint-lg));
     }
   }
 }
@@ -250,10 +244,19 @@
    on very short and very tall screens. --header-h matches the sticky header so
    the hero can subtract it. */
 :root {
-  --header-h: 65px;
+  /*
+   * Must match the sticky header's real height, because anything sizing itself
+   * to "one screen" subtracts it.
+   *
+   * The header grows at the `sm` breakpoint (40rem), not at `lg` — measured, not
+   * assumed. The previous values switched at 64rem and were 16px short across
+   * every tablet width, which is exactly how much the homepage hero and the
+   * contact screen overflowed by there.
+   */
+  --header-h: 61px;
   --carousel-h: clamp(215px, 37vh, 460px);
 }
-@media (width >= 64rem) {
+@media (width >= 40rem) {
   :root {
     --header-h: 81px;
   }
@@ -372,7 +375,9 @@ html[data-theme='light'] {
 
 .image-section {
   position: relative;
-  height: 70%;
+  /* The image is the point of the card — the caption below is kept to the
+     minimum that still fits its two lines. */
+  height: 80%;
   width: 100%;
   overflow: hidden;
 }
@@ -383,9 +388,9 @@ html[data-theme='light'] {
 }
 
 .text-section {
-  height: 30%;
+  height: 20%;
   width: 100%;
-  padding: 1.5rem;
+  padding: 0.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -456,6 +461,6 @@ html[data-theme='light'] {
 
 @media (max-width: 768px) {
   .text-section {
-    padding: 1rem;
+    padding: 0.5rem 0.875rem;
   }
 }

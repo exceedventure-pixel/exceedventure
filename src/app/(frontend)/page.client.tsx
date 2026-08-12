@@ -379,16 +379,12 @@ export default function HomeClient() {
               anything less and they collide with this heading. Type is
               deliberately restrained so the carousel can take the height while
               everything still lands inside one screen. */}
-          <h1 className="mb-1.5 mt-11 text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl xl:text-5xl [@media(max-height:850px)]:lg:text-3xl">
+          <h1 className="mt-11 text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl xl:text-5xl [@media(max-height:850px)]:lg:text-3xl">
             <span>Building Digital </span>
             <span className="text-primary">Excellence.</span>
           </h1>
-          <p className="mb-2 hidden max-w-xl text-sm text-muted-foreground sm:block [@media(max-height:850px)]:text-xs">
-            Imagine a business where your branding does the talking, your AI handles the paperwork,
-            and your content attracts your dream clients.
-          </p>
 
-          <div className="mb-4 mt-2 flex flex-row gap-2 sm:gap-3">
+          <div className="mb-4 mt-5 flex flex-row gap-2 sm:gap-3">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"

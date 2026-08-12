@@ -1,0 +1,144 @@
+/**
+ * Visual identity for the two private areas.
+ *
+ * The first version of these screens had one problem above all others: /crm and
+ * /portal looked identical, and every block on a page carried the same weight,
+ * so nothing told you where you were or what you were looking at. Three things
+ * fix that, and they are all here rather than sprinkled through components:
+ *
+ *   1. Each area owns an accent. The team CRM is brand navy; the client
+ *      dashboard is brand teal. Both come from the existing palette, so they
+ *      read as one product family with two rooms.
+ *   2. Surfaces are separated by tone, not just borders — a page sits on a
+ *      tinted ground so cards visibly float above it.
+ *   3. One shared rhythm for headers and sections, so a heading always means
+ *      the same thing.
+ *
+ * Everything is expressed as a token override under `[data-area]`, so the
+ * components stay area-agnostic and Tailwind's `primary` utilities keep working.
+ */
+
+[data-area] {
+  /* Ground the page sits on — cards read as raised against it. */
+  --area-canvas: oklch(97.2% 0.004 265deg);
+  --area-raised: var(--background);
+  --area-rail: transparent;
+}
+
+/* ── Team CRM: brand navy ─────────────────────────────────────────────────── */
+[data-area='crm'] {
+  --primary: #15246d;
+  --primary-foreground: oklch(100% 0 0deg);
+  --ring: #15246d;
+  --area-tint: color-mix(in oklch, #15246d 8%, transparent);
+  --area-tint-strong: color-mix(in oklch, #15246d 14%, transparent);
+  --area-ink: #15246d;
+}
+
+/* ── Client dashboard: brand teal ─────────────────────────────────────────── */
+[data-area='portal'] {
+  --primary: #00807e;
+  --primary-foreground: oklch(100% 0 0deg);
+  --ring: #00807e;
+  --area-tint: color-mix(in oklch, #00c2be 12%, transparent);
+  --area-tint-strong: color-mix(in oklch, #00c2be 22%, transparent);
+  --area-ink: #00615f;
+}
+
+/*
+ * Dark mode. The navy is lightened to stay legible on a dark ground — the raw
+ * brand navy on near-black is close to unreadable, which is why the accent is
+ * not simply reused.
+ */
+[data-theme='dark'] [data-area] {
+  --area-canvas: oklch(12% 0 0deg);
+  --area-raised: oklch(17% 0 0deg);
+}
+
+[data-theme='dark'] [data-area='crm'] {
+  --primary: #7c8fe8;
+  --primary-foreground: oklch(12% 0 0deg);
+  --ring: #7c8fe8;
+  --area-tint: color-mix(in oklch, #7c8fe8 16%, transparent);
+  --area-tint-strong: color-mix(in oklch, #7c8fe8 26%, transparent);
+  --area-ink: #a9b6f0;
+}
+
+[data-theme='dark'] [data-area='portal'] {
+  --primary: #2fd5d1;
+  --primary-foreground: oklch(12% 0 0deg);
+  --ring: #2fd5d1;
+  --area-tint: color-mix(in oklch, #2fd5d1 16%, transparent);
+  --area-tint-strong: color-mix(in oklch, #2fd5d1 26%, transparent);
+  --area-ink: #7ce7e4;
+}
+
+/* ── Shared building blocks ───────────────────────────────────────────────── */
+
+.area-canvas {
+  background-color: var(--area-canvas);
+}
+
+.area-surface {
+  background-color: var(--area-raised);
+}
+
+/* A card that should read as raised rather than merely outlined. */
+.area-card {
+  background-color: var(--area-raised);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow:
+    0 1px 2px -1px rgb(0 0 0 / 6%),
+    0 1px 3px rgb(0 0 0 / 4%);
+}
+
+/*
+ * The active nav item gets a rail on the left edge as well as a tint. Colour
+ * alone was carrying that job before, which is both weak and invisible to
+ * anyone who cannot separate these two hues.
+ */
+.area-nav-item {
+  position: relative;
+}
+
+.area-nav-item[data-active='true']::before {
+  content: '';
+  position: absolute;
+  left: -0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 1.25rem;
+  border-radius: 0 3px 3px 0;
+  background-color: var(--primary);
+}
+
+/* Section headings share one rhythm across every screen. */
+.area-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.area-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--area-ink);
+}
+
+/* Table headers: quiet, but clearly a header. */
+.area-thead {
+  background-color: color-mix(in oklch, var(--muted) 60%, transparent);
+}
+
+/* Numeric columns line up on the decimal. */
+.area-num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
