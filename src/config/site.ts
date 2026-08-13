@@ -106,6 +106,8 @@ export type SiteConfig = {
     twitterHandle: string
     googleVerification: string
     bingVerification: string
+    /** GA4 measurement id, e.g. `G-XXXXXXXXXX`. Empty disables analytics. */
+    googleAnalyticsId: string
   }
   nav: NavLink[]
   footerLinks: FooterLinkGroup[]
@@ -146,6 +148,9 @@ const siteConfig: SiteConfig = {
     twitterHandle: '@exceedventure',
     googleVerification: process.env.GOOGLE_SITE_VERIFICATION ?? '',
     bingVerification: process.env.BING_SITE_VERIFICATION ?? '',
+    // Falls back to the live property, so no env var is needed to ship. Set the
+    // variable to override it per environment — or to '' to switch it off.
+    googleAnalyticsId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? 'G-M3TZ34VWYP',
   },
 
   // ─── Navigation ────────────────────────────────────────────────────────────
