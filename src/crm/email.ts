@@ -418,10 +418,16 @@ export type SendResult = { sent: boolean; skipped?: boolean; error?: string }
 
 /**
  * Sends one template. Never throws — callers treat email as best-effort.
+ *
+ * `from` overrides the default sender for mail the team writes from a specific
+ * address — the shared mailbox sends as support@ or sales@ rather than as the
+ * no-reply address the automated templates use. It must still be on the domain
+ * verified in Resend; `senderFor` in mailbox-actions guarantees that.
  */
 export const sendEmail = async (
   to: string | string[],
   template: EmailTemplate,
+  options?: { from?: string; replyTo?: string },
 ): Promise<SendResult> => {
   const recipients = (Array.isArray(to) ? to : [to]).filter(Boolean)
   if (recipients.length === 0) return { sent: false, skipped: true }
@@ -431,7 +437,13 @@ export const sendEmail = async (
 
   try {
     const { subject, html } = render(template)
-    const { error } = await api.emails.send({ from: FROM, to: recipients, subject, html })
+    const { error } = await api.emails.send({
+      from: options?.from?.trim() || FROM,
+      to: recipients,
+      subject,
+      html,
+      ...(options?.replyTo ? { replyTo: options.replyTo } : {}),
+    })
     if (error) {
       console.error(`[email] ${template.type} failed: ${error.message}`)
       return { sent: false, error: error.message }
@@ -445,6 +457,98 @@ export const sendEmail = async (
 
 /** True when a key is configured — lets the UI say whether email is live. */
 export const emailConfigured = (): boolean => Boolean(process.env.RESEND_API_KEY?.trim())
+
+// ── Receiving ────────────────────────────────────────────────────────────────
+
+/**
+ * Verifies that an inbound webhook really came from Resend.
+ *
+ * Resend signs every delivery and gives you a signing secret (`whsec_…`) when
+ * you create the webhook. This is stronger than the shared token the route also
+ * accepts: the signature covers the body and a timestamp, so a replayed or
+ * edited payload fails, and unlike a token in the URL it never lands in an
+ * access log or a proxy's request history.
+ *
+ * Returns false when a secret is configured and the signature does not check
+ * out. Returns null when no secret is configured, which leaves the decision to
+ * the caller rather than silently passing.
+ */
+export const verifyInboundSignature = (
+  rawBody: string,
+  headers: { id?: string | null; timestamp?: string | null; signature?: string | null },
+): boolean | null => {
+  const secret = process.env.RESEND_WEBHOOK_SECRET?.trim()
+  if (!secret) return null
+
+  const { id, timestamp, signature } = headers
+  if (!id || !timestamp || !signature) return false
+
+  const api = resend()
+  if (!api) return false
+
+  try {
+    api.webhooks.verify({
+      payload: rawBody,
+      headers: { id, timestamp, signature },
+      webhookSecret: secret,
+    })
+    return true
+  } catch (err) {
+    console.warn(
+      `[email] inbound webhook signature rejected: ${err instanceof Error ? err.message : String(err)}`,
+    )
+    return false
+  }
+}
+
+export type ReceivedEmail = {
+  from: string
+  to: string
+  subject: string
+  text: string
+  html: string
+  messageId?: string
+}
+
+/**
+ * Fetches the body of an inbound message by id.
+ *
+ * Resend's `email.received` webhook carries metadata only — sender, recipients,
+ * subject, attachment names — and deliberately omits the body, headers and
+ * attachments so that a large attachment cannot exceed the request size limit
+ * of whatever receives the hook. The content is a second call, and this is it.
+ *
+ * Returns null rather than throwing; the caller decides whether a missing body
+ * is worth asking the provider to retry.
+ */
+export const fetchReceivedEmail = async (id: string): Promise<ReceivedEmail | null> => {
+  const api = resend()
+  if (!api) return null
+
+  try {
+    const { data, error } = await api.emails.receiving.get(id)
+    if (error || !data) {
+      console.error(`[email] could not fetch inbound ${id}: ${error?.message ?? 'no data returned'}`)
+      return null
+    }
+
+    return {
+      from: data.from,
+      // `to` is who it was addressed to; `received_for` is the address of ours
+      // it actually arrived at, which is what decides the mailbox label.
+      to: data.received_for?.[0] || data.to?.[0] || '',
+      subject: data.subject,
+      text: data.text ?? '',
+      html: data.html ?? '',
+      messageId: data.message_id,
+    }
+  } catch (err) {
+    console.error(
+      `[email] fetching inbound ${id} threw: ${err instanceof Error ? err.message : String(err)}`,
+    )
+    return null
+  }
+}
 
 /**
  * Payload's own transactional email, over the same Resend client.

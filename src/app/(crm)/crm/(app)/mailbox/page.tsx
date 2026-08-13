@@ -120,6 +120,7 @@ export default async function MailboxPage({
           <div className="flex items-center gap-2">
             {folder === 'trash' && conversations.docs.length > 0 && <EmptyTrashButton />}
             <ComposeForm
+              domain={process.env.RESEND_DOMAIN?.trim() || 'exceedventure.com'}
               suggestions={accounts.docs.map((a) => ({
                 email: a.email,
                 name: a.name || a.email,

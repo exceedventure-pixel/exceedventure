@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { notifyStaff } from '@/crm/notify'
+import { fetchReceivedEmail, verifyInboundSignature } from '@/crm/email'
 
 /**
  * Inbound mail → the shared mailbox.
@@ -14,10 +15,12 @@ import { notifyStaff } from '@/crm/notify'
  * SECURITY. This endpoint is unauthenticated by nature — a mail provider has no
  * session. Two things stand in for that:
  *
- *   1. A shared secret, required. Set `INBOUND_EMAIL_SECRET` and pass it as
- *      `?token=` or an `X-Webhook-Secret` header. With no secret configured the
- *      route refuses every request rather than defaulting to open, because an
- *      open version lets anyone forge a message from any client.
+ *   1. Proof the request came from your mail provider, required. Either a
+ *      Resend signature (`RESEND_WEBHOOK_SECRET`, preferred — it covers the
+ *      body and a timestamp) or a shared secret (`INBOUND_EMAIL_SECRET`, passed
+ *      as `?token=` or an `X-Webhook-Secret` header). With neither configured
+ *      the route refuses every request rather than defaulting to open, because
+ *      an open version lets anyone forge a message from any client.
  *   2. Nothing here trusts the sender's claimed identity for anything that
  *      grants access. A matched client only decides which thread the message
  *      joins; `authorType` is always 'client' and never 'staff', so forged mail
@@ -51,6 +54,20 @@ const displayName = (value: string): string => {
   return match ? match[1]!.trim() : ''
 }
 
+/**
+ * "Re: Fwd: Website copy" → "website copy".
+ *
+ * Mail clients prefix a reply rather than changing the subject, so the stripped
+ * subject is what ties a reply back to the thread it belongs to. Covers the
+ * common non-English prefixes too — a client's Outlook may well be German or
+ * Swedish, and `AW:` would otherwise read as part of the subject.
+ */
+const threadKey = (subject: string): string =>
+  subject
+    .replace(/^\s*((re|fw|fwd|aw|sv|antw|vs)\s*(\[\d+\])?\s*:\s*)+/i, '')
+    .trim()
+    .toLowerCase()
+
 /** Which of our addresses it was sent to decides the label on the thread. */
 const mailboxFor = (to: string): string => {
   const local = to.split('@')[0]?.toLowerCase() ?? ''
@@ -58,9 +75,26 @@ const mailboxFor = (to: string): string => {
   return known.includes(local) ? local : 'other'
 }
 
-const authorised = (req: Request): boolean => {
+/**
+ * Two ways in, and at least one must be configured.
+ *
+ * A Resend signing secret is checked first and is the stronger of the two — it
+ * covers the body and a timestamp, so an edited or replayed payload fails. The
+ * shared token stays for providers that do not sign, and so that switching
+ * between them is not a flag day.
+ */
+const authorised = (req: Request, rawBody: string): boolean => {
+  const signed = verifyInboundSignature(rawBody, {
+    id: req.headers.get('svix-id') ?? req.headers.get('webhook-id'),
+    timestamp: req.headers.get('svix-timestamp') ?? req.headers.get('webhook-timestamp'),
+    signature: req.headers.get('svix-signature') ?? req.headers.get('webhook-signature'),
+  })
+  // A configured secret that fails is a rejection, not a reason to fall back to
+  // the weaker check — otherwise the token undoes the signature's guarantees.
+  if (signed !== null) return signed
+
   const secret = process.env.INBOUND_EMAIL_SECRET?.trim()
-  // No secret configured → closed, not open.
+  // Neither mechanism configured → closed, not open.
   if (!secret) return false
 
   const header = req.headers.get('x-webhook-secret')?.trim()
@@ -69,30 +103,71 @@ const authorised = (req: Request): boolean => {
 }
 
 export async function POST(req: Request) {
-  if (!authorised(req)) {
+  // Read the body as text: a signature is over the exact bytes sent, so it
+  // cannot be checked against a re-serialised object.
+  const rawBody = await req.text()
+
+  if (!authorised(req, rawBody)) {
     return Response.json({ message: 'Not authorised.' }, { status: 401 })
   }
 
   let body: Record<string, unknown>
   try {
-    body = (await req.json()) as Record<string, unknown>
+    body = JSON.parse(rawBody) as Record<string, unknown>
   } catch {
     return Response.json({ message: 'Invalid JSON.' }, { status: 400 })
+  }
+
+  /**
+   * One endpoint receives every event type the provider is configured to send.
+   * Anything that is not an inbound message is acknowledged and dropped —
+   * answering with an error would make the provider retry a delivery receipt
+   * for its own outbound mail until it gave up.
+   */
+  const eventType = asString(body.type)
+  if (eventType && eventType !== 'email.received') {
+    return Response.json({ ok: true, ignored: eventType })
   }
 
   // Resend nests under `data`; most others post the fields at the top level.
   const mail = ((body.data as Record<string, unknown>) ?? body) as Record<string, unknown>
 
-  const fromRaw = asString(mail.from)
+  let fromRaw = asString(mail.from)
+  let toRaw = firstAddress(mail.to)
+  let subject = asString(mail.subject)
+  let text = asString(mail.text) || asString(mail.plain) || ''
+  let html = asString(mail.html)
+  let externalId = asString(mail.message_id) || asString(mail.messageId) || undefined
+
+  /**
+   * Resend sends metadata without the body, so the one field we actually store
+   * has to be fetched separately. Providers that post the whole message skip
+   * this entirely — the fields above are already populated.
+   */
+  if (!text && !html) {
+    const emailId = asString(mail.email_id) || asString(mail.emailId)
+    if (emailId) {
+      const full = await fetchReceivedEmail(emailId)
+      if (!full) {
+        // 500 rather than 400: the webhook itself was fine and the follow-up
+        // call is what failed, so the provider should retry instead of
+        // discarding a message we would otherwise never see again.
+        return Response.json({ message: 'Could not fetch message body.' }, { status: 500 })
+      }
+      fromRaw = fromRaw || full.from
+      toRaw = toRaw || full.to
+      subject = subject || full.subject
+      text = full.text
+      html = full.html
+      externalId = externalId || full.messageId
+    }
+  }
+
   const fromEmail = bareEmail(fromRaw)
-  const toEmail = bareEmail(firstAddress(mail.to))
-  const subject = asString(mail.subject) || '(no subject)'
-  const text = asString(mail.text) || asString(mail.plain) || ''
-  const html = asString(mail.html)
+  const toEmail = bareEmail(toRaw)
   // Prefer plain text; fall back to stripping tags rather than storing markup
   // that would render as raw HTML in the thread.
   const bodyText = (text || html.replace(/<[^>]+>/g, ' ')).replace(/\s+\n/g, '\n').trim()
-  const externalId = asString(mail.message_id) || asString(mail.messageId) || undefined
 
   if (!fromEmail || !bodyText) {
     return Response.json({ message: 'Missing sender or body.' }, { status: 400 })
@@ -130,20 +205,33 @@ export async function POST(req: Request) {
     const now = new Date().toISOString()
     const preview = bodyText.slice(0, 140)
 
-    // Continue an existing thread where we can, so a back-and-forth reads as one
-    // conversation rather than a new row per reply.
+    /**
+     * Continue an existing thread where we can, so a back-and-forth reads as
+     * one conversation rather than a new row per reply.
+     *
+     * Candidates are every thread with this sender, newest first. The subject
+     * decides which one: picking the most recent regardless would drop a reply
+     * onto the wrong thread whenever there is more than one conversation open
+     * with the same person. The most recent is still the fallback, because a
+     * reply with a mangled or empty subject belongs on a thread rather than in
+     * a new one of its own.
+     */
     const existing = await payload.find({
       collection: 'conversations',
       where: clientId
         ? { client: { equals: clientId } }
         : { contactEmail: { equals: fromEmail } },
       sort: '-lastMessageAt',
-      limit: 1,
+      limit: 20,
       depth: 0,
       overrideAccess: true,
     })
 
-    let conversationId = existing.docs[0]?.id
+    const key = threadKey(subject)
+    const matched =
+      (key && existing.docs.find((c) => threadKey(c.subject ?? '') === key)) || existing.docs[0]
+
+    let conversationId = matched?.id
     if (conversationId) {
       await payload.update({
         collection: 'conversations',
@@ -161,7 +249,7 @@ export async function POST(req: Request) {
       const created = await payload.create({
         collection: 'conversations',
         data: {
-          subject,
+          subject: subject || '(no subject)',
           ...(clientId ? { client: clientId } : {}),
           contactName: displayName(fromRaw) || undefined,
           contactEmail: fromEmail,

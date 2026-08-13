@@ -587,9 +587,13 @@ export const InviteForm: React.FC = () => (
 
 // ── Mailbox ──────────────────────────────────────────────────────────────────
 
-export const ComposeForm: React.FC<{ suggestions?: { email: string; name: string }[] }> = ({
-  suggestions = [],
-}) => (
+const MAILBOX_SUGGESTIONS = ['support', 'sales', 'info', 'billing', 'contact']
+
+export const ComposeForm: React.FC<{
+  suggestions?: { email: string; name: string }[]
+  /** Sending domain, so the From field can show the whole address. */
+  domain?: string
+}> = ({ suggestions = [], domain = 'exceedventure.com' }) => (
   <Drawer title="New message" trigger={<Button>Compose</Button>}>
     {(close) => (
       <ActionForm action={composeMessage} onDone={close} submitLabel="Send">
@@ -604,17 +608,25 @@ export const ComposeForm: React.FC<{ suggestions?: { email: string; name: string
               ))}
             </datalist>
           </Field>
-          <Field label="From">
-            <Select
+          <Field
+            label="From"
+            hint={`Pick one or type any name — it sends as name@${domain}, and replies come back to the mailbox.`}
+          >
+            <Input
               name="mailbox"
               defaultValue="support"
-              options={[
-                { label: 'support@', value: 'support' },
-                { label: 'sales@', value: 'sales' },
-                { label: 'info@', value: 'info' },
-                { label: 'billing@', value: 'billing' },
-              ]}
+              list="crm-mailbox-suggestions"
+              placeholder="support"
+              autoComplete="off"
+              spellCheck={false}
             />
+            <datalist id="crm-mailbox-suggestions">
+              {MAILBOX_SUGGESTIONS.map((box) => (
+                <option key={box} value={box}>
+                  {box}@{domain}
+                </option>
+              ))}
+            </datalist>
           </Field>
           <Field label="Subject">
             <Input name="subject" required />

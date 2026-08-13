@@ -15,11 +15,38 @@ import { fail, num, optional, relId, str, type ActionResult } from './parse'
  * thread out of your inbox.
  */
 
-/** `support` → `support@exceedventure.com`; a full address passes through. */
+/**
+ * `support` → `Exceed Venture <support@exceedventure.com>`.
+ *
+ * Any local part is allowed, so the team can write from `careers@` or
+ * `accounts@` without a code change — the addresses below are only the
+ * suggested ones. The domain is never taken from the input: Resend rejects mail
+ * from a domain it has not verified, so an address from anywhere else would be
+ * accepted by the form and then silently fail to send.
+ */
 const senderFor = (mailbox: string): string => {
   const domain = process.env.RESEND_DOMAIN?.trim() || 'exceedventure.com'
-  const box = mailbox.includes('@') ? mailbox : `${mailbox || 'support'}@${domain}`
-  return `Exceed Venture <${box}>`
+  const local =
+    (mailbox.split('@')[0] ?? '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9._+-]/g, '') || 'support'
+  return `Exceed Venture <${local}@${domain}>`
+}
+
+/** The labels `conversations.mailbox` accepts. Anything else files as 'other'. */
+const KNOWN_MAILBOXES = ['support', 'sales', 'info', 'billing', 'contact']
+
+/**
+ * The thread label for a sender address.
+ *
+ * `mailbox` is a fixed set on the collection, so a custom address cannot be
+ * stored there. It is only a label for filtering — the address itself lives on
+ * the messages, which is what replies and display actually read.
+ */
+const mailboxCategory = (mailbox: string): string => {
+  const local = (mailbox.split('@')[0] ?? '').trim().toLowerCase()
+  return KNOWN_MAILBOXES.includes(local) ? local : 'other'
 }
 
 /**
@@ -53,6 +80,7 @@ export async function composeMessage(form: FormData): Promise<ActionResult> {
       overrideAccess: true,
     })
     const clientId = account.docs[0] ? relId(account.docs[0].client) : null
+    const sender = senderFor(mailbox)
 
     const now = new Date().toISOString()
     const conversation = await payload.create({
@@ -62,7 +90,7 @@ export async function composeMessage(form: FormData): Promise<ActionResult> {
         ...(clientId ? { client: clientId } : {}),
         contactName: optional(str(form.get('toName'))),
         contactEmail: to,
-        mailbox,
+        mailbox: mailboxCategory(mailbox),
         folder: 'inbox',
         // We wrote it, so there is nothing for the team to read.
         unread: false,
@@ -81,19 +109,20 @@ export async function composeMessage(form: FormData): Promise<ActionResult> {
         authorType: 'staff',
         authorName: user?.name || user?.email,
         direction: 'outbound',
-        fromEmail: senderFor(mailbox),
+        fromEmail: sender,
         toEmail: to,
         readByStaff: true,
       } as never,
       ...as,
     })
 
-    void sendEmail(to, {
-      type: 'custom',
-      subject,
-      heading: subject,
-      message: body,
-    })
+    // Send from the chosen address, not the default no-reply one — the whole
+    // point of picking a mailbox is that the recipient sees and replies to it.
+    void sendEmail(
+      to,
+      { type: 'custom', subject, heading: subject, message: body },
+      { from: sender },
+    )
 
     if (clientId) {
       void notifyClient({
@@ -133,6 +162,30 @@ export async function replyToConversation(form: FormData): Promise<ActionResult>
     const clientId = relId(conversation.client)
     const preview = body.slice(0, 140)
 
+    /**
+     * Reply from the address the thread is actually on.
+     *
+     * `conversation.mailbox` cannot be trusted for this — it collapses to
+     * 'other' for any custom address, and replying from `other@` would be both
+     * wrong and unreachable. The real address is on the messages: whatever we
+     * last wrote from, or failing that whatever they wrote to.
+     */
+    const history = await payload.find({
+      collection: 'messages',
+      where: { conversation: { equals: conversationId } },
+      sort: '-createdAt',
+      limit: 25,
+      depth: 0,
+      ...as,
+    })
+    const lastOutbound = history.docs.find((m) => m.direction === 'outbound' && m.fromEmail)
+    const firstInbound = history.docs.find((m) => m.direction === 'inbound' && m.toEmail)
+    const sender =
+      lastOutbound?.fromEmail ||
+      (firstInbound?.toEmail
+        ? senderFor(firstInbound.toEmail)
+        : senderFor(conversation.mailbox ?? 'support'))
+
     await payload.create({
       collection: 'messages',
       data: {
@@ -142,7 +195,7 @@ export async function replyToConversation(form: FormData): Promise<ActionResult>
         authorType: 'staff',
         authorName: user?.name || user?.email,
         direction: 'outbound',
-        fromEmail: senderFor(conversation.mailbox ?? 'support'),
+        fromEmail: sender,
         toEmail: conversation.contactEmail ?? undefined,
         readByStaff: true,
       } as never,
@@ -161,12 +214,16 @@ export async function replyToConversation(form: FormData): Promise<ActionResult>
     })
 
     if (conversation.contactEmail) {
-      void sendEmail(conversation.contactEmail, {
-        type: 'custom',
-        subject: `Re: ${conversation.subject}`,
-        heading: conversation.subject,
-        message: body,
-      })
+      void sendEmail(
+        conversation.contactEmail,
+        {
+          type: 'custom',
+          subject: `Re: ${conversation.subject}`,
+          heading: conversation.subject,
+          message: body,
+        },
+        { from: sender },
+      )
     }
 
     if (clientId) {
