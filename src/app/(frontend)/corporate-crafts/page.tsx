@@ -43,28 +43,28 @@ export default function CorporateCraftsPage() {
           </p>
         </Reveal>
 
-        <div className="mb-20 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-14 grid grid-cols-2 gap-3 sm:mb-20 sm:gap-6 lg:grid-cols-3 lg:gap-8 [&>*:last-child:nth-child(odd)]:col-span-2 lg:[&>*:last-child:nth-child(odd)]:col-span-1">
           {features.map((feature, i) => (
             <Reveal
               key={feature.title}
               delay={i * 60}
-              className="rounded-2xl border border-border bg-card p-8 shadow-xl transition-colors hover:border-primary/50"
+              className="h-full rounded-2xl border border-border bg-card p-4 shadow-xl transition-colors hover:border-primary/50 sm:p-6 lg:p-8"
             >
-              <CheckCircle2 className="mb-4 h-8 w-8 text-primary" />
-              <h3 className="mb-2 text-xl font-bold">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
+              <CheckCircle2 className="mb-3 h-6 w-6 text-primary sm:mb-4 sm:h-8 sm:w-8" />
+              <h3 className="mb-1.5 text-sm font-bold leading-snug sm:mb-2 sm:text-lg lg:text-xl">{feature.title}</h3>
+              <p className="text-xs text-muted-foreground sm:text-sm lg:text-base">{feature.description}</p>
             </Reveal>
           ))}
         </div>
 
-        <div className="rounded-3xl bg-muted p-12 text-center">
-          <h2 className="mb-6 text-3xl font-bold">Ready to upgrade your corporate materials?</h2>
+        <div className="rounded-3xl bg-muted p-6 text-center sm:p-12">
+          <h2 className="mb-4 text-2xl font-bold sm:mb-6 sm:text-3xl">Ready to upgrade your corporate materials?</h2>
           <p className="mx-auto mb-8 max-w-xl text-lg text-muted-foreground">
             Get in touch with us to discuss your project requirements and receive a customized quote.
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-4 font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-primary px-6 py-4 font-bold text-primary-foreground transition-colors hover:bg-primary/90 sm:px-8"
           >
             Start Project <ArrowRight className="h-5 w-5" />
           </Link>

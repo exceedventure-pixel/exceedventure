@@ -10,48 +10,65 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO("automation-ai/ai-consultancy/ai-strategy-consulting").catch(() => null)
+  const seoDoc = await getPageSEO('automation-ai/ai-consultancy/ai-strategy-consulting').catch(
+    () => null,
+  )
   return generatePageMeta({
-    slug: "automation-ai/ai-consultancy/ai-strategy-consulting",
+    slug: 'automation-ai/ai-consultancy/ai-strategy-consulting',
     seoDoc,
-    fallbackTitle: "AI Strategy & Consulting",
+    fallbackTitle: 'AI Strategy & Consulting',
+    fallbackDescription:
+      'Pilots that never ship, tools bought and forgotten, no agreed view of what AI is even for. A strategy fixes the sequence, not just the shopping list.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="automation-ai/ai-consultancy/ai-strategy-consulting"
-        color="red"
-        icon={Compass}
-        badge="Specialist Service"
-        titleLead="AI Strategy & "
-        titleAccent="Consulting"
-        subtitle="A grounded plan for where AI fits in your business, and where it doesn't."
-        sections={[
-          {
-            color: "red",
-            title: 'What this service covers',
-            subtitle: "A grounded plan for where AI fits in your business, and where it doesn't.",
-            features: [
-              {
-                title: "Opportunity Mapping",
-                icon: Lightbulb,
-                desc: "The places AI would genuinely pay for itself.",
-              },
-              {
-                title: "Roadmap & Sequencing",
-                icon: Compass,
-                desc: "What to do first, and what can wait.",
-              },
-              {
-                title: "Risk & Governance",
-                icon: ShieldCheck,
-                desc: "Data, accuracy and accountability considered up front.",
-              },
-            ],
-          },
-        ]}
-      />
+      slug="automation-ai/ai-consultancy/ai-strategy-consulting"
+      color="red"
+      icon={Compass}
+      badge="Specialist Service"
+      titleLead="AI Strategy & "
+      titleAccent="Consulting"
+      subtitle="A grounded plan for where AI fits in your business, and where it doesn't."
+      hero={{
+        badge: 'AI Strategy',
+        headline: 'An AI plan you can ',
+        headlineAccent: 'act on.',
+        pain: 'Pilots that never ship, tools bought and forgotten, no agreed priority.',
+        symptoms: [
+          'Several pilots, none in production',
+          'No agreed priority between ideas',
+          'Leadership and team want different things',
+        ],
+        primaryCta: { label: 'Book a strategy session', href: '/contact' },
+        secondaryCta: { label: 'See pricing', href: '/pricing' },
+      }}
+      sections={[
+        {
+          color: 'red',
+          title: 'What this service covers',
+          subtitle: "A grounded plan for where AI fits in your business, and where it doesn't.",
+          features: [
+            {
+              title: 'Opportunity Mapping',
+              icon: Lightbulb,
+              desc: 'The places AI would genuinely pay for itself.',
+            },
+            {
+              title: 'Roadmap & Sequencing',
+              icon: Compass,
+              desc: 'What to do first, and what can wait.',
+            },
+            {
+              title: 'Risk & Governance',
+              icon: ShieldCheck,
+              desc: 'Data, accuracy and accountability considered up front.',
+            },
+          ],
+        },
+      ]}
+    />
   )
 }

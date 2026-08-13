@@ -21,31 +21,33 @@ export const SubServiceGrid: React.FC<{ parentHref: string }> = ({ parentHref })
   if (!items.length) return null
 
   return (
-    <section className="border-t border-border bg-muted/30 py-16 md:py-24">
+    <section className="border-t border-border bg-muted/30 py-14 sm:py-16 md:py-24">
       <div className="container">
         <Reveal>
-          <h2 className="text-2xl font-bold md:text-3xl">Explore {parent?.label}</h2>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
+          <h2 className="text-xl font-bold sm:text-2xl md:text-3xl">Explore {parent?.label}</h2>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
             Specialist services within {parent?.label}, each with its own detail.
           </p>
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Two up on a phone. These cards are a heading and a line — stacking
+            them turns a short list into a long scroll for no extra clarity. */}
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:mt-10 lg:grid-cols-3 [&>*:last-child:nth-child(odd)]:col-span-2 lg:[&>*:last-child:nth-child(odd)]:col-span-1">
           {items.map((item, i) => (
-            <Reveal key={item.href} delay={i * 60}>
+            <Reveal key={item.href} delay={i * 60} className="h-full">
               <Link
                 href={item.href}
-                className="group/card flex h-full flex-col rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/50"
+                className="group/card flex h-full flex-col rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/50 sm:p-6"
               >
-                <h3 className="flex items-start justify-between gap-3 text-base font-semibold transition-colors group-hover/card:text-primary">
+                <h3 className="flex items-start justify-between gap-2 text-sm font-semibold leading-snug transition-colors group-hover/card:text-primary sm:gap-3 sm:text-base">
                   {item.label}
                   <ArrowRight
-                    className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover/card:translate-x-0.5 group-hover/card:text-primary"
+                    className="mt-0.5 hidden h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover/card:translate-x-0.5 group-hover/card:text-primary sm:block"
                     aria-hidden="true"
                   />
                 </h3>
                 {item.description && (
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:mt-2 sm:line-clamp-none sm:text-sm">
                     {item.description}
                   </p>
                 )}

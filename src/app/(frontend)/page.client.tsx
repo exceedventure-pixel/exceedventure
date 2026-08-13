@@ -436,28 +436,28 @@ export default function HomeClient() {
       <StatsSection />
 
       {/* Features */}
-      <section className="py-24">
+      <section className="py-16 sm:py-24">
         <div className="container">
-          <Reveal className="mb-16 text-center">
+          <Reveal className="mb-10 sm:mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Why Choose Us?</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               We combine creativity with technology to deliver results.
             </p>
           </Reveal>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4 [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-span-1">
             {features.map((feature, i) => {
               const Icon = feature.icon
               return (
                 <Reveal
                   key={feature.title}
                   delay={i * 80}
-                  className="rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/30 hover:shadow-lg"
+                  className="h-full rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/30 hover:shadow-lg sm:p-6"
                 >
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                    <Icon className="h-6 w-6 text-primary" />
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 sm:mb-4 sm:h-12 sm:w-12">
+                    <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
                   </div>
-                  <h3 className="mb-2 text-lg font-bold">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  <h3 className="mb-1.5 text-sm font-bold leading-snug sm:mb-2 sm:text-lg">{feature.title}</h3>
+                  <p className="text-xs text-muted-foreground sm:text-sm">{feature.description}</p>
                 </Reveal>
               )
             })}
@@ -466,9 +466,9 @@ export default function HomeClient() {
       </section>
 
       {/* Dashboard */}
-      <section className="bg-linear-to-br from-primary/5 via-transparent to-secondary/5 py-24">
+      <section className="bg-linear-to-br from-primary/5 via-transparent to-secondary/5 py-16 sm:py-24">
         <div className="container">
-          <Reveal className="mb-16 text-center">
+          <Reveal className="mb-10 sm:mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Powerful Dashboard</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               Get real-time insights and make data-driven decisions.
@@ -510,40 +510,40 @@ export default function HomeClient() {
       </section>
 
       {/* Ventures */}
-      <section className="py-24">
+      <section className="py-16 sm:py-24">
         <div className="container">
-          <Reveal className="mb-16 text-center">
+          <Reveal className="mb-10 sm:mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Our Branches</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               Specialized branches delivering excellence.
             </p>
           </Reveal>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1">
             {ventures.map((venture, i) => (
-              <Reveal key={venture.name} delay={i * 80}>
+              <Reveal key={venture.name} delay={i * 80} className="h-full">
                 <a
                   href={venture.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block rounded-2xl border border-border bg-card p-8 text-center transition-all hover:border-primary/30 hover:shadow-xl"
+                  className="group flex h-full flex-col rounded-2xl border border-border bg-card p-4 text-center transition-all hover:border-primary/30 hover:shadow-xl sm:p-8"
                 >
-                  <div className="mb-4 flex h-16 items-center justify-center">
+                  <div className="mb-3 flex h-10 items-center justify-center sm:mb-4 sm:h-16">
                     <Image
                       src={venture.light}
                       alt={venture.name}
-                      className="h-12 w-auto transition-transform group-hover:scale-105 dark:hidden"
+                      className="h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:hidden"
                       width={120}
                       height={48}
                     />
                     <Image
                       src={venture.dark}
                       alt={venture.name}
-                      className="hidden h-12 w-auto transition-transform group-hover:scale-105 dark:block"
+                      className="hidden h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:block"
                       width={120}
                       height={48}
                     />
                   </div>
-                  <p className="text-sm text-muted-foreground">{venture.description}</p>
+                  <p className="text-xs text-muted-foreground sm:text-sm">{venture.description}</p>
                 </a>
               </Reveal>
             ))}
@@ -552,7 +552,7 @@ export default function HomeClient() {
       </section>
 
       {/* CTA */}
-      <section className="bg-linear-to-r from-primary to-accent py-24">
+      <section className="bg-linear-to-r from-primary to-accent py-16 sm:py-24">
         <div className="container">
           <div className="mx-auto max-w-4xl text-center">
             <Reveal>

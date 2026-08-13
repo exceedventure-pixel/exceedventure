@@ -16,51 +16,66 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'websites-softwares/e-commerce',
     seoDoc,
     fallbackTitle: 'E-commerce',
+    fallbackDescription:
+      'Most stores do not have a traffic problem. They have a checkout that asks too much, shipping costs that appear too late, and a mobile experience nobody has properly tested.',
   })
 }
 
 export default function Page() {
   return (
     <>
-    <ServiceDetail
+      <ServiceDetail
         slug="websites-softwares/e-commerce"
-      color="teal"
-      icon={ShoppingCart}
-      badge="Sub Service"
-      titleLead="E-"
-      titleAccent="commerce"
-      subtitle="High-converting online stores designed to simplify shopping and strengthen revenue."
-      sections={[
-        {
-          color: 'teal',
-          title: 'What this service includes',
-          subtitle:
-            'Commerce experiences that combine product presentation, checkout simplicity, and trust.',
-          features: [
-            {
-              title: 'Storefront Design',
-              icon: ShoppingCart,
-              desc: 'Create clear product experiences that guide visitors toward purchase.',
-            },
-            {
-              title: 'Secure Checkout',
-              icon: CreditCard,
-              desc: 'Offer smooth, reliable checkout flows with payment confidence.',
-            },
-            {
-              title: 'Growth-Oriented UX',
-              icon: TrendingUp,
-              desc: 'Improve conversion through better structure, clarity, and persuasive design.',
-            },
-            {
-              title: 'Reliability & Trust',
-              icon: ShieldCheck,
-              desc: 'Support customer confidence with polished, dependable ecommerce experiences.',
-            },
+        color="teal"
+        icon={ShoppingCart}
+        badge="Sub Service"
+        titleLead="E-"
+        titleAccent="commerce"
+        subtitle="High-converting online stores designed to simplify shopping and strengthen revenue."
+        hero={{
+          badge: 'E-commerce',
+          headline: 'Baskets filled, ',
+          headlineAccent: 'then abandoned.',
+          pain: 'Not a traffic problem — a checkout that asks too much, too late.',
+          symptoms: [
+            'High abandonment, unknown cause',
+            'Checkout is longer than it needs',
+            'Shipping costs appear at the end',
           ],
-        },
-      ]}
-    />
+          primaryCta: { label: 'Get a free store review', href: '/contact' },
+          secondaryCta: { label: 'See our work', href: '/our-works' },
+        }}
+        sections={[
+          {
+            color: 'teal',
+            title: 'What this service includes',
+            subtitle:
+              'Commerce experiences that combine product presentation, checkout simplicity, and trust.',
+            features: [
+              {
+                title: 'Storefront Design',
+                icon: ShoppingCart,
+                desc: 'Create clear product experiences that guide visitors toward purchase.',
+              },
+              {
+                title: 'Secure Checkout',
+                icon: CreditCard,
+                desc: 'Offer smooth, reliable checkout flows with payment confidence.',
+              },
+              {
+                title: 'Growth-Oriented UX',
+                icon: TrendingUp,
+                desc: 'Improve conversion through better structure, clarity, and persuasive design.',
+              },
+              {
+                title: 'Reliability & Trust',
+                icon: ShieldCheck,
+                desc: 'Support customer confidence with polished, dependable ecommerce experiences.',
+              },
+            ],
+          },
+        ]}
+      />
       <SubServiceGrid parentHref="/websites-softwares/e-commerce" />
     </>
   )

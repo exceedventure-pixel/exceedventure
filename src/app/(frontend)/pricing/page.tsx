@@ -65,28 +65,30 @@ export default function PricingPage() {
         subtitle="Every project is different, so we scope pricing around your goals. Pick the plan closest to your needs and we'll tailor a custom quote."
       />
 
-      <div className="container pb-24">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <div className="container pb-16 sm:pb-24">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-3 md:gap-8">
           {tiers.map((tier, i) => (
             <Reveal
               key={tier.name}
               delay={i * 80}
               className={cn(
-                'flex flex-col rounded-2xl border bg-card p-8 transition-all',
+                'flex flex-col rounded-2xl border bg-card p-5 transition-all sm:p-6 lg:p-8',
                 tier.featured
                   ? 'border-primary shadow-xl md:-translate-y-2'
                   : 'border-border hover:shadow-lg',
               )}
             >
               {tier.featured && (
-                <span className="mb-4 w-fit rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">
+                <span className="mb-3 w-fit rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary sm:mb-4 sm:text-xs">
                   Most Popular
                 </span>
               )}
-              <h3 className="text-2xl font-bold">{tier.name}</h3>
-              <div className="my-4 text-4xl font-bold">{tier.price}</div>
-              <p className="mb-6 text-muted-foreground">{tier.description}</p>
-              <ul className="mb-8 flex flex-col gap-3">
+              <h3 className="text-xl font-bold sm:text-2xl">{tier.name}</h3>
+              <div className="my-3 text-3xl font-bold sm:my-4 sm:text-4xl">{tier.price}</div>
+              <p className="mb-5 text-sm text-muted-foreground sm:mb-6 sm:text-base">
+                {tier.description}
+              </p>
+              <ul className="mb-6 grid grid-cols-2 gap-x-4 gap-y-2.5 sm:mb-8 sm:grid-cols-1 sm:gap-3">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -97,7 +99,7 @@ export default function PricingPage() {
               <Link
                 href="/contact"
                 className={cn(
-                  'mt-auto inline-flex items-center justify-center rounded-xl px-6 py-3 font-medium transition-colors',
+                  'mt-auto inline-flex min-h-12 items-center justify-center rounded-xl px-6 py-3 font-medium transition-colors',
                   tier.featured
                     ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                     : 'border border-border hover:bg-muted',
@@ -109,9 +111,9 @@ export default function PricingPage() {
           ))}
         </div>
 
-        <p className="mx-auto mt-12 max-w-2xl text-center text-sm text-muted-foreground">
+        <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground sm:mt-12">
           Need something bespoke? We build custom packages around your exact requirements.{' '}
-          <Link href="/contact" className="text-primary hover:underline">
+          <Link href="/contact" className="-my-2 inline-block py-2 text-primary hover:underline">
             Talk to us
           </Link>
           .

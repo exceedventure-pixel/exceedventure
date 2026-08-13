@@ -41,9 +41,12 @@ export const Card: React.FC<{
         {!metaImage && <div className="">No image</div>}
         {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
       </div>
-      <div className="p-4">
+      {/* These sit two-up on a phone, so the type is sized for half a screen
+          and every text block is clamped — an unclamped excerpt at that width
+          runs to a dozen lines and drags the whole row out of shape. */}
+      <div className="p-3 sm:p-4">
         {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
+          <div className="mb-2 line-clamp-1 text-[11px] uppercase sm:mb-4 sm:text-sm">
             {categories?.map((category, index) => {
               if (typeof category === 'object') {
                 const { title: titleFromCategory } = category
@@ -65,15 +68,17 @@ export const Card: React.FC<{
           </div>
         )}
         {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
-              </Link>
-            </h3>
-          </div>
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug sm:text-base">
+            <Link href={href} ref={link.ref}>
+              {titleToUse}
+            </Link>
+          </h3>
         )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+        {description && (
+          <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground sm:mt-2 sm:text-sm">
+            {sanitizedDescription}
+          </p>
+        )}
       </div>
     </article>
   )

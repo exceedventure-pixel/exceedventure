@@ -290,6 +290,19 @@ html.mobile-menu-open #page-wrapper {
 html.mobile-menu-open .mobile-menu-drawer {
   transform: translateX(0);
 }
+.mobile-menu-drawer {
+  visibility: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0.35s;
+}
+html.mobile-menu-open .mobile-menu-drawer {
+  visibility: visible;
+  transition:
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0s;
+}
+
 
 .mobile-drawer-backdrop {
   position: fixed;
@@ -328,6 +341,19 @@ html.blog-category-open #page-wrapper {
 html.blog-category-open .blog-category-drawer {
   transform: translateX(0);
 }
+.blog-category-drawer {
+  visibility: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0.35s;
+}
+html.blog-category-open .blog-category-drawer {
+  visibility: visible;
+  transition:
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0s;
+}
+
 html.blog-category-open .mobile-drawer-backdrop {
   pointer-events: auto;
   background: rgba(0, 0, 0, 0.25);

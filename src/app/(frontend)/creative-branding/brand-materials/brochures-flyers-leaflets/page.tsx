@@ -10,48 +10,65 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO("creative-branding/brand-materials/brochures-flyers-leaflets").catch(() => null)
+  const seoDoc = await getPageSEO(
+    'creative-branding/brand-materials/brochures-flyers-leaflets',
+  ).catch(() => null)
   return generatePageMeta({
-    slug: "creative-branding/brand-materials/brochures-flyers-leaflets",
+    slug: 'creative-branding/brand-materials/brochures-flyers-leaflets',
     seoDoc,
-    fallbackTitle: "Brochures, Flyers & Leaflets",
+    fallbackTitle: 'Brochures, Flyers & Leaflets',
+    fallbackDescription:
+      'Print is unforgiving. A weak layout, a low-resolution image or a missing bleed does not get patched after launch. It gets reprinted, at your cost.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="creative-branding/brand-materials/brochures-flyers-leaflets"
-        color="purple"
-        icon={Printer}
-        badge="Specialist Service"
-        titleLead="Brochures, Flyers & "
-        titleAccent="Leaflets"
-        subtitle="Print collateral designed to be handed over and kept."
-        sections={[
-          {
-            color: "purple",
-            title: 'What this service covers',
-            subtitle: "Print collateral designed to be handed over and kept.",
-            features: [
-              {
-                title: "Brochure Design",
-                icon: BookOpen,
-                desc: "Longer-form print that carries a full argument.",
-              },
-              {
-                title: "Flyers & Leaflets",
-                icon: Printer,
-                desc: "Short-run pieces for events, drops and counters.",
-              },
-              {
-                title: "Print Specification",
-                icon: Wrench,
-                desc: "Stock, finish and sizing specified so quotes come back right.",
-              },
-            ],
-          },
-        ]}
-      />
+      slug="creative-branding/brand-materials/brochures-flyers-leaflets"
+      color="purple"
+      icon={Printer}
+      badge="Specialist Service"
+      titleLead="Brochures, Flyers & "
+      titleAccent="Leaflets"
+      subtitle="Print collateral designed to be handed over and kept."
+      hero={{
+        badge: 'Print Design',
+        headline: 'Printed once, wrong, ',
+        headlineAccent: 'is expensive.',
+        pain: 'A missing bleed does not get patched after launch — it gets reprinted.',
+        symptoms: [
+          'Your last run had mistakes',
+          'Copy and design were done separately',
+          'You are unsure what the printer needs',
+        ],
+        primaryCta: { label: 'Get a free print review', href: '/contact' },
+        secondaryCta: { label: 'See our work', href: '/our-works' },
+      }}
+      sections={[
+        {
+          color: 'purple',
+          title: 'What this service covers',
+          subtitle: 'Print collateral designed to be handed over and kept.',
+          features: [
+            {
+              title: 'Brochure Design',
+              icon: BookOpen,
+              desc: 'Longer-form print that carries a full argument.',
+            },
+            {
+              title: 'Flyers & Leaflets',
+              icon: Printer,
+              desc: 'Short-run pieces for events, drops and counters.',
+            },
+            {
+              title: 'Print Specification',
+              icon: Wrench,
+              desc: 'Stock, finish and sizing specified so quotes come back right.',
+            },
+          ],
+        },
+      ]}
+    />
   )
 }

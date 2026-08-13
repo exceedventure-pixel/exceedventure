@@ -117,6 +117,15 @@ export function servicePageSchema(args: {
   url: string
   providerName: string
   siteUrl: string
+  /** e.g. 'Worldwide' or 'United Kingdom' — from siteConfig.org.areaServed. */
+  areaServed?: string
+  /** The parent category this service sits under, from the breadcrumb trail. */
+  serviceType?: string
+  /**
+   * The deliverables listed in the hero. Emitted as an OfferCatalog so the
+   * specifics of the service are machine-readable, not just the page title.
+   */
+  offers?: string[]
 }): WithContext<Record<string, unknown>> {
   return {
     '@context': 'https://schema.org',
@@ -124,11 +133,27 @@ export function servicePageSchema(args: {
     name: args.name,
     description: args.description,
     url: args.url,
+    ...(args.serviceType ? { serviceType: args.serviceType } : {}),
+    ...(args.areaServed
+      ? { areaServed: { '@type': 'AdministrativeArea', name: args.areaServed } }
+      : {}),
     provider: {
       '@type': 'Organization',
       name: args.providerName,
       url: args.siteUrl,
     },
+    ...(args.offers?.length
+      ? {
+          hasOfferCatalog: {
+            '@type': 'OfferCatalog',
+            name: args.name,
+            itemListElement: args.offers.map((offer) => ({
+              '@type': 'Offer',
+              itemOffered: { '@type': 'Service', name: offer },
+            })),
+          },
+        }
+      : {}),
   }
 }
 

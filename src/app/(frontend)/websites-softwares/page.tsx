@@ -15,19 +15,34 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'websites-softwares',
     seoDoc,
     fallbackTitle: 'Websites & Softwares',
+    fallbackDescription:
+      'If your site looks dated, loads slowly, or needs a developer to change one line of text, it is quietly costing you enquiries every week — and you have no way of seeing how many.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="websites-softwares"
+      slug="websites-softwares"
       color="teal"
       icon={Globe}
       badge="Core Service"
       titleLead="Websites & "
       titleAccent="Softwares"
       subtitle="Launch polished digital products with flexible websites, ecommerce, and custom software experiences."
+      hero={{
+        badge: 'Websites & Software',
+        headline: 'Your website should be ',
+        headlineAccent: 'your best salesperson.',
+        pain: 'Slow, dated or locked behind a developer — it is costing you enquiries.',
+        symptoms: [
+          'You cannot edit it yourself',
+          'Visitors leave without contacting you',
+          'It falls apart on a phone',
+        ],
+        primaryCta: { label: 'Get a free website review', href: '/contact' },
+        secondaryCta: { label: 'See our work', href: '/our-works' },
+      }}
       sections={[
         {
           color: 'teal',

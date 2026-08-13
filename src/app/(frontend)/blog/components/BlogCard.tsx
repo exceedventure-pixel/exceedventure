@@ -51,10 +51,10 @@ export const BlogCard: React.FC<{ doc: BlogCardPost; className?: string }> = ({
       </div>
 
       {/* Body */}
-      <div className="flex flex-col flex-1 p-5 gap-3">
+      <div className="flex flex-col flex-1 p-3 gap-2 sm:p-5 sm:gap-3">
         {/* Category badges */}
         {hasCategories && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5 max-sm:line-clamp-1">
             {categories!.map((cat, i) => {
               if (typeof cat !== 'object' || !cat) return null
               return (
@@ -70,7 +70,7 @@ export const BlogCard: React.FC<{ doc: BlogCardPost; className?: string }> = ({
         )}
 
         {/* Title */}
-        <h3 className="text-base font-semibold leading-snug group-hover:text-primary transition-colors line-clamp-2">
+        <h3 className="text-sm sm:text-base font-semibold leading-snug group-hover:text-primary transition-colors line-clamp-2">
           <Link href={`/blog/${slug}`} ref={link.ref} className="focus:outline-none">
             {title}
           </Link>
@@ -78,19 +78,19 @@ export const BlogCard: React.FC<{ doc: BlogCardPost; className?: string }> = ({
 
         {/* Excerpt */}
         {description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 flex-1">
             {description.replace(/\s/g, ' ')}
           </p>
         )}
 
         {/* Footer: date + read time */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/50 mt-auto">
+        <div className="flex items-center justify-between gap-2 text-[11px] sm:text-xs text-muted-foreground pt-1.5 border-t border-border/50 mt-auto">
           {publishedAt ? (
-            <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
+            <time dateTime={publishedAt} className="truncate">{formatDateTime(publishedAt)}</time>
           ) : (
             <span>Draft</span>
           )}
-          <span>{estimateReadTime(description)}</span>
+          <span className="hidden shrink-0 sm:inline">{estimateReadTime(description)}</span>
         </div>
       </div>
     </article>

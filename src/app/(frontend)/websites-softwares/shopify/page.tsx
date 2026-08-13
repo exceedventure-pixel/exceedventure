@@ -11,11 +11,13 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO("websites-softwares/shopify").catch(() => null)
+  const seoDoc = await getPageSEO('websites-softwares/shopify').catch(() => null)
   return generatePageMeta({
-    slug: "websites-softwares/shopify",
+    slug: 'websites-softwares/shopify',
     seoDoc,
-    fallbackTitle: "Shopify",
+    fallbackTitle: 'Shopify',
+    fallbackDescription:
+      'The platform handles payments and stock. Everything that decides whether someone buys from you rather than the next store is still down to how yours is built.',
   })
 }
 
@@ -30,26 +32,40 @@ export default function Page() {
         titleLead=""
         titleAccent="Shopify"
         subtitle="Shopify storefronts designed, built and tuned for merchants who want to sell more."
+        hero={{
+          badge: 'Shopify',
+          headline: 'Shopify makes selling easy. ',
+          headlineAccent: 'Not being chosen.',
+          pain: 'Shopify handles payments; being picked over the next store is still on you.',
+          symptoms: [
+            'Your store looks like its theme',
+            'App fees add up every month',
+            'Traffic arrives and does not convert',
+          ],
+          primaryCta: { label: 'Get a free store review', href: '/contact' },
+          secondaryCta: { label: 'See our work', href: '/our-works' },
+        }}
         sections={[
           {
-            color: "teal",
+            color: 'teal',
             title: 'What this service covers',
-            subtitle: "Shopify storefronts designed, built and tuned for merchants who want to sell more.",
+            subtitle:
+              'Shopify storefronts designed, built and tuned for merchants who want to sell more.',
             features: [
               {
-                title: "Theme Design",
+                title: 'Theme Design',
                 icon: Palette,
-                desc: "Storefronts shaped around your brand rather than a stock theme.",
+                desc: 'Storefronts shaped around your brand rather than a stock theme.',
               },
               {
-                title: "App & Integration Setup",
+                title: 'App & Integration Setup',
                 icon: Plug,
-                desc: "The apps you need wired in and configured properly.",
+                desc: 'The apps you need wired in and configured properly.',
               },
               {
-                title: "Conversion Tuning",
+                title: 'Conversion Tuning',
                 icon: TrendingUp,
-                desc: "Checkout and product pages refined against real behaviour.",
+                desc: 'Checkout and product pages refined against real behaviour.',
               },
             ],
           },

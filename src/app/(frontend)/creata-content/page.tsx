@@ -47,7 +47,7 @@ export default function CreataContentPage() {
           </p>
         </Reveal>
 
-        <div className="mb-20 grid gap-8 md:grid-cols-2">
+        <div className="mb-14 grid grid-cols-2 gap-3 sm:mb-20 sm:gap-6 md:gap-8 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1">
           {cards.map((card, i) => (
             <Reveal
               key={card.title}

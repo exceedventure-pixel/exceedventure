@@ -15,19 +15,34 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'solutions/web-growth-seo',
     seoDoc,
     fallbackTitle: 'Web Growth (SEO) Services',
+    fallbackDescription:
+      'Rankings and visitor counts look like progress right up to the moment you check how many of them contacted you. Growth is measured at the enquiry, not the click.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="solutions/web-growth-seo"
+      slug="solutions/web-growth-seo"
       color="emerald"
       icon={TrendingUp}
       badge="Growth Service"
       titleLead="Web Growth "
       titleAccent="(SEO)"
       subtitle="Earn compounding organic traffic with data-driven SEO that lifts your rankings and keeps them there."
+      hero={{
+        badge: 'SEO & Web Growth',
+        headline: 'Traffic that never becomes ',
+        headlineAccent: 'an enquiry.',
+        pain: 'Growth is measured at the enquiry, not the click.',
+        symptoms: [
+          'Visitors up, enquiries flat',
+          'You rank for terms that do not buy',
+          'Nobody looks at what happens next',
+        ],
+        primaryCta: { label: 'Get a free SEO audit', href: '/resources/freebies-audits' },
+        secondaryCta: { label: 'Talk to a specialist', href: '/contact' },
+      }}
       sections={[
         {
           color: 'emerald',
@@ -35,12 +50,36 @@ export default function Page() {
           subtitle:
             'Sustainable organic growth built on technical health, authority, and content that ranks.',
           features: [
-            { title: 'SEO Strategy', icon: Search, desc: 'Comprehensive keyword research and on-page optimization for higher rankings.' },
-            { title: 'Technical SEO', icon: Wrench, desc: 'Site speed, crawlability, and structured data fixes that unlock rankings.' },
-            { title: 'Link Building', icon: Globe, desc: 'High-quality backlink acquisition to boost domain authority and trust.' },
-            { title: 'Content Optimization', icon: FileText, desc: 'SEO-friendly content restructuring to improve search visibility.' },
-            { title: 'Keyword Research', icon: Target, desc: 'Intent-mapped keyword targeting that captures buyers, not just clicks.' },
-            { title: 'Analytics & Reporting', icon: BarChart3, desc: 'Detailed reporting on traffic, rankings, and organic revenue growth.' },
+            {
+              title: 'SEO Strategy',
+              icon: Search,
+              desc: 'Comprehensive keyword research and on-page optimization for higher rankings.',
+            },
+            {
+              title: 'Technical SEO',
+              icon: Wrench,
+              desc: 'Site speed, crawlability, and structured data fixes that unlock rankings.',
+            },
+            {
+              title: 'Link Building',
+              icon: Globe,
+              desc: 'High-quality backlink acquisition to boost domain authority and trust.',
+            },
+            {
+              title: 'Content Optimization',
+              icon: FileText,
+              desc: 'SEO-friendly content restructuring to improve search visibility.',
+            },
+            {
+              title: 'Keyword Research',
+              icon: Target,
+              desc: 'Intent-mapped keyword targeting that captures buyers, not just clicks.',
+            },
+            {
+              title: 'Analytics & Reporting',
+              icon: BarChart3,
+              desc: 'Detailed reporting on traffic, rankings, and organic revenue growth.',
+            },
           ],
         },
       ]}

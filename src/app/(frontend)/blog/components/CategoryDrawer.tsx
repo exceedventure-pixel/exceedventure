@@ -163,7 +163,7 @@ export const CategoryDrawer: React.FC<Props> = ({ categories, activeCategorySlug
                 <button
                   onClick={close}
                   aria-label="Close filter"
-                  className="w-7 h-7 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/25 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/25 transition-colors"
                 >
                   <X className="text-primary-foreground w-4 h-4" />
                 </button>

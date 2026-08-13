@@ -255,7 +255,7 @@ export const StackedCarousel = () => {
         </button>
 
         {/* Dots */}
-        <div className="absolute -bottom-8 left-1/2 flex -translate-x-1/2 gap-2">
+        <div className="absolute -bottom-12 left-1/2 flex -translate-x-1/2 gap-1">
           {data.map((item, index) => (
             <button
               key={item.id}
@@ -263,12 +263,16 @@ export const StackedCarousel = () => {
               onClick={() => userGoTo(index)}
               aria-label={`Go to slide ${index + 1}`}
               aria-current={index === activeIndex}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === activeIndex
-                  ? 'w-6 bg-primary'
-                  : 'w-2 bg-foreground/20 hover:bg-foreground/40'
-              }`}
-            />
+              className="flex h-11 w-8 items-center justify-center"
+            >
+              <span
+                className={`block h-2 rounded-full transition-all duration-300 ${
+                  index === activeIndex
+                    ? 'w-6 bg-primary'
+                    : 'w-2 bg-foreground/20 hover:bg-foreground/40'
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>

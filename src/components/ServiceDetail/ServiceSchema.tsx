@@ -61,10 +61,16 @@ export const ServiceSchema: React.FC<{
   slug: string
   title: string
   description?: string
-}> = ({ slug, title, description }) => {
+  /** Hero deliverables, emitted as the Service's OfferCatalog. */
+  offers?: string[]
+}> = ({ slug, title, description, offers }) => {
   const siteUrl = getServerSideURL()
   const url = `${siteUrl}/${slug.replace(/^\//, '')}`
   const trail = resolveTrail(slug)
+
+  // Home → Section → Service → Sub-service, so the second entry is the top-level
+  // category this page belongs to. Nothing to state on a section page itself.
+  const serviceType = trail.length > 2 ? trail[1].name : undefined
 
   return (
     <>
@@ -79,44 +85,64 @@ export const ServiceSchema: React.FC<{
               url,
               providerName: siteConfig.org.legalName,
               siteUrl,
+              areaServed: siteConfig.org.areaServed,
+              serviceType,
+              offers,
             }),
-            breadcrumbSchema(trail),
+            // Absolute URLs: BreadcrumbList `item` is an entity reference, and
+            // Google drops the whole list when it is given a bare path.
+            breadcrumbSchema(
+              trail.map((crumb) => ({
+                name: crumb.name,
+                href: `${siteUrl}${crumb.href === '/' ? '' : crumb.href}`,
+              })),
+            ),
           ]),
         }}
       />
-
-      {/* Visible trail — backs the BreadcrumbList markup with real navigation
-          and adds upward internal links these deep pages otherwise lack. */}
-      {trail.length > 1 && (
-        <nav aria-label="Breadcrumb" className="container pt-6">
-          <ol className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
-            {trail.map((crumb, i) => {
-              const last = i === trail.length - 1
-              return (
-                <li key={crumb.href} className="flex items-center gap-1">
-                  {i > 0 && (
-                    <ChevronRight className="h-3 w-3 shrink-0 opacity-50" aria-hidden="true" />
-                  )}
-                  {last ? (
-                    <span className="font-medium text-foreground" aria-current="page">
-                      {crumb.name}
-                    </span>
-                  ) : (
-                    <Link
-                      href={crumb.href}
-                      className="flex items-center gap-1 transition-colors hover:text-primary"
-                    >
-                      {i === 0 && <Home className="h-3 w-3 shrink-0" aria-hidden="true" />}
-                      {crumb.name}
-                    </Link>
-                  )}
-                </li>
-              )
-            })}
-          </ol>
-        </nav>
-      )}
     </>
+  )
+}
+
+/**
+ * Visible trail — backs the BreadcrumbList markup with real navigation and adds
+ * the upward internal links these deep pages otherwise lack.
+ *
+ * Rendered *inside* the hero rather than above it. The hero sizes itself to one
+ * screen, so anything sitting between it and the sticky header has to be part
+ * of that measurement; as a sibling it pushed the hero down by its own height
+ * and guaranteed a scroll on short viewports.
+ */
+export const ServiceBreadcrumb: React.FC<{ slug: string }> = ({ slug }) => {
+  const trail = resolveTrail(slug)
+  if (trail.length < 2) return null
+
+  return (
+    <nav aria-label="Breadcrumb" className="container">
+      <ol className="-my-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted-foreground">
+        {trail.map((crumb, i) => {
+          const last = i === trail.length - 1
+          return (
+            <li key={crumb.href} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 opacity-50" aria-hidden="true" />}
+              {last ? (
+                <span className="py-2 font-medium text-foreground" aria-current="page">
+                  {crumb.name}
+                </span>
+              ) : (
+                <Link
+                  href={crumb.href}
+                  className="flex items-center gap-1 py-2 transition-colors hover:text-primary"
+                >
+                  {i === 0 && <Home className="h-3 w-3 shrink-0" aria-hidden="true" />}
+                  {crumb.name}
+                </Link>
+              )}
+            </li>
+          )
+        })}
+      </ol>
+    </nav>
   )
 }
 

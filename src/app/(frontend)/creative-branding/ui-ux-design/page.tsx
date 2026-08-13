@@ -11,11 +11,13 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO("creative-branding/ui-ux-design").catch(() => null)
+  const seoDoc = await getPageSEO('creative-branding/ui-ux-design').catch(() => null)
   return generatePageMeta({
-    slug: "creative-branding/ui-ux-design",
+    slug: 'creative-branding/ui-ux-design',
     seoDoc,
-    fallbackTitle: "UI/UX Design",
+    fallbackTitle: 'UI/UX Design',
+    fallbackDescription:
+      'Nobody files a complaint about confusing navigation. They just stop. The damage shows up in your numbers long before it shows up in your feedback.',
   })
 }
 
@@ -30,26 +32,39 @@ export default function Page() {
         titleLead="UI/UX "
         titleAccent="Design"
         subtitle="Interface and experience design that makes products obvious to use."
+        hero={{
+          badge: 'UI/UX Design',
+          headline: 'People leave your product ',
+          headlineAccent: 'and never say why.',
+          pain: 'Nobody files a complaint about confusing navigation — they just stop.',
+          symptoms: [
+            'Users drop at the same step',
+            'Support answers the same question',
+            'You redesign by opinion',
+          ],
+          primaryCta: { label: 'Get a free UX review', href: '/contact' },
+          secondaryCta: { label: 'See our work', href: '/our-works' },
+        }}
         sections={[
           {
-            color: "purple",
+            color: 'purple',
             title: 'What this service covers',
-            subtitle: "Interface and experience design that makes products obvious to use.",
+            subtitle: 'Interface and experience design that makes products obvious to use.',
             features: [
               {
-                title: "User Research",
+                title: 'User Research',
                 icon: Search,
-                desc: "Decisions grounded in what users do, not what we assume.",
+                desc: 'Decisions grounded in what users do, not what we assume.',
               },
               {
-                title: "Interface Design",
+                title: 'Interface Design',
                 icon: Monitor,
-                desc: "Screens designed to make the next step obvious.",
+                desc: 'Screens designed to make the next step obvious.',
               },
               {
-                title: "Prototyping",
+                title: 'Prototyping',
                 icon: MousePointer,
-                desc: "Clickable prototypes that find problems before build.",
+                desc: 'Clickable prototypes that find problems before build.',
               },
             ],
           },

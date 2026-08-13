@@ -10,48 +10,66 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO("websites-softwares/wordpress/wordpress-ecommerce").catch(() => null)
+  const seoDoc = await getPageSEO('websites-softwares/wordpress/wordpress-ecommerce').catch(
+    () => null,
+  )
   return generatePageMeta({
-    slug: "websites-softwares/wordpress/wordpress-ecommerce",
+    slug: 'websites-softwares/wordpress/wordpress-ecommerce',
     seoDoc,
-    fallbackTitle: "WordPress E-commerce",
+    fallbackTitle: 'WordPress E-commerce',
+    fallbackDescription:
+      'A default WooCommerce install slows badly as the catalogue and the order volume grow. The problems arrive at exactly the point you can least afford them.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="websites-softwares/wordpress/wordpress-ecommerce"
-        color="teal"
-        icon={ShoppingCart}
-        badge="Specialist Service"
-        titleLead="WordPress "
-        titleAccent="E-commerce"
-        subtitle="WooCommerce storefronts built to handle real catalogues and real order volume."
-        sections={[
-          {
-            color: "teal",
-            title: 'What this service covers',
-            subtitle: "WooCommerce storefronts built to handle real catalogues and real order volume.",
-            features: [
-              {
-                title: "WooCommerce Builds",
-                icon: Store,
-                desc: "Product, cart and checkout flows configured around how you sell.",
-              },
-              {
-                title: "Payments & Shipping",
-                icon: CreditCard,
-                desc: "Gateways, tax and delivery rules set up and tested.",
-              },
-              {
-                title: "Catalogue at Scale",
-                icon: Boxes,
-                desc: "Structures that stay fast as your product count grows.",
-              },
-            ],
-          },
-        ]}
-      />
+      slug="websites-softwares/wordpress/wordpress-ecommerce"
+      color="teal"
+      icon={ShoppingCart}
+      badge="Specialist Service"
+      titleLead="WordPress "
+      titleAccent="E-commerce"
+      subtitle="WooCommerce storefronts built to handle real catalogues and real order volume."
+      hero={{
+        badge: 'WooCommerce',
+        headline: 'WooCommerce is fine until ',
+        headlineAccent: 'you get busy.',
+        pain: 'It slows down at exactly the point you can least afford it to.',
+        symptoms: [
+          'Slower as the catalogue grows',
+          'Checkout struggles at peak',
+          'Stock does not sync anywhere',
+        ],
+        primaryCta: { label: 'Get a free store review', href: '/contact' },
+        secondaryCta: { label: 'See our work', href: '/our-works' },
+      }}
+      sections={[
+        {
+          color: 'teal',
+          title: 'What this service covers',
+          subtitle:
+            'WooCommerce storefronts built to handle real catalogues and real order volume.',
+          features: [
+            {
+              title: 'WooCommerce Builds',
+              icon: Store,
+              desc: 'Product, cart and checkout flows configured around how you sell.',
+            },
+            {
+              title: 'Payments & Shipping',
+              icon: CreditCard,
+              desc: 'Gateways, tax and delivery rules set up and tested.',
+            },
+            {
+              title: 'Catalogue at Scale',
+              icon: Boxes,
+              desc: 'Structures that stay fast as your product count grows.',
+            },
+          ],
+        },
+      ]}
+    />
   )
 }

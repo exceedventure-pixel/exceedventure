@@ -95,7 +95,7 @@ export const ContactButton: React.FC<{ channels: ContactChannels }> = ({ channel
   }, [open])
 
   const triggerClass =
-    'inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-sm font-medium transition-colors hover:bg-muted sm:gap-2 sm:px-4 sm:py-2'
+    'inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted sm:gap-2 sm:px-4'
 
   /** Pulsing dot — reads as an "available now" status indicator. */
   const dot = (
@@ -216,26 +216,26 @@ export const ContactButton: React.FC<{ channels: ContactChannels }> = ({ channel
         mounted &&
         createPortal(
           <div className="fixed inset-0 z-70 flex items-end justify-center p-4 sm:items-center">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
-            onClick={() => setChatOpen(false)}
-            aria-hidden="true"
-          />
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Contact us"
-            className="relative w-full max-w-sm animate-in fade-in-0 zoom-in-95 duration-200"
-          >
-            <button
-              type="button"
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
               onClick={() => setChatOpen(false)}
-              aria-label="Close chat"
-              className="absolute -top-11 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-background text-foreground shadow-lg transition-colors hover:bg-muted"
+              aria-hidden="true"
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Contact us"
+              className="relative w-full max-w-sm animate-in fade-in-0 zoom-in-95 duration-200"
             >
-              <X className="h-4 w-4" />
-            </button>
-            <ContactChat size="tall" />
+              <button
+                type="button"
+                onClick={() => setChatOpen(false)}
+                aria-label="Close chat"
+                className="absolute -top-11 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-background text-foreground shadow-lg transition-colors hover:bg-muted"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <ContactChat size="tall" />
             </div>
           </div>,
           document.body,

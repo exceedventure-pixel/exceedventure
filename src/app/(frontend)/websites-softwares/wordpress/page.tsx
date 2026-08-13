@@ -16,46 +16,61 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'websites-softwares/wordpress',
     seoDoc,
     fallbackTitle: 'WordPress',
+    fallbackDescription:
+      'Most WordPress sites end up slow, plugin-heavy and locked behind whoever built them. That is a decision made during the build, and it can be avoided.',
   })
 }
 
 export default function Page() {
   return (
     <>
-    <ServiceDetail
+      <ServiceDetail
         slug="websites-softwares/wordpress"
-      color="teal"
-      icon={LayoutTemplate}
-      badge="Sub Service"
-      titleLead="Word"
-      titleAccent="Press"
-      subtitle="Flexible, SEO-friendly WordPress websites built for content, visibility, and long-term growth."
-      sections={[
-        {
-          color: 'teal',
-          title: 'Why this service works',
-          subtitle:
-            'A dependable foundation for businesses that need a strong content hub and easy updates.',
-          features: [
-            {
-              title: 'Business Websites',
-              icon: Smartphone,
-              desc: 'Fast, modern WordPress sites tailored to your brand and goals.',
-            },
-            {
-              title: 'Content-Driven Pages',
-              icon: Search,
-              desc: 'Publish blogs, services, and resources without sacrificing performance.',
-            },
-            {
-              title: 'Scalable Setup',
-              icon: ShieldCheck,
-              desc: 'Grow from a simple website to a larger digital presence with room to expand.',
-            },
+        color="teal"
+        icon={LayoutTemplate}
+        badge="Sub Service"
+        titleLead="Word"
+        titleAccent="Press"
+        subtitle="Flexible, SEO-friendly WordPress websites built for content, visibility, and long-term growth."
+        hero={{
+          badge: 'WordPress',
+          headline: 'WordPress your team ',
+          headlineAccent: 'can actually run.',
+          pain: 'Slow, plugin-heavy and locked behind whoever built it — by choice, not fate.',
+          symptoms: [
+            'Every change means a ticket',
+            'It slows after every update',
+            'You inherited a build nobody gets',
           ],
-        },
-      ]}
-    />
+          primaryCta: { label: 'Get a free website review', href: '/contact' },
+          secondaryCta: { label: 'See our work', href: '/our-works' },
+        }}
+        sections={[
+          {
+            color: 'teal',
+            title: 'Why this service works',
+            subtitle:
+              'A dependable foundation for businesses that need a strong content hub and easy updates.',
+            features: [
+              {
+                title: 'Business Websites',
+                icon: Smartphone,
+                desc: 'Fast, modern WordPress sites tailored to your brand and goals.',
+              },
+              {
+                title: 'Content-Driven Pages',
+                icon: Search,
+                desc: 'Publish blogs, services, and resources without sacrificing performance.',
+              },
+              {
+                title: 'Scalable Setup',
+                icon: ShieldCheck,
+                desc: 'Grow from a simple website to a larger digital presence with room to expand.',
+              },
+            ],
+          },
+        ]}
+      />
       <SubServiceGrid parentHref="/websites-softwares/wordpress" />
     </>
   )

@@ -10,48 +10,63 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO("automation-ai/ai-consultancy/ai-for-smes").catch(() => null)
+  const seoDoc = await getPageSEO('automation-ai/ai-consultancy/ai-for-smes').catch(() => null)
   return generatePageMeta({
-    slug: "automation-ai/ai-consultancy/ai-for-smes",
+    slug: 'automation-ai/ai-consultancy/ai-for-smes',
     seoDoc,
-    fallbackTitle: "AI for SMEs",
+    fallbackTitle: 'AI for SMEs',
+    fallbackDescription:
+      'Most AI guidance assumes a data team and a six-figure budget. If you are ten people trying to keep up, almost none of it applies to you.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="automation-ai/ai-consultancy/ai-for-smes"
-        color="red"
-        icon={Building2}
-        badge="Specialist Service"
-        titleLead="AI for "
-        titleAccent="SMEs"
-        subtitle="Practical AI for smaller teams, sized to a real budget."
-        sections={[
-          {
-            color: "red",
-            title: 'What this service covers',
-            subtitle: "Practical AI for smaller teams, sized to a real budget.",
-            features: [
-              {
-                title: "Right-Sized Tools",
-                icon: Wrench,
-                desc: "Tools that fit a small team, not an enterprise licence.",
-              },
-              {
-                title: "Quick Wins First",
-                icon: Zap,
-                desc: "Start where the payback arrives in weeks.",
-              },
-              {
-                title: "Team Training",
-                icon: Users,
-                desc: "Your people confident using it after we leave.",
-              },
-            ],
-          },
-        ]}
-      />
+      slug="automation-ai/ai-consultancy/ai-for-smes"
+      color="red"
+      icon={Building2}
+      badge="Specialist Service"
+      titleLead="AI for "
+      titleAccent="SMEs"
+      subtitle="Practical AI for smaller teams, sized to a real budget."
+      hero={{
+        badge: 'AI for SMEs',
+        headline: 'AI for a small team, ',
+        headlineAccent: 'not an enterprise.',
+        pain: 'Most AI advice assumes a data team and a six-figure budget.',
+        symptoms: [
+          'Every proposal starts at enterprise scale',
+          'No technical team to run it',
+          'You cannot risk months on a maybe',
+        ],
+        primaryCta: { label: 'Book a free AI consultation', href: '/contact' },
+        secondaryCta: { label: 'See pricing', href: '/pricing' },
+      }}
+      sections={[
+        {
+          color: 'red',
+          title: 'What this service covers',
+          subtitle: 'Practical AI for smaller teams, sized to a real budget.',
+          features: [
+            {
+              title: 'Right-Sized Tools',
+              icon: Wrench,
+              desc: 'Tools that fit a small team, not an enterprise licence.',
+            },
+            {
+              title: 'Quick Wins First',
+              icon: Zap,
+              desc: 'Start where the payback arrives in weeks.',
+            },
+            {
+              title: 'Team Training',
+              icon: Users,
+              desc: 'Your people confident using it after we leave.',
+            },
+          ],
+        },
+      ]}
+    />
   )
 }

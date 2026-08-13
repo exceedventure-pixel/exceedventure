@@ -110,7 +110,9 @@ function NavRow({ item, onClose }: { item: (typeof siteConfig.nav)[number]; onCl
             onClick={onClose}
             className={clsx(
               'flex h-10 items-center rounded-lg pl-4 pr-3 text-sm transition-colors hover:bg-muted',
-              pathname === item.href ? 'bg-primary/10 font-medium text-primary' : 'text-foreground/70',
+              pathname === item.href
+                ? 'bg-primary/10 font-medium text-primary'
+                : 'text-foreground/70',
             )}
           >
             All {item.label}
@@ -248,7 +250,7 @@ export const MobileMenu: React.FC = () => {
                   <button
                     onClick={close}
                     aria-label="Close menu"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border transition-colors hover:bg-muted"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-border transition-colors hover:bg-muted"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -271,9 +273,7 @@ export const MobileMenu: React.FC = () => {
                     <Avatar size={40} />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold">Your account</p>
-                      <p className="text-xs text-muted-foreground">
-                        Track projects and invoices
-                      </p>
+                      <p className="text-xs text-muted-foreground">Track projects and invoices</p>
                     </div>
                   </div>
                 )}
@@ -356,7 +356,7 @@ export const MobileMenu: React.FC = () => {
                 )}
                 <a
                   href={`mailto:${siteConfig.contact.email}`}
-                  className="block truncate text-xs text-muted-foreground transition-colors hover:text-foreground"
+                  className="-my-2 block truncate py-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {siteConfig.contact.email}
                 </a>

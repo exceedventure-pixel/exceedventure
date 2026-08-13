@@ -78,10 +78,10 @@ export default function CareersPage() {
       </section>
 
       {/* Why join */}
-      <section className="py-24 bg-background">
+      <section className="py-16 sm:py-24 bg-background">
         <div className="container max-w-4xl">
-          <h2 className="text-2xl font-bold mb-12 text-center">Why {siteConfig.name}?</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h2 className="text-xl sm:text-2xl font-bold mb-8 sm:mb-12 text-center">Why {siteConfig.name}?</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8 [&>*:last-child:nth-child(odd)]:col-span-2 lg:[&>*:last-child:nth-child(odd)]:col-span-1">
             {[
               {
                 title: 'Remote-first',
@@ -108,9 +108,9 @@ export default function CareersPage() {
                 body: 'Core collaboration hours with flexible start and finish times that work around your life.',
               },
             ].map((item) => (
-              <div key={item.title} className="rounded-lg border border-border p-6 bg-background">
-                <h3 className="font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.body}</p>
+              <div key={item.title} className="rounded-lg border border-border p-4 sm:p-6 bg-background">
+                <h3 className="text-sm sm:text-base font-semibold leading-snug mb-1.5 sm:mb-2">{item.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">{item.body}</p>
               </div>
             ))}
           </div>
@@ -118,23 +118,23 @@ export default function CareersPage() {
       </section>
 
       {/* Open roles */}
-      <section className="py-24 bg-muted">
+      <section className="py-16 sm:py-24 bg-muted">
         <div className="container max-w-3xl">
-          <h2 className="text-2xl font-bold mb-10">Open Roles</h2>
-          <div className="flex flex-col gap-6">
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-10">Open Roles</h2>
+          <div className="flex flex-col gap-4 sm:gap-6">
             {openRoles.map((role) => (
               <div
                 key={role.title}
-                className="rounded-lg border border-border bg-background p-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+                className="rounded-lg border border-border bg-background p-4 sm:p-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4"
               >
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg mb-1">{role.title}</h3>
+                  <h3 className="font-semibold text-base sm:text-lg mb-1">{role.title}</h3>
                   <p className="text-xs text-primary font-medium mb-3">{role.type}</p>
                   <p className="text-sm text-muted-foreground">{role.description}</p>
                 </div>
                 <Link
                   href={`/contact?role=${encodeURIComponent(role.title)}`}
-                  className="inline-flex items-center justify-center rounded-md border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted transition-colors whitespace-nowrap self-start"
+                  className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center rounded-md border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted transition-colors whitespace-nowrap self-stretch sm:self-start"
                 >
                   Apply
                 </Link>

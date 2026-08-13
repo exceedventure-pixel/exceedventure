@@ -15,19 +15,34 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'digital-marketing',
     seoDoc,
     fallbackTitle: 'Digital Marketing',
+    fallbackDescription:
+      'Money goes out across ads, social and search, and the honest answer to which of them brought last month’s customers is a shrug.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="digital-marketing"
+      slug="digital-marketing"
       color="blue"
       icon={Megaphone}
       badge="Growth Service"
       titleLead="Digital "
       titleAccent="Marketing"
       subtitle="Drive qualified traffic, stronger visibility, and measurable business growth across the digital funnel."
+      hero={{
+        badge: 'Digital Marketing',
+        headline: 'Spending, without knowing ',
+        headlineAccent: 'what works.',
+        pain: 'Ask which channel brought last month’s customers and the answer is a shrug.',
+        symptoms: [
+          'Enquiries cannot be traced to a channel',
+          'Spend continues out of habit',
+          'Reporting is a dashboard screenshot',
+        ],
+        primaryCta: { label: 'Get a free marketing review', href: '/contact' },
+        secondaryCta: { label: 'See pricing', href: '/pricing' },
+      }}
       sections={[
         {
           color: 'blue',

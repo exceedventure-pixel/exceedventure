@@ -15,19 +15,34 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'automation-ai',
     seoDoc,
     fallbackTitle: 'Automation & AI',
+    fallbackDescription:
+      'Copying data between systems, chasing the same updates, retyping the same replies. None of it shows up on a P&L, and all of it is eating days every month.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="automation-ai"
+      slug="automation-ai"
       color="red"
       icon={Bot}
       badge="Innovation Service"
       titleLead="Automation & "
       titleAccent="AI"
       subtitle="Use intelligent systems to reduce manual work, speed up execution, and make operations smarter."
+      hero={{
+        badge: 'Automation & AI',
+        headline: 'Stop doing work a ',
+        headlineAccent: 'computer should do.',
+        pain: 'Copying data, chasing updates, retyping replies — days a month, gone.',
+        symptoms: [
+          'The same data typed into three tools',
+          'Work stalls waiting on a handoff',
+          'You cannot hire your way out of admin',
+        ],
+        primaryCta: { label: 'Book a free automation review', href: '/contact' },
+        secondaryCta: { label: 'See pricing', href: '/pricing' },
+      }}
       sections={[
         {
           color: 'red',

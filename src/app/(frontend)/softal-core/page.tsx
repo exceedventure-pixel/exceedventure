@@ -39,18 +39,18 @@ export default function SoftalCorePage() {
           </p>
         </Reveal>
 
-        <div className="mb-20 grid gap-6 text-center md:grid-cols-3">
+        <div className="mb-14 grid grid-cols-2 gap-3 text-center sm:mb-20 sm:gap-6 md:grid-cols-3 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1">
           {services.map((service, i) => (
             <Reveal
               key={service.title}
               delay={i * 80}
-              className="rounded-2xl border border-border bg-card p-8 shadow-lg transition-shadow hover:shadow-xl"
+              className="h-full rounded-2xl border border-border bg-card p-4 shadow-lg transition-shadow hover:shadow-xl sm:p-6 lg:p-8"
             >
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10 text-accent">
-                <Code2 className="h-8 w-8" />
+              <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-accent/10 text-accent sm:mb-6 sm:h-16 sm:w-16">
+                <Code2 className="h-5 w-5 sm:h-8 sm:w-8" />
               </div>
-              <h3 className="mb-3 text-xl font-bold">{service.title}</h3>
-              <p className="text-muted-foreground">{service.desc}</p>
+              <h3 className="mb-1.5 text-sm font-bold leading-snug sm:mb-3 sm:text-lg lg:text-xl">{service.title}</h3>
+              <p className="text-xs text-muted-foreground sm:text-sm lg:text-base">{service.desc}</p>
             </Reveal>
           ))}
         </div>
@@ -58,7 +58,7 @@ export default function SoftalCorePage() {
         <div className="text-center">
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-xl bg-accent px-8 py-4 font-bold text-white transition-colors hover:bg-accent/90"
+            className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-6 py-4 font-bold text-white transition-colors hover:bg-accent/90 sm:px-8"
           >
             Discuss Your Tech Needs <ArrowRight className="h-5 w-5" />
           </Link>

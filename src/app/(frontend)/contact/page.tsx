@@ -179,7 +179,7 @@ export default async function ContactPage({
                   <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                     Follow
                   </span>
-                  <div className="flex items-center gap-3">
+                  <div className="-mx-2 flex items-center">
                     {social.map((item) => {
                       const Icon = socialIcons[item.icon]
                       if (!Icon) return null
@@ -190,7 +190,7 @@ export default async function ContactPage({
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={item.platform}
-                          className="transition-opacity hover:opacity-70"
+                          className="p-2 transition-opacity hover:opacity-70"
                         >
                           <Icon size={22} />
                         </a>

@@ -115,7 +115,7 @@ export const signOutPortal = async (): Promise<void> => {
 
 // Both states share one pill so the header never reflows when they swap.
 const pill =
-  'inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:gap-2 sm:px-4 sm:py-2'
+  'inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:gap-2 sm:px-4'
 
 export const AccountButton: React.FC = () => {
   const { signedIn, account } = usePortalSession()

@@ -15,19 +15,34 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'creative-branding',
     seoDoc,
     fallbackTitle: 'Creative & Branding',
+    fallbackDescription:
+      'When nothing about your brand is memorable, the only thing a customer can compare is your quote. That is a fight you do not want to be in.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="creative-branding"
+      slug="creative-branding"
       color="purple"
       icon={Palette}
       badge="Creative Service"
       titleLead="Creative & "
       titleAccent="Branding"
       subtitle="Shape a brand that feels distinct, memorable, and built for long-term recognition."
+      hero={{
+        badge: 'Creative & Branding',
+        headline: 'Look like everyone else, ',
+        headlineAccent: 'compete on price.',
+        pain: 'If nothing about you is memorable, the only thing left to compare is your quote.',
+        symptoms: [
+          'Materials differ by who made them',
+          'Customers cannot say what sets you apart',
+          'You keep losing on price',
+        ],
+        primaryCta: { label: 'Get a free brand review', href: '/contact' },
+        secondaryCta: { label: 'See our work', href: '/our-works' },
+      }}
       sections={[
         {
           color: 'purple',

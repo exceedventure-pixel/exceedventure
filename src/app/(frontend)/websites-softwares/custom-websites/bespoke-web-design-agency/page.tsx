@@ -10,48 +10,66 @@ export const dynamic = 'force-static'
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seoDoc = await getPageSEO("websites-softwares/custom-websites/bespoke-web-design-agency").catch(() => null)
+  const seoDoc = await getPageSEO(
+    'websites-softwares/custom-websites/bespoke-web-design-agency',
+  ).catch(() => null)
   return generatePageMeta({
-    slug: "websites-softwares/custom-websites/bespoke-web-design-agency",
+    slug: 'websites-softwares/custom-websites/bespoke-web-design-agency',
     seoDoc,
-    fallbackTitle: "Bespoke Web Design Agency",
+    fallbackTitle: 'Bespoke Web Design Agency',
+    fallbackDescription:
+      'Your competitors bought the same three templates you did. When every site in a sector looks identical, there is nothing left for a customer to judge except price.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="websites-softwares/custom-websites/bespoke-web-design-agency"
-        color="teal"
-        icon={PenTool}
-        badge="Specialist Service"
-        titleLead="Bespoke Web Design "
-        titleAccent="Agency"
-        subtitle="Websites designed from scratch around your goals, not adapted from a template."
-        sections={[
-          {
-            color: "teal",
-            title: 'What this service covers',
-            subtitle: "Websites designed from scratch around your goals, not adapted from a template.",
-            features: [
-              {
-                title: "Discovery & Strategy",
-                icon: Compass,
-                desc: "We work out what the site has to achieve before designing it.",
-              },
-              {
-                title: "Original Design",
-                icon: PenTool,
-                desc: "Every screen drawn for you rather than picked from a library.",
-              },
-              {
-                title: "Built to Spec",
-                icon: Code2,
-                desc: "Developed exactly as designed, with no compromises in translation.",
-              },
-            ],
-          },
-        ]}
-      />
+      slug="websites-softwares/custom-websites/bespoke-web-design-agency"
+      color="teal"
+      icon={PenTool}
+      badge="Specialist Service"
+      titleLead="Bespoke Web Design "
+      titleAccent="Agency"
+      subtitle="Websites designed from scratch around your goals, not adapted from a template."
+      hero={{
+        badge: 'Bespoke Web Design',
+        headline: 'Stop looking like ',
+        headlineAccent: 'everyone else.',
+        pain: 'When every site in a sector looks the same, only price is left to judge.',
+        symptoms: [
+          'Your site looks like competitors’',
+          'The design came from a marketplace',
+          'Nothing on it is really yours',
+        ],
+        primaryCta: { label: 'Get a free design review', href: '/contact' },
+        secondaryCta: { label: 'See our work', href: '/our-works' },
+      }}
+      sections={[
+        {
+          color: 'teal',
+          title: 'What this service covers',
+          subtitle:
+            'Websites designed from scratch around your goals, not adapted from a template.',
+          features: [
+            {
+              title: 'Discovery & Strategy',
+              icon: Compass,
+              desc: 'We work out what the site has to achieve before designing it.',
+            },
+            {
+              title: 'Original Design',
+              icon: PenTool,
+              desc: 'Every screen drawn for you rather than picked from a library.',
+            },
+            {
+              title: 'Built to Spec',
+              icon: Code2,
+              desc: 'Developed exactly as designed, with no compromises in translation.',
+            },
+          ],
+        },
+      ]}
+    />
   )
 }

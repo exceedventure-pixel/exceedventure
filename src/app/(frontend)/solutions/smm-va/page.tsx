@@ -15,19 +15,34 @@ export async function generateMetadata(): Promise<Metadata> {
     slug: 'solutions/smm-va',
     seoDoc,
     fallbackTitle: 'SMM & VA Services',
+    fallbackDescription:
+      'You need twenty hours of help a week, not a full-time salary, a contract and a desk. Most businesses over-hire because part-time support is hard to find and harder to trust.',
   })
 }
 
 export default function Page() {
   return (
     <ServiceDetail
-        slug="solutions/smm-va"
+      slug="solutions/smm-va"
       color="indigo"
       icon={Users}
       badge="Support Service"
       titleLead="SMM & "
       titleAccent="Virtual Assistants"
       subtitle="Keep your social presence active and your back office moving with dedicated management and support."
+      hero={{
+        badge: 'Social & VA Support',
+        headline: 'Hire the hours, ',
+        headlineAccent: 'not the headcount.',
+        pain: 'You need twenty hours a week, not a salary, a contract and a desk.',
+        symptoms: [
+          'You need help, not a full-time hire',
+          'Recruiting takes months',
+          'The workload varies weekly',
+        ],
+        primaryCta: { label: 'Get a free workload review', href: '/contact' },
+        secondaryCta: { label: 'See pricing', href: '/pricing' },
+      }}
       sections={[
         {
           color: 'indigo',
@@ -35,12 +50,36 @@ export default function Page() {
           subtitle:
             'Hands-on social media management and virtual assistance that free your team to focus on growth.',
           features: [
-            { title: 'Social Media Management', icon: Share2, desc: 'Full account management across the platforms that matter to you.' },
-            { title: 'Community Engagement', icon: MessageCircle, desc: 'Replies, comments, and DMs handled to grow an active audience.' },
-            { title: 'Content Scheduling', icon: Calendar, desc: 'Planned, consistent posting so your feed never goes dark.' },
-            { title: 'Virtual Assistants', icon: Headphones, desc: 'Dedicated support for admin, research, and day-to-day operations.' },
-            { title: 'Inbox & DM Handling', icon: Inbox, desc: 'Timely, on-brand responses that turn conversations into leads.' },
-            { title: 'Reporting', icon: BarChart3, desc: 'Clear reporting on growth, engagement, and response times.' },
+            {
+              title: 'Social Media Management',
+              icon: Share2,
+              desc: 'Full account management across the platforms that matter to you.',
+            },
+            {
+              title: 'Community Engagement',
+              icon: MessageCircle,
+              desc: 'Replies, comments, and DMs handled to grow an active audience.',
+            },
+            {
+              title: 'Content Scheduling',
+              icon: Calendar,
+              desc: 'Planned, consistent posting so your feed never goes dark.',
+            },
+            {
+              title: 'Virtual Assistants',
+              icon: Headphones,
+              desc: 'Dedicated support for admin, research, and day-to-day operations.',
+            },
+            {
+              title: 'Inbox & DM Handling',
+              icon: Inbox,
+              desc: 'Timely, on-brand responses that turn conversations into leads.',
+            },
+            {
+              title: 'Reporting',
+              icon: BarChart3,
+              desc: 'Clear reporting on growth, engagement, and response times.',
+            },
           ],
         },
       ]}
