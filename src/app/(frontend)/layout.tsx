@@ -9,6 +9,7 @@ import { AdminBar } from '@/components/AdminBar'
 import { GoogleAnalytics } from '@/components/Analytics'
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -24,6 +25,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
       <head>
+        {/* Goes through next/script, so it executes once the client runtime
+            loads rather than during parse — which is why globals.css hides the
+            document until it lands. */}
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
@@ -43,6 +47,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Footer />
           </div>
         </Providers>
+        {/*
+         * Outside #page-wrapper on purpose: the wrapper is transformed for the
+         * push-drawer animation, and a transformed ancestor becomes the
+         * containing block for `position: fixed` — inside it, the button would
+         * ride along with the page instead of staying put in the viewport.
+         */}
+        <WhatsAppButton />
         <GoogleAnalytics />
       </body>
     </html>

@@ -73,6 +73,7 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    'website-showcase': WebsiteShowcase;
     users: User;
     clients: Client;
     'crm-accounts': CrmAccount;
@@ -104,6 +105,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'website-showcase': WebsiteShowcaseSelect<false> | WebsiteShowcaseSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     clients: ClientsSelect<false> | ClientsSelect<true>;
     'crm-accounts': CrmAccountsSelect<false> | CrmAccountsSelect<true>;
@@ -440,6 +442,82 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * Live client sites shown under the homepage hero. Add the URL and publish it, then run `pnpm capture:showcase` to fetch the screenshot and check whether the site allows being embedded. A site with no screenshot yet is skipped rather than shown broken.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "website-showcase".
+ */
+export interface WebsiteShowcase {
+  id: number;
+  /**
+   * Shown on the card. e.g. "Create A Content".
+   */
+  title: string;
+  /**
+   * The card links here and the live preview loads it.
+   */
+  url: string;
+  /**
+   * Optional. What the fake browser bar shows. Defaults to the hostname.
+   */
+  displayUrl?: string | null;
+  /**
+   * Chip shown on the card.
+   */
+  category?: ('website' | 'webApp' | 'ecommerce' | 'landing' | 'content' | 'other') | null;
+  /**
+   * Filled in by `pnpm capture:showcase` — a full-page screenshot at 1440px wide. This is both the placeholder and the fallback, so a site with no poster is not shown at all.
+   */
+  poster?: (number | null) | Media;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Off until you are happy with the screenshot.
+   */
+  published?: boolean | null;
+  /**
+   * Sorts to the front, above the order number.
+   */
+  featured?: boolean | null;
+  /**
+   * Controls the hover-scroll live preview. Status and page height are written by the capture script — you only need to touch the mode.
+   */
+  embed: {
+    /**
+     * Switch to "Screenshot only" for any site with a cookie banner, a full-screen hero, or heavy ads — those look wrong inside a small frame. The screenshot still scrolls, so the card loses nothing visually.
+     */
+    mode: 'auto' | 'live' | 'poster';
+    /**
+     * From the site’s X-Frame-Options / CSP headers at capture time.
+     */
+    status?: ('unknown' | 'allowed' | 'blocked') | null;
+    /**
+     * Which header produced that verdict.
+     */
+    reason?: string | null;
+    checkedAt?: string | null;
+    /**
+     * How tall the embedded page renders, in pixels — and therefore how far the hover scroll can travel. Lower it to about 1500 for sites whose hero fills the whole screen, otherwise the preview shows nothing but that hero.
+     */
+    viewportHeight?: number | null;
+    /**
+     * Real height of the full page at 1440px wide, measured during capture.
+     */
+    pageHeight?: number | null;
+  };
+  /**
+   * Written by `pnpm capture:showcase`.
+   */
+  capture?: {
+    lastCapturedAt?: string | null;
+    error?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1325,6 +1403,10 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
+        relationTo: 'website-showcase';
+        value: number | WebsiteShowcase;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1619,6 +1701,38 @@ export interface CategoriesSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "website-showcase_select".
+ */
+export interface WebsiteShowcaseSelect<T extends boolean = true> {
+  title?: T;
+  url?: T;
+  displayUrl?: T;
+  category?: T;
+  poster?: T;
+  sortOrder?: T;
+  published?: T;
+  featured?: T;
+  embed?:
+    | T
+    | {
+        mode?: T;
+        status?: T;
+        reason?: T;
+        checkedAt?: T;
+        viewportHeight?: T;
+        pageHeight?: T;
+      };
+  capture?:
+    | T
+    | {
+        lastCapturedAt?: T;
+        error?: T;
       };
   updatedAt?: T;
   createdAt?: T;

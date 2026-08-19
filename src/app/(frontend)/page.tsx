@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import React from 'react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
+import { getWebsiteShowcase } from '@/utilities/getWebsiteShowcase'
 import { generatePageMeta } from '@/utilities/generateMeta'
 import { jsonLdScript, webPageSchema, breadcrumbSchema } from '@/utilities/jsonld'
 import siteConfig from '@/config/site'
@@ -20,7 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const seoDoc = await getPageSEO('home').catch(() => null)
+  const [seoDoc, showcase] = await Promise.all([
+    getPageSEO('home').catch(() => null),
+    getWebsiteShowcase(),
+  ])
 
   return (
     <>
@@ -38,7 +42,7 @@ export default async function HomePage() {
         }}
       />
 
-      <HomeClient />
+      <HomeClient showcase={showcase} />
     </>
   )
 }

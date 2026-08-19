@@ -7,6 +7,8 @@ import * as migration_20260811_190000_record_codes from './20260811_190000_recor
 import * as migration_20260811_200000_site_settings from './20260811_200000_site_settings'
 import * as migration_20260812_100000_enquiries from './20260812_100000_enquiries'
 import * as migration_20260812_120000_user_roles from './20260812_120000_user_roles'
+import * as migration_20260818_100000_website_showcase from './20260818_100000_website_showcase'
+import * as migration_20260819_120000_showcase_uniform_grid from './20260819_120000_showcase_uniform_grid'
 
 export const migrations = [
   {
@@ -53,5 +55,15 @@ export const migrations = [
     up: migration_20260812_120000_user_roles.up,
     down: migration_20260812_120000_user_roles.down,
     name: '20260812_120000_user_roles',
+  },
+  {
+    up: migration_20260818_100000_website_showcase.up,
+    down: migration_20260818_100000_website_showcase.down,
+    name: '20260818_100000_website_showcase',
+  },
+  {
+    up: migration_20260819_120000_showcase_uniform_grid.up,
+    down: migration_20260819_120000_showcase_uniform_grid.down,
+    name: '20260819_120000_showcase_uniform_grid',
   },
 ]

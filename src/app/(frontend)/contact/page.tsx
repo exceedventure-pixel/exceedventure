@@ -111,12 +111,19 @@ export default async function ContactPage({
         }}
       />
 
-      <section className="relative flex min-h-[calc(100svh-var(--header-h))] items-center overflow-hidden py-6 lg:py-0">
+      <section
+        // Same treatment as PageHero and ServiceHero: pulled up under the
+        // header and padded back down, so the glow starts at the top of the
+        // window with the header transparent over it.
+        data-header-transparent=""
+        className="relative -mt-[var(--header-h)] flex min-h-svh items-center overflow-hidden pb-6 pt-[calc(var(--header-h)+1.5rem)] lg:pb-0 lg:pt-[var(--header-h)]"
+      >
         {/* Background glow, carried over from the old hero so the page still
-            feels part of the marketing site. */}
+            feels part of the marketing site. Masked at the foot so the section's
+            clip does not end it on a hard line. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 -z-10 h-full w-full max-w-7xl -translate-x-1/2"
+          className="pointer-events-none absolute left-1/2 top-0 -z-10 h-full w-full max-w-7xl -translate-x-1/2 [mask-image:linear-gradient(to_bottom,#000_0%,#000_62%,transparent_100%)]"
         >
           <div className="absolute left-1/4 top-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute bottom-10 right-1/4 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />

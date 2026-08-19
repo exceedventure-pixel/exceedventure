@@ -5,6 +5,8 @@ import { Palette, BrushCleaning, FileText, Sparkles, PenTool, Layers } from 'luc
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
 import { ServiceDetail } from '@/components/ServiceDetail'
+import { serviceHero } from '@/config/services'
+import { AccentSync } from '@/components/AccentSync'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -22,75 +24,78 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Page() {
   return (
-    <ServiceDetail
-      slug="creative-branding"
-      color="purple"
-      icon={Palette}
-      badge="Creative Service"
-      titleLead="Creative & "
-      titleAccent="Branding"
-      subtitle="Shape a brand that feels distinct, memorable, and built for long-term recognition."
-      hero={{
-        badge: 'Creative & Branding',
-        headline: 'Look like everyone else, ',
-        headlineAccent: 'compete on price.',
-        pain: 'If nothing about you is memorable, the only thing left to compare is your quote.',
-        symptoms: [
-          'Materials differ by who made them',
-          'Customers cannot say what sets you apart',
-          'You keep losing on price',
-        ],
-        primaryCta: { label: 'Get a free brand review', href: '/contact' },
-        secondaryCta: { label: 'See our work', href: '/our-works' },
-      }}
-      sections={[
-        {
-          color: 'purple',
-          title: 'What this service is for',
-          subtitle:
-            'Creative direction and branding support for businesses that want stronger identity and presence.',
-          features: [
-            {
-              title: 'Brand Design',
-              icon: BrushCleaning,
-              desc: 'Create visual systems that communicate your brand clearly and consistently.',
-              items: ['Identity systems', 'Visual direction', 'Brand consistency'],
-            },
-            {
-              title: 'Content Supply',
-              icon: FileText,
-              desc: 'Produce on-brand content that supports growth across channels.',
-              items: ['Copywriting', 'Marketing content', 'Content pipelines'],
-            },
-            {
-              title: 'Brand Materials',
-              icon: Sparkles,
-              desc: 'Develop the assets your business needs to present itself professionally.',
-              items: ['Social visuals', 'Promotional assets', 'Brand toolkit'],
-            },
+    <>
+      {/* Hands this page's colour to the header, so its buttons wear the
+          same wash this page paints behind its hero. */}
+      <AccentSync color="purple" />
+      <ServiceDetail
+        slug="creative-branding"
+        color="purple"
+        icon={Palette}
+        badge="Creative Service"
+        titleLead="Creative & "
+        titleAccent="Branding"
+        subtitle="Shape a brand that feels distinct, memorable, and built for long-term recognition."
+        hero={{
+          ...serviceHero('creative-branding'),
+          badge: 'Creative & Branding',
+          symptoms: [
+            'Materials differ by who made them',
+            'Customers cannot say what sets you apart',
+            'You keep losing on price',
           ],
-        },
-        {
-          color: 'pink',
-          muted: true,
-          badge: 'Creative Execution',
-          title: 'From identity to assets',
-          subtitle:
-            'A cohesive creative approach that strengthens both perception and performance.',
-          features: [
-            {
-              title: 'Visual Storytelling',
-              icon: PenTool,
-              desc: 'Turn your brand message into visuals that connect with your audience.',
-            },
-            {
-              title: 'Flexible Brand Systems',
-              icon: Layers,
-              desc: 'Create assets that are easy to apply across web, print, and campaigns.',
-            },
-          ],
-        },
-      ]}
-    />
+          primaryCta: { label: 'Get a free brand review', href: '/contact' },
+          secondaryCta: { label: 'See our work', href: '/our-works' },
+        }}
+        sections={[
+          {
+            color: 'purple',
+            title: 'What this service is for',
+            subtitle:
+              'Creative direction and branding support for businesses that want stronger identity and presence.',
+            features: [
+              {
+                title: 'Brand Design',
+                icon: BrushCleaning,
+                desc: 'Create visual systems that communicate your brand clearly and consistently.',
+                items: ['Identity systems', 'Visual direction', 'Brand consistency'],
+              },
+              {
+                title: 'Content Supply',
+                icon: FileText,
+                desc: 'Produce on-brand content that supports growth across channels.',
+                items: ['Copywriting', 'Marketing content', 'Content pipelines'],
+              },
+              {
+                title: 'Brand Materials',
+                icon: Sparkles,
+                desc: 'Develop the assets your business needs to present itself professionally.',
+                items: ['Social visuals', 'Promotional assets', 'Brand toolkit'],
+              },
+            ],
+          },
+          {
+            color: 'pink',
+            muted: true,
+            badge: 'Creative Execution',
+            title: 'From identity to assets',
+            subtitle:
+              'A cohesive creative approach that strengthens both perception and performance.',
+            features: [
+              {
+                title: 'Visual Storytelling',
+                icon: PenTool,
+                desc: 'Turn your brand message into visuals that connect with your audience.',
+              },
+              {
+                title: 'Flexible Brand Systems',
+                icon: Layers,
+                desc: 'Create assets that are easy to apply across web, print, and campaigns.',
+              },
+            ],
+          },
+        ]}
+      />
+    </>
   )
 }

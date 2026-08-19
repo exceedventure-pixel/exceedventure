@@ -16,13 +16,22 @@ interface PageHeroProps {
 export const PageHero: React.FC<PageHeroProps> = ({ title, subtitle, children, className }) => {
   return (
     <section
+      // Marks this as a hero the header may sit transparently on top of.
+      data-header-transparent=""
       className={cn(
-        'relative flex min-h-[60vh] flex-col items-center justify-center overflow-hidden pb-20 pt-32 text-center',
+        // Pulled up under the header and padded back down by the same amount,
+        // so the glow starts at the top of the window with the header floating
+        // on it rather than beginning on a hard line beneath it. The min-height
+        // gains the header's strip too, so the visible hero is the same size it
+        // has always been.
+        'relative -mt-[var(--header-h)] flex min-h-[calc(60vh+var(--header-h))] flex-col items-center justify-center overflow-hidden pb-20 pt-[calc(8rem+var(--header-h))] text-center',
         className,
       )}
     >
-      {/* Background glow */}
-      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-full w-full max-w-7xl -translate-x-1/2">
+      {/* Background glow. Faded out before the foot: the section clips its
+          overflow, so without the mask the orbs end on a hard horizontal line
+          exactly where the next section begins. */}
+      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-full w-full max-w-7xl -translate-x-1/2 [mask-image:linear-gradient(to_bottom,#000_0%,#000_62%,transparent_100%)]">
         <div className="absolute left-1/4 top-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute bottom-20 right-1/4 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
       </div>

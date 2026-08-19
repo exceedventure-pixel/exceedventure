@@ -67,15 +67,23 @@
     }
   }
 
-  /* Desktop (lg and up) uses 80% of the viewport rather than a fixed max-width,
-     so the layout scales with the monitor instead of capping at 86rem.
-     Floored at --breakpoint-lg: at 1024px wide a plain 80% leaves only ~819px,
-     which is not enough for the header (the nav alone needs 535px) and squashes
-     the logo. So 80% applies from ~1280px up, and smaller laptops keep the full
-     width they had before. Phones and tablets are unaffected. */
+  /* Desktop (lg and up) runs edge to edge — laptops, including every MacBook
+     (13"/14" ~1440-1512, 16" ~1728 logical), get the full viewport width so the
+     layout never feels boxed in on a screen that isn't especially wide.
+     Phones and tablets are unaffected. */
   @variant lg {
     .container {
-      max-width: max(80%, var(--breakpoint-lg));
+      max-width: 100%;
+    }
+  }
+
+  /* Large PC monitors (1920px and up) pull back to 85% so line lengths stay
+     readable and the content keeps a margin against the bezel. The 1800px
+     cutoff sits above the widest MacBook default scaling, so those stay full
+     width per the rule above. */
+  @media (width >= 1800px) {
+    .container {
+      max-width: 85%;
     }
   }
 }
@@ -121,10 +129,16 @@
   /* Header dropdown surface — the open trigger and its panel share this colour
      so the panel reads as an extension of the menu item, not a floating card.
      Deliberately neutral (zero chroma): tinting these with the navy --primary
-     mixed to a mauve cast in oklch. */
-  --menu-surface: oklch(97% 0 0deg);
-  --menu-surface-hover: oklch(93.5% 0 0deg);
-  --menu-border: oklch(90% 0 0deg);
+     mixed to a mauve cast in oklch.
+
+     Dark and translucent in *both* themes, paired with a backdrop blur on the
+     panel: smoked glass over the page rather than a panel sitting on it. Kept
+     identical light and dark so the trigger, the corner fillet and the panel
+     always agree — the fillet paints its colour with a spread shadow and cannot
+     carry a blur of its own, so any difference between them shows up as a seam. */
+  --menu-surface: oklch(18% 0 0deg / 74%);
+  --menu-surface-hover: oklch(100% 0 0deg / 10%);
+  --menu-border: oklch(100% 0 0deg / 12%);
 }
 
 [data-theme='dark'] {
@@ -164,11 +178,12 @@
   --warning: oklch(35% 0.08 70deg);
   --error: oklch(45% 0.1 25deg);
 
-  /* Dark mode lifts off the near-black background so the panel still separates
-     from the page behind it. Neutral, same reasoning as light. */
-  --menu-surface: oklch(20.5% 0 0deg);
-  --menu-surface-hover: oklch(26.5% 0 0deg);
-  --menu-border: oklch(30% 0 0deg);
+  /* Identical to light on purpose — see the note there. The panel forces the
+     dark token set on itself, so if these two differed the trigger (light vars)
+     and the panel (dark vars) would meet in a visible step. */
+  --menu-surface: oklch(18% 0 0deg / 74%);
+  --menu-surface-hover: oklch(100% 0 0deg / 10%);
+  --menu-border: oklch(100% 0 0deg / 12%);
 }
 
 @theme inline {
@@ -253,12 +268,12 @@
    * every tablet width, which is exactly how much the homepage hero and the
    * contact screen overflowed by there.
    */
-  --header-h: 61px;
+  --header-h: 60px;
   --carousel-h: clamp(215px, 37vh, 460px);
 }
 @media (width >= 40rem) {
   :root {
-    --header-h: 81px;
+    --header-h: 80px;
   }
 }
 
@@ -366,6 +381,67 @@ html {
 html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
+}
+
+/* ─── Opening hero ───────────────────────────────────────────────────────────
+   The only @keyframes in the project. Everything else animates with CSS
+   transitions driven from React state; these three are ambient loops with no
+   state behind them, which is the one case a keyframe does better.
+
+   All three are neutralised by the reduced-motion block below, and the
+   component switches its phrase cycle off entirely in that case rather than
+   letting it become a hard cut every few seconds. */
+
+/* Two blurred pools of light, drifting out of step so the pattern never
+   obviously repeats. */
+@keyframes hero-intro-drift {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-46%, -54%) scale(1.12);
+  }
+}
+
+.hero-intro-glow {
+  animation: hero-intro-drift 18s ease-in-out infinite;
+}
+.hero-intro-glow--slow {
+  animation-duration: 26s;
+  animation-direction: reverse;
+}
+
+/* The progress hairline for the current phase, filling over its lifetime. */
+@keyframes hero-intro-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.hero-intro-fill {
+  animation: hero-intro-fill linear forwards;
+}
+
+/* Scroll cue. A small nudge rather than a bounce — it should read as an
+   invitation, not an alert. */
+@keyframes hero-intro-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
+.hero-intro-nudge {
+  animation: hero-intro-nudge 2.4s ease-in-out infinite;
 }
 
 /* Reduce motion for users who prefer it */

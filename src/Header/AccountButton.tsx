@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Avatar } from '@/components/Avatar'
+import { cn } from '@/utilities/ui'
+import { useAccent } from '@/providers/Accent'
 
 /**
  * Header control for the client dashboard: "Login" to a guest, "Dashboard" to
@@ -113,12 +115,25 @@ export const signOutPortal = async (): Promise<void> => {
   pending = null
 }
 
-// Both states share one pill so the header never reflows when they swap.
-const pill =
-  'inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:gap-2 sm:px-4'
+/*
+ * Both states share one pill so the header never reflows when they swap.
+ *
+ * The fill is the live accent rather than a fixed `bg-primary`: this button
+ * floats on top of whatever wash the page is painting, and on the homepage that
+ * wash changes with every slide. `brand` resolves to the same navy it always
+ * was, so every page without an accent looks exactly as it did.
+ */
+const pill = (fill: string, text: string) =>
+  cn(
+    'inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors duration-500 sm:gap-2 sm:px-4',
+    fill,
+    text,
+  )
 
 export const AccountButton: React.FC = () => {
   const { signedIn, account } = usePortalSession()
+  const { tokens } = useAccent()
+  const className = pill(tokens.cta, tokens.ctaText)
 
   if (!signedIn) {
     return (
@@ -133,7 +148,7 @@ export const AccountButton: React.FC = () => {
         // window.opener and navigate this one.
         rel="noopener noreferrer"
         aria-label="Login or sign up to the client dashboard (opens in a new tab)"
-        className={pill}
+        className={className}
       >
         <Avatar size={20} tone="onPrimary" />
         <span className="hidden sm:inline">Login</span>
@@ -147,7 +162,7 @@ export const AccountButton: React.FC = () => {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Open your client dashboard (opens in a new tab)"
-      className={pill}
+      className={className}
     >
       <Avatar size={20} tone="onPrimary" />
       <span className="hidden sm:inline">Dashboard</span>

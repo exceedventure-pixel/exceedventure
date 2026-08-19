@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react'
 import clsx from 'clsx'
 import siteConfig, { type NavChild } from '@/config/site'
+import { useAccent } from '@/providers/Accent'
 
 /**
  * Desktop nav. Dropdowns open on **click**, not hover, and the open trigger
@@ -32,6 +33,7 @@ const DropdownRow: React.FC<{ child: NavChild; active: boolean; onNavigate: () =
   onNavigate,
 }) => {
   const Icon = child.icon
+  const { tokens } = useAccent()
 
   return (
     <div
@@ -43,7 +45,7 @@ const DropdownRow: React.FC<{ child: NavChild; active: boolean; onNavigate: () =
       <Link
         href={child.href}
         onClick={onNavigate}
-        className="group/row flex items-start gap-3 px-2.5 py-2.5"
+        className="group flex items-start gap-3 px-2.5 py-2.5"
       >
         <span
           className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-background"
@@ -53,9 +55,7 @@ const DropdownRow: React.FC<{ child: NavChild; active: boolean; onNavigate: () =
             <Icon
               className={clsx(
                 'h-4 w-4',
-                active
-                  ? 'text-foreground'
-                  : 'text-muted-foreground group-hover/row:text-foreground',
+                active ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground',
               )}
             />
           ) : (
@@ -85,11 +85,11 @@ const DropdownRow: React.FC<{ child: NavChild; active: boolean; onNavigate: () =
             <span
               className={clsx(
                 'flex items-center gap-1.5 text-sm font-semibold transition-colors',
-                active ? 'text-primary' : 'text-foreground group-hover/row:text-primary',
+                active ? tokens.accent : clsx('text-foreground', tokens.accentGroupHover),
               )}
             >
               {child.label}
-              <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all duration-200 group-hover/row:translate-x-0 group-hover/row:opacity-100" />
+              <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100" />
             </span>
           )}
 
@@ -108,6 +108,12 @@ const DropdownRow: React.FC<{ child: NavChild; active: boolean; onNavigate: () =
 
 export const HeaderNav: React.FC = () => {
   const pathname = usePathname()
+  /*
+   * The active item wears the same colour as the buttons beside it and the
+   * wash behind it, rather than a fixed `primary` — so on a service page the
+   * whole header reads as one colour instead of navy sitting on teal.
+   */
+  const { tokens } = useAccent()
   const [openHref, setOpenHref] = useState<string | null>(null)
   const navRef = useRef<HTMLElement | null>(null)
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
@@ -153,8 +159,11 @@ export const HeaderNav: React.FC = () => {
               key={item.href}
               href={item.href}
               className={clsx(
-                'flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[17px] font-semibold transition-colors duration-200 hover:bg-(--menu-surface) hover:text-primary',
-                isActive ? 'text-primary' : 'text-foreground/80',
+                // Colour shift only on hover — no fill. The filled surface is
+                // reserved for the open state, where it is the panel's roof.
+                'flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[17px] font-semibold transition-colors duration-200',
+                tokens.accentHover,
+                isActive ? tokens.accent : 'text-foreground/80',
               )}
             >
               {item.shortLabel ?? item.label}
@@ -192,15 +201,17 @@ export const HeaderNav: React.FC = () => {
               className={clsx(
                 'flex flex-col items-start gap-0.5 px-3.5',
                 isOpen
-                  ? // Open: square off the bottom and run the fill to the very
-                    // edge, so it meets the panel below with no seam.
-                    'rounded-t-xl py-2 bg-(--menu-surface) text-primary'
+                  ? // Open: square off the bottom and run the glass to the very
+                    // edge, so it meets the panel below with no seam. Text goes
+                    // light because the surface is dark in both themes.
+                    'rounded-t-xl py-2 bg-(--menu-surface) text-white backdrop-blur-xl'
                   : clsx(
-                      // Closed: trade 4px of padding for 4px of margin. Same row
-                      // height, but the hover fill stops short of the open
-                      // panel's top edge instead of merging into it.
-                      'my-1 rounded-xl py-1 hover:bg-(--menu-surface) hover:text-primary',
-                      isActive ? 'text-primary' : 'text-foreground/80',
+                      // Closed: no fill at all, just a colour shift. The margin
+                      // still matches the open state's extra padding so the row
+                      // height never changes between the two.
+                      'my-1 rounded-xl py-1',
+                      tokens.accentHover,
+                      isActive ? tokens.accent : 'text-foreground/80',
                     ),
               )}
             >
@@ -245,10 +256,17 @@ export const HeaderNav: React.FC = () => {
                 <div
                   id={panelId}
                   aria-labelledby={triggerId}
+                  /*
+                   * The surface is dark in both themes, so the panel switches to
+                   * the dark token set rather than having every child overridden
+                   * one by one — text, muted text, icon tiles and row hovers all
+                   * come out legible on glass for free.
+                   */
+                  data-theme="dark"
                   className={clsx(
                     // Borderless: the shared surface plus a layered shadow carries
                     // the edge, so nothing outlines the join with the trigger.
-                    'absolute top-full w-92 overflow-hidden rounded-b-xl bg-(--menu-surface) shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_12px_28px_-8px_rgba(0,0,0,0.16),0_28px_60px_-24px_rgba(0,0,0,0.35)]',
+                    'absolute top-full w-92 overflow-hidden rounded-b-xl bg-(--menu-surface) backdrop-blur-xl shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_12px_28px_-8px_rgba(0,0,0,0.16),0_28px_60px_-24px_rgba(0,0,0,0.35)]',
                     alignEnd ? 'right-0 rounded-tl-xl' : 'left-0 rounded-tr-xl',
                   )}
                 >

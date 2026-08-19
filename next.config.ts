@@ -25,6 +25,13 @@ const nextConfig: NextConfig = {
       {
         pathname: '/assets/**',
       },
+      // Uploads land in public/media, so they are also reachable at /media/… —
+      // which is the URL the S3 plugin builds whenever S3_PUBLIC_URL is empty.
+      // Without this, next/image *throws* on such a src and takes the whole
+      // page down rather than just failing to load one image.
+      {
+        pathname: '/media/**',
+      },
     ],
     // Our own brand assets include trusted inline SVGs (logos, venture marks).
     dangerouslyAllowSVG: true,

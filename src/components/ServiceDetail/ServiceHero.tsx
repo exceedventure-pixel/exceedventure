@@ -36,8 +36,8 @@ export interface ServiceHeroContent {
   badge?: string
   /**
    * The H1. Lead with the problem or the outcome and keep the target keyword in
-   * it. Aim for six words or fewer; it is set very large and must not run past
-   * two lines. Falls back to `titleLead` + `titleAccent`.
+   * it. The real limit is two lines at `lg:text-7xl`, which in practice means
+   * about seven short words. Falls back to `titleLead` + `titleAccent`.
    */
   headline?: string
   /** Accented tail of the headline. Only used alongside `headline`. */
@@ -138,10 +138,22 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({
   return (
     <section
       aria-labelledby="service-hero-heading"
-      className="relative flex min-h-[calc(100svh-var(--header-h))] flex-col overflow-hidden border-b border-border/60 py-6 sm:py-8 lg:py-10"
+      // Marks this as a hero the header may sit transparently on top of.
+      data-header-transparent=""
+      /*
+       * Pulled up under the header, with the header's height folded into the
+       * top padding at each breakpoint, so the accent wash starts at the top of
+       * the window instead of on a hard line below the header. Full svh now
+       * that it owns the header's strip as well.
+       */
+      className="relative -mt-[var(--header-h)] flex min-h-svh flex-col overflow-hidden border-b border-border/60 pb-6 pt-[calc(var(--header-h)+1.5rem)] sm:pb-8 sm:pt-[calc(var(--header-h)+2rem)] lg:pb-10 lg:pt-[calc(var(--header-h)+2.5rem)]"
     >
-      {/* Decorative accent wash. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+      {/* Decorative accent wash. Masked soft at the foot so the clip does not
+          end it on a hard line where the next section starts. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,transparent_100%)]"
+      >
         <div
           className={cn(
             'absolute left-1/2 top-[-30%] h-160 w-160 -translate-x-1/2 rounded-full blur-[140px]',
@@ -183,8 +195,9 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({
             <Link
               href={primaryCta.href}
               className={cn(
-                'inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-medium text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2',
+                'inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-medium shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2',
                 c.cta,
+                c.ctaText,
               )}
             >
               {primaryCta.label}

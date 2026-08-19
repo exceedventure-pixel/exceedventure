@@ -24,8 +24,13 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
+import { HeroIntro } from '@/components/HeroIntro'
+import { useAccent } from '@/providers/Accent'
+import { cn } from '@/utilities/ui'
 import { Reveal } from '@/components/Reveal'
 import { StackedCarousel } from '@/components/StackedCarousel'
+import { WebsiteShowcaseSection } from '@/components/WebsiteShowcase'
+import type { ShowcaseItem } from '@/components/WebsiteShowcase/types'
 
 // ─── Animated counter (dependency-free) ──────────────────────────────────────
 const AnimatedCounter = ({
@@ -359,227 +364,265 @@ const StatsSection: React.FC = () => {
   )
 }
 
-export default function HomeClient() {
+/** `showcase` defaults to empty so the page still renders without the prop. */
+export default function HomeClient({ showcase = [] }: { showcase?: ShowcaseItem[] }) {
+  /*
+   * The main CTA wears whatever colour the page is currently wearing. In
+   * practice that is the brand navy by the time anyone has scrolled down to it
+   * — the opening loop hands the accent back as soon as it leaves the screen —
+   * but it means this button can never be the one thing left in the wrong
+   * colour when it is on screen alongside a coloured wash.
+   */
+  const { tokens } = useAccent()
+
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      {/* Hero */}
-      {/* Sized to one screen: everything from the carousel to the service cards
-          should be visible on first load without scrolling. svh rather than vh
-          so mobile browser chrome doesn't push the cards off. */}
-      <section className="relative flex min-h-[calc(100svh-var(--header-h))] flex-col items-center justify-center bg-white pb-4 pt-2 text-center dark:bg-transparent sm:bg-transparent lg:pb-6 lg:pt-2">
-        {/* Stacked carousel — kept outside the container so it stays full-bleed.
-            The negative margin absorbs most of the carousel's own md:py-12 on
-            larger screens; mobile is left alone since it only has py-2 there. */}
-        <div className="z-10 w-full overflow-visible md:-my-8">
-          <StackedCarousel />
-        </div>
+    <>
+      {/* Opening screen — one sentence at a time, cycling through what we do.
+          Everything below is unchanged; this simply arrives before it.
 
-        <Reveal className="container z-10 flex w-full flex-col items-center">
-          {/* mt-11 clears the carousel's dots, which hang 32px below its own box —
-              anything less and they collide with this heading. Type is
-              deliberately restrained so the carousel can take the height while
-              everything still lands inside one screen. */}
-          <h1 className="mt-11 text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl xl:text-5xl [@media(max-height:850px)]:lg:text-3xl">
-            <span>Building Digital </span>
-            <span className="text-primary">Excellence.</span>
-          </h1>
+          Deliberately outside the wrapper below: `overflow-x-hidden` computes
+          to `overflow: hidden auto`, which clips this section's negative top
+          margin and cut its gradient off in a hard line at the header. */}
+      <HeroIntro />
 
-          <div className="mb-4 mt-5 flex flex-row gap-2 sm:gap-3">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
-            >
-              Start a Project <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/our-works"
-              className="inline-flex items-center justify-center rounded-xl border border-border px-6 py-2.5 text-base font-medium transition-colors hover:bg-muted"
-            >
-              View Our Work
-            </Link>
+      <div className="min-h-screen overflow-x-hidden">
+        {/* Hero */}
+        {/* At least one screen tall, but no longer squeezed into exactly one:
+          the carousel, the headline and the service cards each get room to
+          breathe and the section grows past the fold if it needs to. svh rather
+          than vh so mobile browser chrome doesn't push the cards off. */}
+        <section className="relative flex min-h-[calc(100svh-var(--header-h))] flex-col items-center justify-center bg-white py-14 text-center dark:bg-transparent sm:bg-transparent sm:py-20 lg:py-24">
+          {/* Stacked carousel — kept outside the container so it stays full-bleed.
+            It keeps its own vertical padding now; the negative margin that used
+            to claw it back was there only to win height for the one-screen fit. */}
+          <div className="z-10 w-full overflow-visible">
+            <StackedCarousel />
           </div>
 
-          <div className="grid w-full max-w-5xl grid-cols-2 gap-3 lg:grid-cols-4">
-            {services.map((service) => {
-              const Icon = service.icon
-              const colors = colorClasses[service.color]
-              return (
-                <Link
-                  key={service.title}
-                  href={service.href}
-                  className={`group block h-full rounded-xl border border-border bg-card p-3 text-center transition-all hover:-translate-y-1 sm:p-4 ${colors.hover}`}
-                >
-                  <div
-                    className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${colors.bg}`}
-                  >
-                    <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${colors.text}`} />
-                  </div>
-                  <h3 className="text-xs font-bold leading-tight sm:text-base">
-                    <span className="block">{service.title}</span>
-                    <span className="block font-light opacity-80">{service.titleAccent}</span>
-                  </h3>
-                </Link>
-              )
-            })}
-          </div>
-        </Reveal>
+          <Reveal className="container z-10 flex w-full flex-col items-center">
+            {/* The carousel's dots hang 32px below its own box, so the top margin
+              has to clear those before it starts buying any real separation. */}
+            <h1 className="mt-16 text-3xl font-bold tracking-tight sm:mt-20 sm:text-4xl lg:text-5xl xl:text-6xl">
+              <span>Building Digital </span>
+              <span className="text-primary">Excellence.</span>
+            </h1>
 
-        {/* Background glow */}
-        <div className="pointer-events-none absolute right-0 top-0 -z-10 h-full w-full overflow-hidden">
-          <div className="absolute right-[-5%] top-[-10%] h-125 w-125 rounded-full bg-primary/10 blur-[100px]" />
-          <div className="absolute bottom-[-10%] left-[-5%] h-100 w-100 rounded-full bg-secondary/10 blur-[100px]" />
-        </div>
-      </section>
+            <div className="mb-10 mt-7 flex flex-row gap-2 sm:mb-14 sm:gap-3">
+              <Link
+                href="/contact"
+                className={cn(
+                  'inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-base font-medium shadow-lg transition-colors duration-500',
+                  tokens.cta,
+                  tokens.ctaText,
+                )}
+              >
+                Start a Project <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/our-works"
+                className="inline-flex items-center justify-center rounded-xl border border-border px-6 py-2.5 text-base font-medium transition-colors hover:bg-muted"
+              >
+                View Our Work
+              </Link>
+            </div>
 
-      {/* Stats — bento grid: two small cards + a wide one on the left,
-          one tall card on the right carrying the project breakdown. */}
-      <StatsSection />
-
-      {/* Features */}
-      <section className="py-16 sm:py-24">
-        <div className="container">
-          <Reveal className="mb-10 sm:mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Why Choose Us?</h2>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              We combine creativity with technology to deliver results.
-            </p>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4 [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-span-1">
-            {features.map((feature, i) => {
-              const Icon = feature.icon
-              return (
-                <Reveal
-                  key={feature.title}
-                  delay={i * 80}
-                  className="h-full rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/30 hover:shadow-lg sm:p-6"
-                >
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 sm:mb-4 sm:h-12 sm:w-12">
-                    <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
-                  </div>
-                  <h3 className="mb-1.5 text-sm font-bold leading-snug sm:mb-2 sm:text-lg">{feature.title}</h3>
-                  <p className="text-xs text-muted-foreground sm:text-sm">{feature.description}</p>
-                </Reveal>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Dashboard */}
-      <section className="bg-linear-to-br from-primary/5 via-transparent to-secondary/5 py-16 sm:py-24">
-        <div className="container">
-          <Reveal className="mb-10 sm:mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Powerful Dashboard</h2>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Get real-time insights and make data-driven decisions.
-            </p>
-          </Reveal>
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-            <Reveal className="space-y-6">
-              {dashboardItems.map((item) => {
-                const Icon = item.icon
+            <div className="grid w-full max-w-6xl grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+              {services.map((service) => {
+                const Icon = service.icon
+                const colors = colorClasses[service.color]
                 return (
-                  <div
-                    key={item.title}
-                    className="flex gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/20"
+                  <Link
+                    key={service.title}
+                    href={service.href}
+                    className={`group block h-full rounded-xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-1 sm:p-7 ${colors.hover}`}
                   >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                      <Icon className="h-6 w-6 text-primary" />
+                    <div
+                      className={`mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-lg sm:mb-4 sm:h-12 sm:w-12 ${colors.bg}`}
+                    >
+                      <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${colors.text}`} />
                     </div>
-                    <div>
-                      <h3 className="mb-1 font-bold">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
-                    </div>
-                  </div>
+                    <h3 className="text-sm font-bold leading-tight sm:text-lg">
+                      <span className="block">{service.title}</span>
+                      <span className="block font-light opacity-80">{service.titleAccent}</span>
+                    </h3>
+                  </Link>
                 )
               })}
-            </Reveal>
-            <Reveal delay={120} className="relative">
-              <div className="overflow-hidden rounded-2xl border border-border shadow-2xl">
-                <Image
-                  src="/assets/home-page-01.svg"
-                  alt="Dashboard"
-                  className="h-auto w-full"
-                  width={600}
-                  height={400}
-                />
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Ventures */}
-      <section className="py-16 sm:py-24">
-        <div className="container">
-          <Reveal className="mb-10 sm:mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Our Branches</h2>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Specialized branches delivering excellence.
-            </p>
+            </div>
           </Reveal>
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1">
-            {ventures.map((venture, i) => (
-              <Reveal key={venture.name} delay={i * 80} className="h-full">
-                <a
-                  href={venture.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex h-full flex-col rounded-2xl border border-border bg-card p-4 text-center transition-all hover:border-primary/30 hover:shadow-xl sm:p-8"
-                >
-                  <div className="mb-3 flex h-10 items-center justify-center sm:mb-4 sm:h-16">
-                    <Image
-                      src={venture.light}
-                      alt={venture.name}
-                      className="h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:hidden"
-                      width={120}
-                      height={48}
-                    />
-                    <Image
-                      src={venture.dark}
-                      alt={venture.name}
-                      className="hidden h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:block"
-                      width={120}
-                      height={48}
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground sm:text-sm">{venture.description}</p>
-                </a>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* CTA */}
-      <section className="bg-linear-to-r from-primary to-accent py-16 sm:py-24">
-        <div className="container">
-          <div className="mx-auto max-w-4xl text-center">
-            <Reveal>
-              <h2 className="mb-6 text-3xl font-bold text-white sm:text-5xl">
-                Ready to Exceed Your Goals?
-              </h2>
-              <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80">
-                Let us work together to build something amazing.
-              </p>
-              <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-lg font-medium text-primary shadow-lg transition-colors hover:bg-white/90"
-                >
-                  Get Started <ArrowRight className="h-5 w-5" />
-                </Link>
-                <Link
-                  href="/about"
-                  className="inline-flex items-center justify-center rounded-xl border border-white px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-white/10"
-                >
-                  Learn More
-                </Link>
-              </div>
-            </Reveal>
+          {/* Background glow. Masked soft at both ends: the orbs are positioned to
+            overhang the section, so the clip would otherwise end them on a hard
+            line at each boundary. */}
+          <div className="pointer-events-none absolute right-0 top-0 -z-10 h-full w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,#000_18%,#000_82%,transparent_100%)]">
+            <div className="absolute right-[-5%] top-[-10%] h-125 w-125 rounded-full bg-primary/10 blur-[100px]" />
+            <div className="absolute bottom-[-10%] left-[-5%] h-100 w-100 rounded-full bg-secondary/10 blur-[100px]" />
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+
+        {/* Website showcase — live client sites in a three-column grid, one card
+          scrolling itself at a time and everything holding still while a
+          pointer is in the grid. Managed in the CMS; renders nothing at all
+          when none are published, so the hero flows straight into the stats as
+          it did before. */}
+        <WebsiteShowcaseSection items={showcase} />
+
+        {/* Stats — bento grid: two small cards + a wide one on the left,
+          one tall card on the right carrying the project breakdown. */}
+        <StatsSection />
+
+        {/* Features */}
+        <section className="py-16 sm:py-24">
+          <div className="container">
+            <Reveal className="mb-10 sm:mb-16 text-center">
+              <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Why Choose Us?</h2>
+              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+                We combine creativity with technology to deliver results.
+              </p>
+            </Reveal>
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4 [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-span-1">
+              {features.map((feature, i) => {
+                const Icon = feature.icon
+                return (
+                  <Reveal
+                    key={feature.title}
+                    delay={i * 80}
+                    className="h-full rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/30 hover:shadow-lg sm:p-6"
+                  >
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 sm:mb-4 sm:h-12 sm:w-12">
+                      <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
+                    </div>
+                    <h3 className="mb-1.5 text-sm font-bold leading-snug sm:mb-2 sm:text-lg">
+                      {feature.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground sm:text-sm">
+                      {feature.description}
+                    </p>
+                  </Reveal>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Dashboard */}
+        <section className="bg-linear-to-br from-primary/5 via-transparent to-secondary/5 py-16 sm:py-24">
+          <div className="container">
+            <Reveal className="mb-10 sm:mb-16 text-center">
+              <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Powerful Dashboard</h2>
+              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+                Get real-time insights and make data-driven decisions.
+              </p>
+            </Reveal>
+            <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+              <Reveal className="space-y-6">
+                {dashboardItems.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <div
+                      key={item.title}
+                      className="flex gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/20"
+                    >
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <Icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="mb-1 font-bold">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </Reveal>
+              <Reveal delay={120} className="relative">
+                <div className="overflow-hidden rounded-2xl border border-border shadow-2xl">
+                  <Image
+                    src="/assets/home-page-01.svg"
+                    alt="Dashboard"
+                    className="h-auto w-full"
+                    width={600}
+                    height={400}
+                  />
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* Ventures */}
+        <section className="py-16 sm:py-24">
+          <div className="container">
+            <Reveal className="mb-10 sm:mb-16 text-center">
+              <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Our Branches</h2>
+              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+                Specialized branches delivering excellence.
+              </p>
+            </Reveal>
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1">
+              {ventures.map((venture, i) => (
+                <Reveal key={venture.name} delay={i * 80} className="h-full">
+                  <a
+                    href={venture.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex h-full flex-col rounded-2xl border border-border bg-card p-4 text-center transition-all hover:border-primary/30 hover:shadow-xl sm:p-8"
+                  >
+                    <div className="mb-3 flex h-10 items-center justify-center sm:mb-4 sm:h-16">
+                      <Image
+                        src={venture.light}
+                        alt={venture.name}
+                        className="h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:hidden"
+                        width={120}
+                        height={48}
+                      />
+                      <Image
+                        src={venture.dark}
+                        alt={venture.name}
+                        className="hidden h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:block"
+                        width={120}
+                        height={48}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground sm:text-sm">
+                      {venture.description}
+                    </p>
+                  </a>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="bg-linear-to-r from-primary to-accent py-16 sm:py-24">
+          <div className="container">
+            <div className="mx-auto max-w-4xl text-center">
+              <Reveal>
+                <h2 className="mb-6 text-3xl font-bold text-white sm:text-5xl">
+                  Ready to Exceed Your Goals?
+                </h2>
+                <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80">
+                  Let us work together to build something amazing.
+                </p>
+                <div className="flex flex-col justify-center gap-4 sm:flex-row">
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-lg font-medium text-primary shadow-lg transition-colors hover:bg-white/90"
+                  >
+                    Get Started <ArrowRight className="h-5 w-5" />
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="inline-flex items-center justify-center rounded-xl border border-white px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-white/10"
+                  >
+                    Learn More
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
   )
 }

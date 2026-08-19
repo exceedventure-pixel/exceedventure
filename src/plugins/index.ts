@@ -25,6 +25,16 @@ const generateURL: GenerateURL<Post> = ({ doc }) => {
   return doc?.slug ? `${url}/blog/${doc.slug}` : url
 }
 
+/**
+ * Whether uploads actually go to Cloudflare R2.
+ *
+ * A bucket is still required — an environment with no S3_BUCKET has nothing to
+ * talk to — but S3_LOCAL_DISK is the opt-out for a machine that has the
+ * placeholder credentials rather than real ones. Nothing sets it in production,
+ * so deployed behaviour is exactly what it was.
+ */
+const useR2 = Boolean(process.env.S3_BUCKET) && process.env.S3_LOCAL_DISK !== 'true'
+
 export const plugins: Plugin[] = [
   redirectsPlugin({
     collections: ['posts'],
@@ -94,30 +104,45 @@ export const plugins: Plugin[] = [
     },
   }),
 
-  // Cloudflare R2 storage — active only when S3_BUCKET is set.
-  // Falls back to local storage for local development without R2 credentials.
-  ...(process.env.S3_BUCKET
-    ? [
-        s3Storage({
-          collections: {
-            media: {
-              prefix: 'media',
-              generateFileURL: ({ filename, prefix }) => {
-                const base = (process.env.S3_PUBLIC_URL || '').replace(/\/$/, '')
-                return `${base}/${prefix ? `${prefix}/` : ''}${filename}`
-              },
-            },
-          },
-          bucket: process.env.S3_BUCKET,
-          config: {
-            credentials: {
-              accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
-            },
-            region: 'auto',
-            endpoint: process.env.S3_ENDPOINT || '',
-          },
-        }),
-      ]
-    : []),
+  /**
+   * Cloudflare R2 storage.
+   *
+   * Always in the array, never conditionally spread. Calling the plugin is what
+   * registers its client upload handler in `admin.dependencies`, and the plugin
+   * does that before it looks at `enabled` — deliberately, "to avoid import map
+   * discrepancies between dev and prod". An environment that skipped the plugin
+   * regenerated importMap.js without that entry, and that is what blanked the
+   * live admin. `enabled` decides whether files go to R2; whether the plugin is
+   * *loaded* is no longer an environment's decision.
+   *
+   * `alwaysInsertFields` keeps `url` and `prefix` on media even when disabled,
+   * so every environment has the same schema and a dev-mode Drizzle push never
+   * proposes dropping a column (which prompts on stdin, and hangs the dev
+   * server waiting for an answer nobody can see).
+   *
+   * Disabled, Payload keeps serving uploads from public/media through its own
+   * static handler — the local-dev setup, since R2 credentials are not local.
+   */
+  s3Storage({
+    enabled: useR2,
+    alwaysInsertFields: true,
+    collections: {
+      media: {
+        prefix: 'media',
+        generateFileURL: ({ filename, prefix }) => {
+          const base = (process.env.S3_PUBLIC_URL || '').replace(/\/$/, '')
+          return `${base}/${prefix ? `${prefix}/` : ''}${filename}`
+        },
+      },
+    },
+    bucket: process.env.S3_BUCKET || '',
+    config: {
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+      },
+      region: 'auto',
+      endpoint: process.env.S3_ENDPOINT || '',
+    },
+  }),
 ]

@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
+    "capture:showcase": "cross-env NODE_OPTIONS=--no-deprecation node --env-file=.env --import tsx scripts/capture-showcase-shots.ts",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --webpack",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
