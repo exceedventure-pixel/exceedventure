@@ -613,53 +613,56 @@ const siteConfig: SiteConfig = {
   ],
 
   // ─── Footer links ──────────────────────────────────────────────────────────
+  /*
+   * Four columns, and every href resolves.
+   *
+   * What was here was an e-commerce footer — Support Center, How to Order,
+   * Order Tracking, Payment, Shipping, and a whole "Consumer Policy" column of
+   * Happy Return, Refund, Exchange, Cancellation, Pre-Order, Extra Discount.
+   * None of it described this business, and eleven of those links pointed at
+   * /support/* and /consumer-policy/* routes that do not exist: the footer was
+   * shipping a column and a half of 404s on every page of the site.
+   *
+   * Services first, because that is what a visitor who scrolled this far is
+   * looking for. "Quick Links" is gone — Home is the logo, and everything else
+   * in it now sits under the heading it belongs to.
+   */
   footerLinks: [
     {
-      heading: 'Resources',
+      heading: 'Services',
       links: [
-        { label: 'Blogs', href: '/blog' },
-        { label: 'Documentation', href: '/resources/documentation' },
-        { label: 'Freebies & Audits', href: '/resources/freebies-audits' },
-        { label: 'Referral Program', href: '/resources/referral-program' },
-      ],
-    },
-    {
-      heading: 'Support',
-      links: [
-        { label: 'Support Center', href: '/support' },
-        { label: 'How to Order', href: '/support/how-to-order' },
-        { label: 'Order Tracking', href: '/support/order-tracking' },
-        { label: 'Payment', href: '/support/payment' },
-        { label: 'Shipping', href: '/support/shipping' },
-        { label: 'FAQ', href: '/company/faqs' },
-      ],
-    },
-    {
-      heading: 'Consumer Policy',
-      links: [
-        { label: 'Happy Return', href: '/consumer-policy/happy-return' },
-        { label: 'Refund Policy', href: '/consumer-policy/refund-policy' },
-        { label: 'Exchange', href: '/consumer-policy/exchange' },
-        { label: 'Cancellation', href: '/consumer-policy/cancellation' },
-        { label: 'Pre-Order', href: '/consumer-policy/pre-order' },
-        { label: 'Extra Discount', href: '/consumer-policy/extra-discount' },
+        { label: 'Websites & Software', href: '/websites-softwares' },
+        { label: 'Digital Marketing', href: '/digital-marketing' },
+        { label: 'Automation & AI', href: '/automation-ai' },
+        { label: 'Creative & Branding', href: '/creative-branding' },
+        { label: 'All Solutions', href: '/solutions' },
       ],
     },
     {
       heading: 'Company',
       links: [
-        { label: 'FAQs', href: '/company/faqs' },
-        { label: 'Privacy Policy', href: '/company/privacy-policy' },
-        { label: 'Terms of Service', href: '/company/terms-of-service' },
+        { label: 'About Us', href: '/about' },
+        { label: 'Our Work', href: '/our-works' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'Careers', href: '/careers' },
+        { label: 'Contact', href: '/contact' },
       ],
     },
     {
-      heading: 'Quick Links',
+      heading: 'Resources',
       links: [
-        { label: 'Home', href: '/' },
-        { label: 'About Us', href: '/about' },
-        { label: 'Solutions', href: '/solutions' },
-        { label: 'Contact', href: '/contact' },
+        { label: 'Blog', href: '/blog' },
+        { label: 'Documentation', href: '/resources/documentation' },
+        { label: 'Freebies & Audits', href: '/resources/freebies-audits' },
+        { label: 'Referral Program', href: '/resources/referral-program' },
+        { label: 'FAQs', href: '/company/faqs' },
+      ],
+    },
+    {
+      heading: 'Legal',
+      links: [
+        { label: 'Privacy Policy', href: '/company/privacy-policy' },
+        { label: 'Terms of Service', href: '/company/terms-of-service' },
       ],
     },
   ],

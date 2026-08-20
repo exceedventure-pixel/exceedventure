@@ -96,80 +96,82 @@ export const ShowcaseCard: React.FC<{
          * reading as one set instead of six slightly different windows.
          */}
         <div ref={frameRef} className="relative aspect-4/3 overflow-hidden bg-muted">
-        {/*
-         * Scaler: a fixed 1440px-wide design space shrunk to fit the card.
-         * `pointer-events-none` is not optional — without it the iframe
-         * swallows the hover, eats the click that should open the site, and
-         * captures the wheel, which hijacks the page scroll.
-         */}
-        <div
-          className="pointer-events-none absolute left-0 top-0 origin-top-left"
-          style={{ width: CAPTURE_WIDTH, transform: `scale(${scale})` }}
-          aria-hidden="true"
-        >
-          {/* Shifter: the only animated element. */}
+          {/*
+           * Scaler: a fixed 1440px-wide design space shrunk to fit the card.
+           * `pointer-events-none` is not optional — without it the iframe
+           * swallows the hover, eats the click that should open the site, and
+           * captures the wheel, which hijacks the page scroll.
+           */}
           <div
-            ref={shifterRef}
-            className="will-change-transform"
-            style={{
-              transform: `translate3d(0, ${-shift}px, 0)`,
-              transition: `transform ${duration}ms ${easing} ${delay}ms`,
-            }}
+            className="pointer-events-none absolute left-0 top-0 origin-top-left"
+            style={{ width: CAPTURE_WIDTH, transform: `scale(${scale})` }}
+            aria-hidden="true"
           >
-            <Image
-              src={item.posterUrl}
-              alt=""
-              width={CAPTURE_WIDTH}
-              height={item.posterHeight}
-              quality={100}
-              // The poster's *layout* width is 1440 inside the pre-scale design
-              // space, so without this the browser fetches a 1440–2880px source
-              // for a card that renders at 400–760px.
-              sizes="(min-width: 1024px) 720px, (min-width: 640px) 480px, 100vw"
-              className="block h-auto w-full select-none"
-              draggable={false}
-            />
-
-            {live && (
-              <iframe
-                src={item.url}
-                title={`Live preview of ${item.title}`}
-                /*
-                 * `allow-same-origin` alongside `allow-scripts` is the pairing
-                 * everyone warns about — but that warning is about framing a
-                 * SAME-origin document, which could then reach out and strip
-                 * its own sandbox attribute. These frames are cross-origin
-                 * (getWebsiteShowcase refuses to embed our own origin), so this
-                 * restores the embedded site's own origin and gains it nothing
-                 * over us. Without it, storage and cookie access throw and a
-                 * large share of real sites render blank.
-                 *
-                 * Everything else stays off on purpose. A client site can be
-                 * sold, expire, or be compromised: without allow-top-navigation
-                 * it cannot redirect our homepage, without allow-popups it
-                 * cannot spawn ad windows, without allow-modals it cannot
-                 * alert(), without allow-downloads it cannot push a file at a
-                 * visitor. Do not add one to make a stubborn site work — switch
-                 * that site to screenshot-only instead.
-                 */
-                sandbox="allow-scripts allow-same-origin"
-                /* Empty Permissions Policy: no camera, mic, geolocation, payment. */
-                allow=""
-                referrerPolicy="strict-origin-when-cross-origin"
-                loading="lazy"
-                tabIndex={-1}
-                aria-hidden="true"
-                onLoad={onFrameLoad}
-                style={{
-                  width: CAPTURE_WIDTH,
-                  height: item.viewportHeight,
-                  opacity: loaded ? 1 : 0,
-                }}
-                className="absolute left-0 top-0 block border-0 transition-opacity duration-500"
+            {/* Shifter: the only animated element. */}
+            <div
+              ref={shifterRef}
+              className="will-change-transform"
+              style={{
+                transform: `translate3d(0, ${-shift}px, 0)`,
+                transition: `transform ${duration}ms ${easing} ${delay}ms`,
+              }}
+            >
+              <Image
+                src={item.posterUrl}
+                alt=""
+                width={CAPTURE_WIDTH}
+                height={item.posterHeight}
+                quality={100}
+                // The poster's *layout* width is 1440 inside the pre-scale design
+                // space, so without this the browser fetches a 1440–2880px source
+                // for a card that renders at a quarter of the container.
+                // Viewport-relative rather than fixed px: the container runs edge
+                // to edge from lg up, so a card's real width tracks the window.
+                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                className="block h-auto w-full select-none"
+                draggable={false}
               />
-            )}
+
+              {live && (
+                <iframe
+                  src={item.url}
+                  title={`Live preview of ${item.title}`}
+                  /*
+                   * `allow-same-origin` alongside `allow-scripts` is the pairing
+                   * everyone warns about — but that warning is about framing a
+                   * SAME-origin document, which could then reach out and strip
+                   * its own sandbox attribute. These frames are cross-origin
+                   * (getWebsiteShowcase refuses to embed our own origin), so this
+                   * restores the embedded site's own origin and gains it nothing
+                   * over us. Without it, storage and cookie access throw and a
+                   * large share of real sites render blank.
+                   *
+                   * Everything else stays off on purpose. A client site can be
+                   * sold, expire, or be compromised: without allow-top-navigation
+                   * it cannot redirect our homepage, without allow-popups it
+                   * cannot spawn ad windows, without allow-modals it cannot
+                   * alert(), without allow-downloads it cannot push a file at a
+                   * visitor. Do not add one to make a stubborn site work — switch
+                   * that site to screenshot-only instead.
+                   */
+                  sandbox="allow-scripts allow-same-origin"
+                  /* Empty Permissions Policy: no camera, mic, geolocation, payment. */
+                  allow=""
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  loading="lazy"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  onLoad={onFrameLoad}
+                  style={{
+                    width: CAPTURE_WIDTH,
+                    height: item.viewportHeight,
+                    opacity: loaded ? 1 : 0,
+                  }}
+                  className="absolute left-0 top-0 block border-0 transition-opacity duration-500"
+                />
+              )}
+            </div>
           </div>
-        </div>
 
           {/* Only claim "live" once the real site is actually on screen. */}
           {loaded && (
@@ -201,13 +203,13 @@ export const ShowcaseCard: React.FC<{
        * Outside the lifting device on purpose: the type stays anchored while
        * the screen rises, which is what stops the hover feeling like a wobble.
        */}
-      <div className="mt-4 flex items-start justify-between gap-3 px-0.5">
+      <div className="mt-3 flex items-start justify-between gap-2 px-0.5 sm:mt-4 sm:gap-3">
         <div className="min-w-0">
-          <h3 className="truncate text-[15px] font-semibold tracking-[-0.01em] transition-colors duration-300 group-hover:text-primary sm:text-base">
+          <h3 className="truncate text-[13px] font-semibold tracking-[-0.01em] transition-colors duration-300 group-hover:text-primary sm:text-[15px] lg:text-base">
             {item.title}
           </h3>
           {item.category && (
-            <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="mt-1 truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground sm:text-[11px] sm:tracking-[0.16em]">
               {item.category}
             </p>
           )}

@@ -119,13 +119,18 @@ export const HeaderClient: React.FC<{ channels: ContactChannels }> = ({ channels
       {...(heroTheme ? { 'data-theme': heroTheme } : {})}
     >
       {/*
-       * Three tracks, with the nav in the middle one: the outer two are both
-       * `1fr`, so the nav sits at the true centre of the header rather than
-       * wherever the logo and the action cluster happen to leave it. Below `lg`
-       * the nav is hidden and the middle track simply collapses to nothing.
+       * Three tracks from `lg`, with the nav in the middle one: the outer two
+       * are both `1fr`, so the nav sits at the true centre of the header rather
+       * than wherever the logo and the action cluster happen to leave it.
+       *
+       * A plain flex row below that, and it has to be. The nav is
+       * `display: none` there, which takes it out of the grid altogether — so
+       * the actions slid into the middle `auto` track, a dead `1fr` column was
+       * left over on the right, and the logo was squeezed into 66px of a track
+       * sized for 139.
        */}
-      <div className="container grid grid-cols-[1fr_auto_1fr] items-center py-3 sm:py-4">
-        <Link href="/" className="flex items-center justify-self-start">
+      <div className="container flex items-center justify-between py-3 sm:py-4 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        <Link href="/" className="flex shrink-0 items-center lg:justify-self-start">
           <Logo loading="eager" priority="high" className="max-w-30 sm:max-w-none" />
         </Link>
 
@@ -133,7 +138,7 @@ export const HeaderClient: React.FC<{ channels: ContactChannels }> = ({ channels
           <HeaderNav />
         </div>
 
-        <div className="flex items-center justify-self-end gap-1.5 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3 lg:justify-self-end">
           <ThemeToggle />
 
           {/* Opens a menu — call, WhatsApp, or the full contact page. */}

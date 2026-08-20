@@ -2,7 +2,7 @@ import React from 'react'
 import { getSiteSettings } from '@/utilities/getSiteSettings'
 
 /**
- * Floating WhatsApp button, bottom-left on every frontend page.
+ * Floating WhatsApp button, bottom-right on every frontend page.
  *
  * The header's Contact menu already offers WhatsApp, but it costs a click to
  * open and scrolls away with the header on long pages. This stays put.
@@ -27,7 +27,15 @@ export async function WhatsAppButton() {
       data-whatsapp-fab
       aria-label={whatsapp ? `Chat with us on WhatsApp — ${whatsapp}` : 'Chat with us on WhatsApp'}
       className={[
-        'group fixed right-5 z-50 flex items-center rounded-full bg-[#25d366] p-3 text-white',
+        'group fixed z-50 flex items-center rounded-full bg-[#25d366] p-3 text-white',
+        /*
+         * Pinned to the content's right edge rather than the window's, so it
+         * sits inside the page instead of floating out in the margin. The
+         * container is padded 2rem from md, and above 1800px it also pulls
+         * back to 85% of the window — that last stop leaves 7.5vw of margin
+         * either side, which is what the calc adds back.
+         */
+        'right-5 md:right-8 [@media(width>=1800px)]:right-[calc(7.5vw+2rem)]',
         // Clears the iOS home indicator on phones; the calc collapses to the
         // plain 1.25rem everywhere else.
         'bottom-[calc(1.25rem+env(safe-area-inset-bottom))]',

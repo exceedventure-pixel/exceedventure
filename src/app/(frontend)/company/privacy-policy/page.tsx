@@ -10,13 +10,18 @@ export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoDoc = await getPageSEO('company/privacy-policy').catch(() => null)
-  return generatePageMeta({ slug: 'company/privacy-policy', seoDoc, fallbackTitle: 'Privacy Policy' })
+  return generatePageMeta({
+    slug: 'company/privacy-policy',
+    seoDoc,
+    fallbackTitle: 'Privacy Policy',
+  })
 }
 
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen">
       <PageHero
+        variant="compact"
         title="Privacy Policy"
         subtitle="We value your privacy. Read about how we collect, use, and protect your personal information."
         className="min-h-[45vh] pb-8"
@@ -55,8 +60,8 @@ export default function PrivacyPolicyPage() {
 
           <h3>3. How We Use Your Data</h3>
           <p>
-            We will only use your personal data when the law allows us to. Most commonly, we will use
-            your personal data to:
+            We will only use your personal data when the law allows us to. Most commonly, we will
+            use your personal data to:
           </p>
           <ul>
             <li>Provide and improve our services to you.</li>
@@ -68,8 +73,8 @@ export default function PrivacyPolicyPage() {
           <h3>4. Data Security</h3>
           <p>
             We have put in place appropriate security measures to prevent your personal data from
-            being accidentally lost, used or accessed in an unauthorized way. We limit access to your
-            personal data to those employees and partners who have a business need to know.
+            being accidentally lost, used or accessed in an unauthorized way. We limit access to
+            your personal data to those employees and partners who have a business need to know.
           </p>
 
           <h3>5. Your Rights</h3>

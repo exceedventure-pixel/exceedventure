@@ -65,11 +65,6 @@ export type SlideCopy = {
   accent: string
   /** The line under it — one sentence, plain language, no jargon. */
   sub: string
-  /**
-   * The slide's button. A verb, two to four words: it is read in under two
-   * seconds and has to say what happens next without the headline's help.
-   */
-  cta: string
 }
 
 export const SERVICE_COPY: Record<ServiceKey, ServiceCopy> = {
@@ -86,7 +81,6 @@ export const SERVICE_COPY: Record<ServiceKey, ServiceCopy> = {
       lead: 'BUILD YOUR',
       accent: 'DIGITAL HOME',
       sub: 'Websites, software & digital platforms built for your business.',
-      cta: 'See what we build',
     },
   },
   'digital-marketing': {
@@ -102,7 +96,6 @@ export const SERVICE_COPY: Record<ServiceKey, ServiceCopy> = {
       lead: 'GET FOUND.',
       accent: 'GET CUSTOMERS.',
       sub: 'SEO, social media & digital campaigns that bring your business online.',
-      cta: 'Get found online',
     },
   },
   'automation-ai': {
@@ -117,7 +110,6 @@ export const SERVICE_COPY: Record<ServiceKey, ServiceCopy> = {
       lead: 'WORK SMARTER,',
       accent: 'NOT HARDER',
       sub: 'Automate repetitive tasks and connect your business workflows.',
-      cta: 'Automate the busywork',
     },
   },
   'creative-branding': {
@@ -133,7 +125,6 @@ export const SERVICE_COPY: Record<ServiceKey, ServiceCopy> = {
       lead: 'LOOK PROFESSIONAL.',
       accent: 'STAND OUT.',
       sub: 'Brand identity, graphics & creative content that make your business memorable.',
-      cta: 'Build your brand',
     },
   },
 }

@@ -30,18 +30,21 @@ export const Logo = ({ className, loading, priority }: Props) => {
   } as const
 
   return (
-    <span className={clsx('inline-flex items-center select-none', className)} aria-label={name}>
+    <span
+      className={clsx('inline-flex shrink-0 items-center select-none', className)}
+      aria-label={name}
+    >
       {/* Light theme */}
       <Image
         {...imgProps}
         src="/assets/sitelogolight.svg"
-        className="h-9 w-auto dark:hidden sm:h-12"
+        className="h-9 w-auto shrink-0 dark:hidden sm:h-12"
       />
       {/* Dark theme */}
       <Image
         {...imgProps}
         src="/assets/sitelogo.svg"
-        className="hidden h-9 w-auto dark:block sm:h-12"
+        className="hidden h-9 w-auto shrink-0 dark:block sm:h-12"
       />
     </span>
   )

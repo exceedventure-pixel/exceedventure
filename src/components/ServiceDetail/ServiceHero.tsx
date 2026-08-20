@@ -1,9 +1,9 @@
 import React from 'react'
-import Link from 'next/link'
-import { ArrowRight, type LucideIcon } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 import { cn } from '@/utilities/ui'
 import { colorMap, type ServiceColor } from './colors'
+import { SplitHero } from '@/components/SplitHero'
 
 export interface ServiceCta {
   label: string
@@ -49,15 +49,21 @@ export interface ServiceHeroContent {
    */
   pain?: string
   /**
-   * Three short symptoms, set as a quiet row beneath the fold line. Fragments,
-   * not sentences — they are scanned on the way past, not read.
+   * Three short symptoms. **No longer rendered** — the hero used to close on a
+   * hairline rule and a row of these, and that strip was removed. The field is
+   * kept because 76 pages still supply real copy for it; if nothing adopts it,
+   * strip it from those pages rather than leaving it to rot here.
    */
   symptoms?: string[]
   /** Main action. Name the thing they get, not the thing they do. */
   primaryCta?: ServiceCta
   /** Low-commitment alternative for people who are not ready to enquire. */
   secondaryCta?: ServiceCta
-  /** A few words under the buttons that remove the last hesitation. */
+  /**
+   * A few words under the buttons that remove the last hesitation. No default
+   * any more: every page that did not set one was showing "Free, and no
+   * obligation.", and pages with something specific to say still say it.
+   */
   reassurance?: string
   /** Optional trust strip. Use real, verifiable numbers or leave it out. */
   stats?: ServiceStat[]
@@ -70,7 +76,8 @@ interface ServiceHeroProps extends ServiceHeroContent {
   titleLead: string
   titleAccent: string
   subtitle: string
-  /** Feature titles from the page's first section, used when `symptoms` is absent. */
+  /** Feature titles from the page's first section. Unused since the symptom
+   *  strip was removed — see `symptoms`. */
   fallbackPoints?: string[]
   /** Breadcrumb trail, rendered inside the hero so it counts toward its height. */
   breadcrumb?: React.ReactNode
@@ -78,7 +85,6 @@ interface ServiceHeroProps extends ServiceHeroContent {
 
 const DEFAULT_PRIMARY_CTA: ServiceCta = { label: 'Get a free quote', href: '/contact' }
 const DEFAULT_SECONDARY_CTA: ServiceCta = { label: 'See pricing', href: '/pricing' }
-const DEFAULT_REASSURANCE = 'Free, and no obligation.'
 
 /**
  * Service page hero.
@@ -118,12 +124,10 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({
   headline,
   headlineAccent,
   pain,
-  symptoms,
   primaryCta = DEFAULT_PRIMARY_CTA,
   secondaryCta = DEFAULT_SECONDARY_CTA,
-  reassurance = DEFAULT_REASSURANCE,
+  reassurance,
   stats,
-  fallbackPoints,
   breadcrumb,
 }) => {
   const c = colorMap[color]
@@ -133,131 +137,34 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({
   const h1Lead = headline ?? titleLead
   const h1Accent = headline ? headlineAccent : titleAccent
   const painLine = pain ?? subtitle
-  const points = symptoms?.length ? symptoms : (fallbackPoints ?? [])
 
   return (
-    <section
-      aria-labelledby="service-hero-heading"
-      // Marks this as a hero the header may sit transparently on top of.
-      data-header-transparent=""
-      /*
-       * Pulled up under the header, with the header's height folded into the
-       * top padding at each breakpoint, so the accent wash starts at the top of
-       * the window instead of on a hard line below the header. Full svh now
-       * that it owns the header's strip as well.
-       */
-      className="relative -mt-[var(--header-h)] flex min-h-svh flex-col overflow-hidden border-b border-border/60 pb-6 pt-[calc(var(--header-h)+1.5rem)] sm:pb-8 sm:pt-[calc(var(--header-h)+2rem)] lg:pb-10 lg:pt-[calc(var(--header-h)+2.5rem)]"
+    <SplitHero
+      headingId="service-hero-heading"
+      badge={badge}
+      icon={Icon}
+      tokens={c}
+      headline={h1Lead}
+      headlineAccent={h1Accent}
+      sub={painLine}
+      primaryCta={primaryCta}
+      secondaryCta={secondaryCta}
+      reassurance={reassurance}
+      breadcrumb={breadcrumb}
     >
-      {/* Decorative accent wash. Masked soft at the foot so the clip does not
-          end it on a hard line where the next section starts. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,transparent_100%)]"
-      >
-        <div
-          className={cn(
-            'absolute left-1/2 top-[-30%] h-160 w-160 -translate-x-1/2 rounded-full blur-[140px]',
-            c.glow,
-          )}
-        />
-      </div>
-
-      {breadcrumb}
-
-      <div className="container flex flex-1 flex-col justify-center py-6 text-center sm:py-10">
-        <div className="mx-auto flex max-w-4xl flex-col items-center">
-          <span
-            className={cn(
-              'inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em]',
-              c.accent,
-            )}
-          >
-            <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-            {badge}
-          </span>
-
-          <h1
-            id="service-hero-heading"
-            className="mt-6 text-balance text-3xl sm:mt-7 font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-7xl [@media(max-height:820px)]:lg:text-5xl"
-          >
-            {h1Lead}
-            {h1Accent && <span className={c.accent}>{h1Accent}</span>}
-          </h1>
-
-          <p className="mt-5 max-w-[40ch] sm:mt-7 text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            {painLine}
-          </p>
-
-          {/* Two paths out: one for people ready to talk, one for people still
-              comparing. Losing the second group to a dead end is the most
-              common way a single-button hero under-converts. */}
-          <div className="mt-8 flex flex-col items-center gap-x-8 gap-y-4 sm:mt-10 sm:flex-row">
-            <Link
-              href={primaryCta.href}
-              className={cn(
-                'inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-medium shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2',
-                c.cta,
-                c.ctaText,
-              )}
-            >
-              {primaryCta.label}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              href={secondaryCta.href}
-              className={cn(
-                'group inline-flex min-h-11 items-center gap-1.5 px-5 py-3 text-base font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
-                c.accent,
-              )}
-            >
-              {secondaryCta.label}
-              <ArrowRight
-                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
-            </Link>
-          </div>
-
-          {reassurance && (
-            <p className="mt-5 text-xs text-muted-foreground/80 sm:mt-6">{reassurance}</p>
-          )}
-
-          {stats && stats.length > 0 && (
-            <dl className="mt-12 flex flex-wrap justify-center gap-x-14 gap-y-6">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <dt className={cn('text-3xl font-semibold leading-none', c.accent)}>
-                    {stat.value}
-                  </dt>
-                  <dd className="mt-2 text-xs text-muted-foreground">{stat.label}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-        </div>
-      </div>
-
-      {/* Recognition, sat at the foot of the screen so it reads as a footnote to
-          the statement above rather than competing with it. */}
-      {points.length > 0 && (
-        <div className="container">
-          <ul className="mx-auto grid max-w-sm gap-4 border-t border-border/60 pt-6 sm:max-w-5xl sm:pt-8 sm:grid-cols-3 sm:gap-10">
-            {points.map((point) => (
-              <li
-                key={point}
-                className="flex items-start gap-3 text-sm leading-relaxed text-muted-foreground"
-              >
-                <span
-                  className={cn('mt-2 h-1.5 w-1.5 shrink-0 rounded-full', c.dot)}
-                  aria-hidden="true"
-                />
-                {point}
-              </li>
-            ))}
-          </ul>
-        </div>
+      {stats && stats.length > 0 && (
+        <dl className="mt-10 flex flex-wrap justify-center gap-x-10 gap-y-5 lg:justify-start">
+          {stats.map((stat) => (
+            <div key={stat.label}>
+              <dt className={cn('text-2xl font-semibold leading-none sm:text-3xl', c.accent)}>
+                {stat.value}
+              </dt>
+              <dd className="mt-1.5 text-xs text-muted-foreground">{stat.label}</dd>
+            </div>
+          ))}
+        </dl>
       )}
-    </section>
+    </SplitHero>
   )
 }
 

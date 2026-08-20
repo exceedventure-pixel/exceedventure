@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import React from 'react'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Building2 } from 'lucide-react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
@@ -30,7 +30,8 @@ const ventures = [
   },
   {
     name: 'Create a Content',
-    description: 'Visual content and motion creatives that support campaigns, products, and brands.',
+    description:
+      'Visual content and motion creatives that support campaigns, products, and brands.',
     light: '/assets/createacontent.svg',
     dark: '/assets/dark-createacontent.svg',
     color: 'red',
@@ -59,13 +60,13 @@ export default function VenturesPage() {
   return (
     <div className="min-h-screen">
       <PageHero
-        title={
-          <>
-            Our <span className="text-primary">Branches</span>
-          </>
-        }
+        badge="Our branches"
+        icon={Building2}
+        title="Our "
+        titleAccent="Branches"
+        outlineWord="Branches"
+        primaryCta={{ label: 'Work with us', href: '/contact' }}
         subtitle="Explore our specialized branches, each focused on a different aspect of digital transformation and content creation."
-        className="min-h-[45vh] pb-8"
       />
 
       <div className="container pb-20">
@@ -79,11 +80,27 @@ export default function VenturesPage() {
                   className={`group flex h-full flex-col rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:shadow-xl sm:p-6 lg:p-8 ${colors.border}`}
                 >
                   <div className={`mb-3 w-fit rounded-xl p-2.5 sm:mb-6 sm:p-4 ${colors.bg}`}>
-                    <Image src={venture.light} alt={venture.name} className="h-8 w-auto object-contain sm:h-12 dark:hidden" width={120} height={48} />
-                    <Image src={venture.dark} alt={venture.name} className="hidden h-8 w-auto object-contain sm:h-12 dark:block" width={120} height={48} />
+                    <Image
+                      src={venture.light}
+                      alt={venture.name}
+                      className="h-8 w-auto object-contain sm:h-12 dark:hidden"
+                      width={120}
+                      height={48}
+                    />
+                    <Image
+                      src={venture.dark}
+                      alt={venture.name}
+                      className="hidden h-8 w-auto object-contain sm:h-12 dark:block"
+                      width={120}
+                      height={48}
+                    />
                   </div>
-                  <h3 className="mb-2 text-base font-bold leading-snug sm:mb-3 sm:text-xl lg:text-2xl">{venture.name}</h3>
-                  <p className="mb-4 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:mb-6 sm:line-clamp-none sm:text-base">{venture.description}</p>
+                  <h3 className="mb-2 text-base font-bold leading-snug sm:mb-3 sm:text-xl lg:text-2xl">
+                    {venture.name}
+                  </h3>
+                  <p className="mb-4 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:mb-6 sm:line-clamp-none sm:text-base">
+                    {venture.description}
+                  </p>
                   <div className="mb-6 hidden flex-wrap gap-2 sm:flex">
                     {venture.features.map((feature) => (
                       <span key={feature} className={`rounded-full px-3 py-1 text-sm ${colors.bg}`}>
@@ -104,8 +121,8 @@ export default function VenturesPage() {
         <div className="mt-14 sm:mt-20 rounded-3xl bg-linear-to-r from-primary to-secondary p-6 sm:p-12 text-center text-white">
           <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Want to Work With Us?</h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
-            Whether you need corporate documents, creative content, or software solutions, we&apos;ve
-            got you covered.
+            Whether you need corporate documents, creative content, or software solutions,
+            we&apos;ve got you covered.
           </p>
           <Link
             href="/contact"

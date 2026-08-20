@@ -43,12 +43,6 @@ const CAROUSEL_DATA: CarouselItem[] = [
     description: 'Impress your clients with professionalism',
   },
   {
-    id: 6,
-    text: 'SPECIAL BRANCHES',
-    image: '/assets/carousel/image-6.png',
-    description: 'Streamlining workflows with smart specialized branches',
-  },
-  {
     id: 7,
     text: 'Corporate Design',
     image: '/assets/carousel/image-7.png',
@@ -72,10 +66,16 @@ const TRANSITION_MS = 400
  * wings arriving a beat behind the centre so the stack builds outwards instead
  * of snapping into place all at once.
  */
-const ASSEMBLE_MS = 950
+const ASSEMBLE_MS = 1500
 /** Per-rank delay. Rank 0 is the centre card, which lands first. */
-const ASSEMBLE_STAGGER_MS = 90
-const EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)'
+const ASSEMBLE_STAGGER_MS = 150
+/*
+ * Quart-out, not the expo-out the slide transitions use. Expo leaves almost all
+ * of its distance in the first fifth of the timeline, which reads as a snap on a
+ * move this long; quart keeps the cards visibly travelling for most of it and
+ * still settles without a bounce.
+ */
+const EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
 /** How far off-screen a wing starts, in viewport widths. */
 const FLY_IN_VW = 68
@@ -226,20 +226,25 @@ export const StackedCarousel = () => {
     /*
      * Waiting to be assembled: parked off the edge it will arrive from, turned
      * a few degrees and scaled back, so the fly-in reads as cards being dealt
-     * rather than panels sliding along a rail. The centre card has no side to
-     * come from, so it rises instead.
+     * rather than panels sliding along a rail.
+     *
+     * Fully opaque, and off screen rather than invisible. Fading them up meant
+     * the cards were still half transparent through the part of the move you
+     * actually watch; now they are simply outside the window until they are
+     * not. The centre card gets a side to come from for the same reason — as a
+     * rise from just below its resting place it would have been sitting there,
+     * solid and visible, before anything started.
      *
      * No transition at all here — this is a resting position the browser paints
      * once, and the movement belongs entirely to the change out of it.
      */
     if (phase === 'idle') {
-      const dir = Math.sign(offset)
+      const dir = Math.sign(offset) || -1
+      const reach = offset === 0 ? FLY_IN_VW * 0.75 : FLY_IN_VW
       return {
-        transform: dir
-          ? `translateX(${dir * FLY_IN_VW}vw) rotate(${dir * 7}deg) scale(0.86)`
-          : 'translateY(3.5rem) scale(0.9)',
+        transform: `translateX(${dir * reach}vw) rotate(${dir * 7}deg) scale(0.86)`,
         zIndex,
-        opacity: 0,
+        opacity: abs > 2.4 ? 0 : 1,
         transition: 'none',
       }
     }
@@ -252,9 +257,9 @@ export const StackedCarousel = () => {
       transition: reducedMotion
         ? 'none'
         : phase === 'assembling'
-          ? `transform ${ASSEMBLE_MS}ms ${EASE_OUT} ${abs * ASSEMBLE_STAGGER_MS}ms, opacity ${ASSEMBLE_MS}ms ease-out ${abs * ASSEMBLE_STAGGER_MS}ms`
+          ? `transform ${ASSEMBLE_MS}ms ${EASE_OUT} ${abs * ASSEMBLE_STAGGER_MS}ms`
           : `transform ${TRANSITION_MS}ms ease-out, opacity ${TRANSITION_MS}ms ease-out`,
-      willChange: phase === 'assembling' ? 'transform, opacity' : undefined,
+      willChange: phase === 'assembling' ? 'transform' : undefined,
     }
   }
 
@@ -317,7 +322,13 @@ export const StackedCarousel = () => {
                       // would preload an image nobody has scrolled to yet.
                       loading="lazy"
                     />
-                    {!isCenter && <div className="card-overlay" />}
+                    {/* Always mounted so it can fade, but held off until the
+                        stack is live: the side cards are meant to recede once
+                        they are in place, not while they are still arriving. */}
+                    <div
+                      className="card-overlay"
+                      style={{ opacity: !isCenter && phase === 'live' ? 1 : 0 }}
+                    />
                   </div>
 
                   <div className="text-section">

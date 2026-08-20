@@ -12,6 +12,7 @@ import {
   Users,
   ArrowRight,
   type LucideIcon,
+  Layers,
 } from 'lucide-react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
@@ -53,7 +54,12 @@ const solutions: {
     icon: Bot,
     color: 'red',
     href: '/solutions/automation',
-    features: ['AI Integration', 'Task Automation', 'Business Process Automation', 'Custom Workflows'],
+    features: [
+      'AI Integration',
+      'Task Automation',
+      'Business Process Automation',
+      'Custom Workflows',
+    ],
   },
   {
     title: 'Media Buying',
@@ -88,7 +94,12 @@ const solutions: {
     icon: Target,
     color: 'amber',
     href: '/solutions/marketing',
-    features: ['Marketing Strategy', 'Campaign Management', 'Email Marketing', 'Funnel Optimization'],
+    features: [
+      'Marketing Strategy',
+      'Campaign Management',
+      'Email Marketing',
+      'Funnel Optimization',
+    ],
   },
   {
     title: 'Content Supply',
@@ -106,7 +117,12 @@ const solutions: {
     icon: Users,
     color: 'indigo',
     href: '/solutions/smm-va',
-    features: ['Social Media Management', 'Community Engagement', 'Virtual Assistants', 'Reporting'],
+    features: [
+      'Social Media Management',
+      'Community Engagement',
+      'Virtual Assistants',
+      'Reporting',
+    ],
   },
 ]
 
@@ -115,7 +131,11 @@ const colorClasses: Record<string, { bg: string; text: string; border: string }>
   red: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'hover:border-red-500/50' },
   blue: { bg: 'bg-blue-500/10', text: 'text-blue-500', border: 'hover:border-blue-500/50' },
   purple: { bg: 'bg-purple-500/10', text: 'text-purple-500', border: 'hover:border-purple-500/50' },
-  emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-500', border: 'hover:border-emerald-500/50' },
+  emerald: {
+    bg: 'bg-emerald-500/10',
+    text: 'text-emerald-500',
+    border: 'hover:border-emerald-500/50',
+  },
   amber: { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'hover:border-amber-500/50' },
   pink: { bg: 'bg-pink-500/10', text: 'text-pink-500', border: 'hover:border-pink-500/50' },
   indigo: { bg: 'bg-indigo-500/10', text: 'text-indigo-500', border: 'hover:border-indigo-500/50' },
@@ -147,11 +167,13 @@ export default async function SolutionsPage() {
       />
 
       <PageHero
-        title={
-          <>
-            Our <span className="text-primary">Solutions</span>
-          </>
-        }
+        badge="Solutions"
+        icon={Layers}
+        title="Our "
+        titleAccent="Solutions"
+        outlineWord="Solutions"
+        primaryCta={{ label: 'Talk to us', href: '/contact' }}
+        secondaryCta={{ label: 'See pricing', href: '/pricing' }}
         subtitle="We provide comprehensive digital solutions to help businesses thrive in the modern landscape."
       />
 
@@ -167,14 +189,23 @@ export default async function SolutionsPage() {
                 delay={index * 80}
                 className={`group flex h-full flex-col rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:shadow-xl sm:p-6 lg:p-8 ${colors.border}`}
               >
-                <div className={`mb-3 w-fit rounded-xl p-2.5 sm:mb-6 sm:p-4 ${colors.bg} ${colors.text} transition-transform duration-200 group-hover:scale-110`}>
+                <div
+                  className={`mb-3 w-fit rounded-xl p-2.5 sm:mb-6 sm:p-4 ${colors.bg} ${colors.text} transition-transform duration-200 group-hover:scale-110`}
+                >
                   <Icon className="h-6 w-6 sm:h-9 sm:w-9 lg:h-10 lg:w-10" />
                 </div>
-                <h3 className="mb-2 text-base font-bold leading-snug sm:mb-3 sm:text-xl lg:text-2xl">{solution.title}</h3>
-                <p className="mb-4 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:mb-6 sm:line-clamp-none sm:text-base">{solution.description}</p>
+                <h3 className="mb-2 text-base font-bold leading-snug sm:mb-3 sm:text-xl lg:text-2xl">
+                  {solution.title}
+                </h3>
+                <p className="mb-4 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:mb-6 sm:line-clamp-none sm:text-base">
+                  {solution.description}
+                </p>
                 <div className="mb-6 hidden flex-wrap gap-2 sm:flex">
                   {solution.features.map((feature) => (
-                    <span key={feature} className={`rounded-full px-3 py-1 text-sm ${colors.bg} ${colors.text}`}>
+                    <span
+                      key={feature}
+                      className={`rounded-full px-3 py-1 text-sm ${colors.bg} ${colors.text}`}
+                    >
                       {feature}
                     </span>
                   ))}
@@ -195,17 +226,17 @@ export default async function SolutionsPage() {
       <section className="pb-16 sm:pb-24">
         <div className="container">
           <div className="rounded-3xl bg-linear-to-r from-primary to-secondary p-6 sm:p-12 text-center text-white">
-          <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to Get Started?</h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
-            Let&apos;s discuss how we can help transform your business with our comprehensive digital
-            solutions.
-          </p>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 font-bold text-primary transition-colors hover:bg-white/90"
-          >
-            Contact Us <ArrowRight size={18} />
-          </Link>
+            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">Ready to Get Started?</h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
+              Let&apos;s discuss how we can help transform your business with our comprehensive
+              digital solutions.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 font-bold text-primary transition-colors hover:bg-white/90"
+            >
+              Contact Us <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
       </section>

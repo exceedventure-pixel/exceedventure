@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AUTO_SCROLL_MS } from './useLiveFrame'
 
 /**
- * The unattended tour: a couple of cards at a time scroll themselves, picked at
+ * The unattended tour: three cards at a time scroll themselves, picked at
  * random.
  *
  * This is the only thing that moves a card. Hovering used to scroll one and no
@@ -14,11 +14,11 @@ import { AUTO_SCROLL_MS } from './useLiveFrame'
  * rather than a fallback for people who did not happen to hover.
  *
  * A pointer freezes the card under it (see useLiveFrame) but does not stop the
- * tour: pausing everything meant the other card of the batch was yanked home
- * the moment the cursor entered the grid, which is movement caused by hovering
- * — the exact thing being removed. The hovered card is skipped when picking
- * instead, so a batch never spends one of its two slots on a card that is
- * pinned and cannot move.
+ * tour: pausing everything meant the rest of the batch was yanked home the
+ * moment the cursor entered the grid, which is movement caused by hovering —
+ * the exact thing being removed. The hovered card is skipped when picking
+ * instead, so a batch never spends one of its slots on a card that is pinned
+ * and cannot move.
  *
  * Returns a ref for the grid: the tour observes its children, so a card is only
  * ever picked while it is actually on screen. Without that, most of a phone's
@@ -32,19 +32,29 @@ const VISIBLE_RATIO = 0.55
 
 /**
  * How many cards run together. Capped by what is on screen, so a phone showing
- * one card tours that one rather than sitting still waiting for a partner.
+ * two cards tours those rather than sitting still waiting for a third.
+ *
+ * Three rather than two now the grid is four across: with two running, half a
+ * desktop row was always still, and a section whose whole argument is "these
+ * are live sites" reads better with most of the row in motion. It is still a
+ * batch and not "all of them" on purpose — a grid where every card moves at
+ * once is a wall of movement with nothing to rest the eye on.
  */
-const BATCH = 2
+const BATCH = 3
 
 /**
  * Offset between the cards in a batch.
  *
- * Two thumbnails starting on the same frame at the same speed read as one
- * sliding panel rather than as two pages being browsed — the same trap the hero
+ * Thumbnails starting on the same frame at the same speed read as one sliding
+ * panel rather than as separate pages being browsed — the same trap the hero
  * loop staggers its lines to avoid. A beat between them is what makes it look
  * composed instead of mechanical.
+ *
+ * Shorter than it was, because the batch grew: the tour waits out the whole
+ * stagger before the next pick, so three cards at 450ms each added nearly a
+ * second of dead time to every cycle.
  */
-const STAGGER_MS = 450
+const STAGGER_MS = 340
 
 /** Stable identity: a fresh [] every render would re-arm the timer forever. */
 const NONE: number[] = []
@@ -115,8 +125,7 @@ export function useAutoTour(count: number) {
   }, [])
 
   const pick = useCallback((): number[] => {
-    // A pinned card cannot move, so touring it would quietly turn a batch of
-    // two into a batch of one.
+    // A pinned card cannot move, so touring it would quietly shrink the batch.
     const onScreen = [...visible.current].filter((i) => i !== hoveredCard.current)
     if (!onScreen.length) return NONE
 
@@ -124,8 +133,8 @@ export function useAutoTour(count: number) {
 
     /*
      * Prefer cards that did not just run, but only while there are enough of
-     * them to fill a batch. Insisting on it would starve a phone showing two
-     * cards, which would then alternate between the same pair and a standstill.
+     * them to fill a batch. Insisting on it would starve a phone showing three
+     * cards, which would then alternate between the same trio and a standstill.
      */
     const fresh = onScreen.filter((i) => !last.current.includes(i))
     const pool = fresh.length >= size ? fresh : onScreen

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
-import { Check } from 'lucide-react'
+import { Check, Tag } from 'lucide-react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
@@ -57,11 +57,12 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen">
       <PageHero
-        title={
-          <>
-            Simple, transparent <span className="text-primary">Pricing</span>
-          </>
-        }
+        badge="Pricing"
+        icon={Tag}
+        title="Simple, transparent "
+        titleAccent="Pricing"
+        primaryCta={{ label: 'Get a quote', href: '/contact' }}
+        secondaryCta={{ label: 'See our work', href: '/our-works' }}
         subtitle="Every project is different, so we scope pricing around your goals. Pick the plan closest to your needs and we'll tailor a custom quote."
       />
 

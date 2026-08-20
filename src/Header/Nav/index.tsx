@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import clsx from 'clsx'
 import siteConfig, { type NavChild } from '@/config/site'
 import { useAccent } from '@/providers/Accent'
@@ -24,6 +24,47 @@ import { useAccent } from '@/providers/Accent'
 
 /** Home / About / Contact live in the hamburger drawer only — see site config. */
 const inlineNav = siteConfig.nav.filter((item) => !item.drawerOnly)
+
+// ─── Nav label ───────────────────────────────────────────────────────────────
+
+/**
+ * A menu item's word, and the hairline under it.
+ *
+ * The rule is one element that scales rather than a width or an opacity that
+ * animates: `scaleX` runs on the compositor, and growing from the centre reads
+ * as the line being drawn under the word instead of sliding in from one side.
+ *
+ * Three states, one element. Open has no line at all — the filled surface under
+ * an open trigger is already saying which one it is, and a second marker under
+ * it is noise. Active holds the line permanently. Everything else draws it on
+ * hover and lets it retract.
+ */
+const NavLabel: React.FC<{
+  label: string
+  active: boolean
+  /** The accent bar's colour class. */
+  bar: string
+  open?: boolean
+}> = ({ label, active, bar, open = false }) => (
+  <span className="relative text-[13px] font-semibold uppercase leading-tight tracking-[0.09em]">
+    {label}
+    <span
+      aria-hidden="true"
+      className={clsx(
+        // Caps carry a trailing letter-space that the word itself does not, so
+        // a full-width bar overhangs the last letter by exactly that much.
+        //
+        // `transition-[scale]`, not `transition-transform`: Tailwind v4's
+        // `scale-*` utilities set the standalone `scale` property rather than
+        // composing a `transform`, and `transition-property: transform` does
+        // not cover it — the bar snapped between states instead of growing.
+        'absolute -bottom-1.5 left-0 h-px w-[calc(100%-0.09em)] origin-center rounded-full transition-[scale] duration-300 ease-out',
+        bar,
+        open ? 'scale-x-0' : active ? 'scale-x-100' : 'scale-x-0 group-hover/nav:scale-x-100',
+      )}
+    />
+  </span>
+)
 
 // ─── One service row inside a dropdown ───────────────────────────────────────
 
@@ -148,7 +189,7 @@ export const HeaderNav: React.FC = () => {
   }, [openHref])
 
   return (
-    <nav ref={navRef} className="flex items-center gap-1">
+    <nav ref={navRef} className="flex items-center gap-0.5">
       {inlineNav.map((item, index) => {
         const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
         const children = item.children ?? []
@@ -161,12 +202,12 @@ export const HeaderNav: React.FC = () => {
               className={clsx(
                 // Colour shift only on hover — no fill. The filled surface is
                 // reserved for the open state, where it is the panel's roof.
-                'flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[17px] font-semibold transition-colors duration-200',
+                'group/nav flex items-center rounded-xl px-4 py-2 transition-colors duration-200',
                 tokens.accentHover,
-                isActive ? tokens.accent : 'text-foreground/80',
+                isActive ? tokens.accent : 'text-foreground/75',
               )}
             >
-              {item.shortLabel ?? item.label}
+              <NavLabel label={item.shortLabel ?? item.label} active={isActive} bar={tokens.dot} />
             </Link>
           )
         }
@@ -199,34 +240,34 @@ export const HeaderNav: React.FC = () => {
               // No transitions anywhere on the trigger: the fill and the panel
               // must land on the same frame, so the menu reads as instant.
               className={clsx(
-                'flex flex-col items-start gap-0.5 px-3.5',
+                'group/nav flex items-center px-4',
                 isOpen
                   ? // Open: square off the bottom and run the glass to the very
                     // edge, so it meets the panel below with no seam.
-                    'rounded-t-xl py-2 bg-(--menu-surface) text-foreground backdrop-blur-xl'
+                    'rounded-t-xl bg-(--menu-surface) py-3 text-foreground backdrop-blur-xl'
                   : clsx(
                       // Closed: no fill at all, just a colour shift. The margin
                       // still matches the open state's extra padding so the row
                       // height never changes between the two.
-                      'my-1 rounded-xl py-1',
+                      'my-1.5 rounded-xl py-1.5',
                       tokens.accentHover,
-                      isActive ? tokens.accent : 'text-foreground/80',
+                      isActive ? tokens.accent : 'text-foreground/75',
                     ),
               )}
             >
-              {/* Inherits the trigger's colour, so it tracks hover/open state. */}
-              {item.overline && (
-                <span className="text-[9px] font-medium uppercase leading-none tracking-[0.14em] opacity-45">
-                  {item.overline}
-                </span>
-              )}
-              <span className="flex items-center gap-1.5 text-[17px] font-semibold leading-tight">
-                {item.shortLabel ?? item.label}
-                <ChevronDown
-                  className={clsx('h-3.5 w-3.5', isOpen && 'rotate-180')}
-                  aria-hidden="true"
-                />
-              </span>
+              {/*
+               * The label alone. The chevron and the category overline above it
+               * are gone: four items each carrying a caption and an arrow is a
+               * lot of furniture for four words, and the panel opening on click
+               * is its own affordance. Inherits the trigger's colour, so it
+               * still tracks hover, active and open.
+               */}
+              <NavLabel
+                label={item.shortLabel ?? item.label}
+                active={isActive}
+                open={isOpen}
+                bar={tokens.dot}
+              />
             </button>
 
             {isOpen && (

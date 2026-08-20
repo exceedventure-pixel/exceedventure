@@ -1,21 +1,23 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
 import {
   ArrowDown,
-  ArrowRight,
   Bot,
   Globe,
   Megaphone,
   Palette,
+  PenTool,
+  Search,
   Sparkles,
+  Target,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/utilities/ui'
-import { SERVICE_COPY, SERVICE_ORDER, type ServiceKey } from '@/config/services'
-import { accentMap, type AccentColor } from '@/components/ServiceDetail/colors'
+import { DrawnRule } from '@/components/DrawnRule'
+import { SERVICE_COPY, type ServiceKey } from '@/config/services'
+import { accentMap, type AccentColor, type ServiceColor } from '@/components/ServiceDetail/colors'
 import { useAccent } from '@/providers/Accent'
 
 /**
@@ -61,9 +63,6 @@ type Frame = {
   lead: string
   accent?: string
   sub: string
-  href?: string
-  /** Label for the frame's button. Present whenever `href` is. */
-  cta?: string
   /** Which edge this frame flies in from. It leaves through the opposite one. */
   from: Direction
   /**
@@ -86,18 +85,22 @@ const ENTRY_EDGES: Direction[] = ['left', 'right', 'up', 'down']
 /**
  * Slide artwork.
  *
- * Drop a file into `public/assets/hero/` and name it here — the card crops with
- * object-cover, so anything roughly landscape works and nothing else needs to
- * change. A slide without an entry renders a tinted panel carrying the
- * service's icon instead: a deliberate placeholder rather than a hole in the
- * layout, and a visible reminder that the image is still to come.
+ * Drop a file into `public/assets/hero/` and name it here — the card is square
+ * and crops with object-cover, so a landscape source loses its sides. Square or
+ * near-square art keeps the most of itself. A slide without an entry renders a tinted panel carrying its icon
+ * instead: a deliberate placeholder rather than a hole in the layout, and a
+ * visible reminder that the image is still to come.
+ *
+ * Only set a key once the file is actually there. next/image returns a 400 for
+ * a path that does not resolve, which renders as a broken card rather than the
+ * placeholder — the commented lines below are waiting on artwork.
  */
 const SLIDE_IMAGE: Partial<Record<ServiceKey | 'opening', string>> = {
-  // opening: '/assets/hero/opening.jpg',
-  // 'websites-softwares': '/assets/hero/websites-softwares.jpg',
-  // 'digital-marketing': '/assets/hero/digital-marketing.jpg',
-  // 'automation-ai': '/assets/hero/automation-ai.jpg',
-  // 'creative-branding': '/assets/hero/creative-branding.jpg',
+  // opening: '/assets/hero/opening.webp',
+  // 'websites-softwares': '/assets/hero/websites-softwares.webp',
+  // 'digital-marketing': '/assets/hero/digital-marketing.webp',
+  // 'automation-ai': '/assets/hero/automation-ai.webp',
+  // 'creative-branding': '/assets/hero/creative-branding.webp',
 }
 
 const SLIDE_ICON: Record<ServiceKey, LucideIcon> = {
@@ -108,24 +111,94 @@ const SLIDE_ICON: Record<ServiceKey, LucideIcon> = {
 }
 
 /**
- * The service slides. Words, colour and link all come from the shared service
- * config, so the loop and the page each frame links to cannot drift apart.
+ * One slide, before it is turned into a frame.
+ *
+ * A slide is either one of the four services — words, colour and name pulled
+ * from the shared config so the loop can never drift from the page — or a
+ * standalone written here. The standalone ones are the specialisms worth a
+ * screen of their own without being top-level services: they have no entry in
+ * `SERVICE_COPY`, and adding one purely to feed this loop would put a fifth
+ * service into the type that four real service pages read from.
  */
-const SERVICES: Frame[] = SERVICE_ORDER.map((key, i) => {
-  const copy = SERVICE_COPY[key]
+type Slide =
+  | { service: ServiceKey }
+  | {
+      kicker: string
+      lead: string
+      accent: string
+      sub: string
+      color: ServiceColor
+      icon: LucideIcon
+      /** Its own artwork — the service slides read `SLIDE_IMAGE` instead. */
+      image?: string
+    }
+
+/**
+ * The running order.
+ *
+ * Each specialism follows the service it belongs to — SEO after websites,
+ * paid media after marketing, brand design after creative — so the loop reads
+ * as a subject and then a detail of it, rather than eight unrelated screens.
+ */
+const SLIDES: Slide[] = [
+  { service: 'websites-softwares' },
+  {
+    kicker: 'SEO & Local Search',
+    lead: 'RANK WHERE',
+    accent: 'IT MATTERS',
+    sub: 'Technical SEO and local search that put you in front of people already looking.',
+    color: 'emerald',
+    icon: Search,
+    image: '/assets/hero/seo.webp',
+  },
+  { service: 'digital-marketing' },
+  {
+    kicker: 'Paid Ads & Media Buying',
+    lead: 'SPEND LESS.',
+    accent: 'SELL MORE.',
+    sub: 'Google and Meta campaigns managed to a number you can actually check.',
+    color: 'amber',
+    icon: Target,
+    image: '/assets/hero/meta-ads.webp',
+  },
+  { service: 'automation-ai' },
+  { service: 'creative-branding' },
+  {
+    kicker: 'Brand Design',
+    lead: 'A BRAND THEY',
+    accent: 'REMEMBER',
+    sub: 'Logo, identity and guidelines that hold up everywhere you turn up.',
+    color: 'pink',
+    icon: PenTool,
+  },
+]
+
+/*
+ * Entry edges cycle rather than being indexed one-to-one: there are more
+ * slides than edges now, and running off the end of the list would have left
+ * every slide past the fourth with no direction to come from.
+ */
+const SERVICES: Frame[] = SLIDES.map((slide, i) => {
+  const shared = {
+    from: ENTRY_EDGES[i % ENTRY_EDGES.length],
+    tilt: i % 2 === 0 ? -5 : 5,
+    hold: HOLD_SERVICE,
+  }
+
+  if (!('service' in slide)) {
+    return { ...slide, ...shared }
+  }
+
+  const copy = SERVICE_COPY[slide.service]
   return {
+    ...shared,
     kicker: copy.name,
     lead: copy.slide.lead,
     accent: copy.slide.accent,
     sub: copy.slide.sub,
-    href: copy.href,
-    cta: copy.slide.cta,
     color: copy.color,
-    from: ENTRY_EDGES[i],
-    tilt: i % 2 === 0 ? -5 : 5,
-    icon: SLIDE_ICON[key],
-    image: SLIDE_IMAGE[key],
-    hold: HOLD_SERVICE,
+    icon: SLIDE_ICON[slide.service],
+    image: SLIDE_IMAGE[slide.service],
   }
 })
 
@@ -133,8 +206,6 @@ const OPENING: Frame = {
   lead: 'GET YOUR BUSINESS',
   accent: 'ONLINE',
   sub: 'Everything you need to build, grow & manage your digital presence.',
-  href: '/contact',
-  cta: 'Start a project',
   from: 'up',
   color: 'brand',
   tilt: -6,
@@ -142,7 +213,6 @@ const OPENING: Frame = {
   image: SLIDE_IMAGE.opening,
   hold: HOLD_OPENING,
 }
-
 const FRAMES: Frame[] = [OPENING, ...SERVICES]
 
 /**
@@ -338,11 +408,31 @@ export const HeroIntro: React.FC = () => {
 
   const headline = (
     <>
-      <span
-        className="block h-5 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground"
-        style={move(0.55, 0)}
-      >
-        {frame.kicker ?? ''}
+      {/*
+       * The service name, as a badge rather than a whisper.
+       *
+       * It used to be muted grey at 12px, which put the one word that says
+       * which service is being described below everything else on the slide in
+       * the reading order. It now carries the frame's own colour on a tinted
+       * chip — the same treatment the service pages give it — so the slide
+       * announces what it is before the headline has to.
+       *
+       * The wrapper holds a fixed height whether or not there is a kicker: the
+       * opening frame has none, and without it the headline would jump up by
+       * the badge's height on every fifth slide.
+       */}
+      <span className="flex h-7 items-center justify-center lg:justify-start">
+        {frame.kicker && (
+          <span
+            className={cn(
+              'inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-1000',
+              tokens.badge,
+            )}
+            style={move(0.55, 0)}
+          >
+            {frame.kicker}
+          </span>
+        )}
       </span>
 
       {/* clamp() rather than breakpoint steps, so the line grows continuously
@@ -361,46 +451,42 @@ export const HeroIntro: React.FC = () => {
           lineHeight: 1.08,
         }}
       >
-        {frame.lead}
+        <span className="block">{frame.lead}</span>
         {frame.accent && (
-          <>
-            {' '}
-            <span className={tokens.accent}>{frame.accent}</span>
-          </>
+          // A block of its own, so the accent always starts a second line
+          // rather than wrapping only when the words happen to be long enough.
+          <span className="block">
+            {/*
+             * The accent tail, with its drawn rule. `key` on the frame index so
+             * React replaces the node each slide and the stroke redraws rather
+             * than sitting finished from the frame before.
+             */}
+            <DrawnRule key={index} className={tokens.accent}>
+              {frame.accent}
+            </DrawnRule>
+          </span>
         )}
       </span>
 
+      {/*
+       * The service slides drop their sentence on a phone. The badge and the
+       * headline already say which service it is and what it does, and a third
+       * block of type on a 390px screen pushes the card off the fold for
+       * something nobody finishes reading in the two seconds it is up.
+       *
+       * The opening frame keeps its line — it is the one slide with no badge
+       * above it, so the sentence is doing that work instead.
+       */}
       <span
-        className="mx-auto mt-4 block max-w-xl text-balance text-base text-muted-foreground sm:text-lg lg:mx-0"
+        className={cn(
+          'mx-auto mt-6 block max-w-xl text-balance text-base text-muted-foreground sm:text-lg lg:mx-0',
+          frame.kicker && 'hidden sm:block',
+        )}
         style={move(0.75, 140)}
       >
         {frame.sub}
       </span>
     </>
-  )
-
-  /**
-   * The frame's button, filled with the frame's own colour.
-   *
-   * The one thing on this screen that is not decorative, so it sits outside the
-   * `aria-hidden` blocks and stays focusable: a button a keyboard cannot reach
-   * and a screen reader cannot see is not a call to action. It carries no
-   * `aria-live`, so changing slides never interrupts anyone — it simply reads
-   * as whatever it currently says.
-   */
-  const button = frame.href && frame.cta && (
-    <Link
-      href={frame.href}
-      className={cn(
-        'inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-base font-medium shadow-lg transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2',
-        tokens.cta,
-        tokens.ctaText,
-      )}
-      style={move(0.85, 210)}
-    >
-      {frame.cta}
-      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-    </Link>
   )
 
   /**
@@ -427,7 +513,7 @@ export const HeroIntro: React.FC = () => {
         )}
       />
       <div
-        className="relative aspect-4/3 overflow-hidden rounded-3xl border border-border/70 bg-card shadow-2xl shadow-black/20 dark:shadow-black/50"
+        className="relative aspect-square overflow-hidden rounded-3xl border border-border/70 bg-card shadow-2xl shadow-black/20 dark:shadow-black/50"
         style={moveCard()}
       >
         {frame.image ? (
@@ -506,9 +592,10 @@ export const HeroIntro: React.FC = () => {
         branding.
       </h2>
 
-      {/* `aria-hidden` sits on the two decorative halves rather than the whole
-          grid, so the button between them stays a real, reachable link. */}
-      <div className="container">
+      {/* Decorative in full: every link inside is a duplicate of one the
+          static heading above already carries, and the words change every couple
+          of seconds. The `sr-only` h2 is what assistive tech reads instead. */}
+      <div className="container" aria-hidden="true">
         {/* No max-width of its own: the bare container is what the header uses,
             so the words start on the same line as the logo and the card ends on
             the same line as the header's buttons. */}
@@ -522,25 +609,14 @@ export const HeroIntro: React.FC = () => {
           <div className="order-2 text-center lg:order-1 lg:text-left">
             {/* Fixed min-height so the card beside it holds still as frames swap
                 between one-, two- and three-line headlines. */}
-            <div
-              className="flex min-h-48 flex-col justify-center sm:min-h-56 lg:min-h-64"
-              aria-hidden="true"
-            >
-              {frame.href ? (
-                <Link href={frame.href} tabIndex={-1} className="block">
-                  {headline}
-                </Link>
-              ) : (
-                headline
-              )}
+            <div className="flex min-h-48 flex-col justify-center sm:min-h-56 lg:min-h-64">
+              {headline}
             </div>
-
-            {button && <div className="mt-7">{button}</div>}
 
             {/* Progress: one hairline per frame, filling over that frame's own
                 length. In the flow under the words so it tracks their edge. */}
             {!reducedMotion && (
-              <div className="mt-8 flex justify-center gap-2 lg:justify-start" aria-hidden="true">
+              <div className="mt-8 flex justify-center gap-2 lg:justify-start">
                 {FRAMES.map((f, i) => (
                   <button
                     key={`${f.lead}-${i}`}
@@ -571,15 +647,7 @@ export const HeroIntro: React.FC = () => {
             )}
           </div>
 
-          <div className="order-1 lg:order-2" aria-hidden="true">
-            {frame.href ? (
-              <Link href={frame.href} tabIndex={-1} className="block">
-                {card}
-              </Link>
-            ) : (
-              card
-            )}
-          </div>
+          <div className="order-1 lg:order-2">{card}</div>
         </div>
       </div>
 

@@ -64,6 +64,7 @@ export default function FAQsPage() {
       />
 
       <PageHero
+        variant="compact"
         title="Frequently Asked Questions"
         subtitle="Find answers to common questions about our services, pricing, and processes."
       />
@@ -82,7 +83,11 @@ export default function FAQsPage() {
                     strokeWidth={2}
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
                   </svg>
                 </summary>
                 <p className="px-5 pb-5 pt-0 text-muted-foreground">{faq.answer}</p>

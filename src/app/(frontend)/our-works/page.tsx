@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Briefcase } from 'lucide-react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
 import { generatePageMeta } from '@/utilities/generateMeta'
@@ -20,11 +20,12 @@ export default function OurWorksPage() {
   return (
     <div className="min-h-screen">
       <PageHero
-        title={
-          <>
-            Our <span className="text-primary">Works</span>
-          </>
-        }
+        badge="Selected work"
+        icon={Briefcase}
+        title="Our "
+        titleAccent="Works"
+        outlineWord="Works"
+        primaryCta={{ label: 'Start a project', href: '/contact' }}
         subtitle="A selection of the projects we've delivered for clients worldwide — from websites and web systems to branding and content."
       />
 
@@ -33,7 +34,8 @@ export default function OurWorksPage() {
           <h2 className="mb-3 text-2xl font-bold">Portfolio coming soon</h2>
           <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
             We&apos;re curating our featured projects into the new portfolio. In the meantime, tell
-            us what you&apos;re building — we&apos;d love to show you relevant work from our archive.
+            us what you&apos;re building — we&apos;d love to show you relevant work from our
+            archive.
           </p>
           <Link
             href="/contact"

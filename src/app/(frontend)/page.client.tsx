@@ -3,35 +3,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import {
-  ArrowRight,
-  Globe,
-  Bot,
-  Megaphone,
-  Palette,
-  Target,
-  FileText,
-  Rocket,
-  Shield,
-  Users,
-  TrendingUp,
-  BarChart3,
-  Brain,
-  Workflow,
-  Heart,
-  Clock,
-  Briefcase,
-  type LucideIcon,
-} from 'lucide-react'
+import { ArrowRight, FileText, Heart, Clock, Briefcase, type LucideIcon } from 'lucide-react'
 
 import { HeroIntro } from '@/components/HeroIntro'
-import { useAccent } from '@/providers/Accent'
-import { cn } from '@/utilities/ui'
 import { Reveal } from '@/components/Reveal'
 import { StackedCarousel } from '@/components/StackedCarousel'
 import { WebsiteShowcaseSection } from '@/components/WebsiteShowcase'
 import type { ShowcaseItem } from '@/components/WebsiteShowcase/types'
 import { TestimonialsSection } from '@/components/Testimonials'
+import { WhatWeDoGrid } from '@/components/WhatWeDo'
+import { LetsTalkSection } from '@/components/LetsTalk'
+import { OutlineWord } from '@/components/OutlineWord'
 import type { Testimonial } from '@/components/Testimonials/types'
 
 // ─── Animated counter (dependency-free) ──────────────────────────────────────
@@ -114,53 +96,6 @@ function useInView<T extends HTMLElement>(threshold = 0.3) {
   return [ref, inView] as const
 }
 
-// ─── Static content ───────────────────────────────────────────────────────────
-const services: {
-  title: string
-  titleAccent: string
-  icon: LucideIcon
-  color: string
-  href: string
-}[] = [
-  {
-    title: 'WEBSITES',
-    titleAccent: '& SOFTWARES',
-    icon: Globe,
-    color: 'teal',
-    href: '/websites-softwares',
-  },
-  {
-    title: 'DIGITAL',
-    titleAccent: 'MARKETING',
-    icon: Megaphone,
-    color: 'blue',
-    href: '/digital-marketing',
-  },
-  { title: 'AUTOMATION', titleAccent: '& AI', icon: Bot, color: 'red', href: '/automation-ai' },
-  {
-    title: 'CREATIVE',
-    titleAccent: '& BRANDING',
-    icon: Palette,
-    color: 'purple',
-    href: '/creative-branding',
-  },
-]
-
-const colorClasses: Record<string, { bg: string; hover: string; text: string }> = {
-  teal: { bg: 'bg-teal-500/10', hover: 'hover:border-teal-500/40', text: 'text-teal-500' },
-  red: { bg: 'bg-red-500/10', hover: 'hover:border-red-500/40', text: 'text-red-500' },
-  blue: { bg: 'bg-blue-500/10', hover: 'hover:border-blue-500/40', text: 'text-blue-500' },
-  purple: { bg: 'bg-purple-500/10', hover: 'hover:border-purple-500/40', text: 'text-purple-500' },
-  emerald: {
-    bg: 'bg-emerald-500/10',
-    hover: 'hover:border-emerald-500/40',
-    text: 'text-emerald-500',
-  },
-  amber: { bg: 'bg-amber-500/10', hover: 'hover:border-amber-500/40', text: 'text-amber-500' },
-  pink: { bg: 'bg-pink-500/10', hover: 'hover:border-pink-500/40', text: 'text-pink-500' },
-  indigo: { bg: 'bg-indigo-500/10', hover: 'hover:border-indigo-500/40', text: 'text-indigo-500' },
-}
-
 // Breakdown behind the headline "50+ projects" figure. Placeholder split —
 // adjust the counts to the real numbers.
 const projectTypes: { label: string; count: number }[] = [
@@ -170,68 +105,55 @@ const projectTypes: { label: string; count: number }[] = [
   { label: 'Automation & AI', count: 7 },
 ]
 
-const features: { icon: LucideIcon; title: string; description: string }[] = [
-  { icon: Rocket, title: 'Fast Delivery', description: 'We deliver projects on time, every time.' },
+/**
+ * The reasons, as a numbered spec sheet rather than a row of icon cards.
+ *
+ * Four boxes with a tinted glyph in each is the shape this page already uses
+ * twice — the bento and the stats — and a third run of it read as filler. A
+ * numbered list with hairline rules is the one editorial device here, which is
+ * what makes these read as claims being made rather than as more tiles.
+ */
+const reasons: { title: string; description: string }[] = [
   {
-    icon: Shield,
-    title: 'Secure & Reliable',
-    description: 'Enterprise-grade security for your peace of mind.',
-  },
-  { icon: Users, title: 'Dedicated Support', description: 'A team that cares about your success.' },
-  {
-    icon: TrendingUp,
-    title: 'Growth Focused',
-    description: 'Solutions designed to help you scale.',
-  },
-]
-
-const ventures = [
-  {
-    name: 'Softal Core',
-    light: '/assets/softal-core.svg',
-    dark: '/assets/dark-softal-core.svg',
-    href: 'https://softalcore.exceedventure.com',
-    description: 'Software Solutions',
+    title: 'Fast delivery',
+    description: 'Dates given in the first meeting are the dates we launch on.',
   },
   {
-    name: 'Corporate Crafts',
-    light: '/assets/corporate-crafts.svg',
-    dark: '/assets/dark-corporate-crafts.svg',
-    href: 'https://corporatecrafts.exceedventure.com',
-    description: 'Corporate Branding',
+    title: 'Secure and reliable',
+    description: 'Enterprise-grade hosting, backups and updates, handled quietly.',
   },
   {
-    name: 'Create a Content',
-    light: '/assets/createacontent.svg',
-    dark: '/assets/dark-createacontent.svg',
-    href: 'https://createacontent.exceedventure.com',
-    description: 'Content Marketing',
+    title: 'Dedicated support',
+    description: 'We do not vanish at launch. Small things get fixed the same day.',
   },
-]
-
-const dashboardItems: { icon: LucideIcon; title: string; desc: string }[] = [
-  { icon: BarChart3, title: 'Real-time Analytics', desc: 'Monitor metrics in real-time' },
-  { icon: Brain, title: 'AI Insights', desc: 'Smart recommendations' },
-  { icon: Workflow, title: 'Automation', desc: 'Automate repetitive tasks' },
+  {
+    title: 'Growth focused',
+    description: 'Built to be added to, so the site grows with you rather than against you.',
+  },
 ]
 
 // ─── Stats bento ──────────────────────────────────────────────────────────────
 
 /** Shared card chrome: solid fill, generous radius, lift on hover. */
-const statCard =
-  'group relative flex flex-col justify-between overflow-hidden rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-6 lg:p-7'
-
-/** Small/large card heights — the bento keeps its shape down to mobile. */
-const cardSm = 'min-h-[148px] sm:min-h-[190px]'
-const cardLg = 'min-h-[320px] sm:min-h-[396px]'
-
-/**
- * Card fills are the brand hexes rather than the `primary`/`secondary` tokens on
- * purpose: those two swap places in dark mode, which would reshuffle the bento's
- * colours between themes. Fixed values keep this section looking identical in both.
+/*
+ * The same chrome the "what we do" bento uses, for the same reason: an alpha
+ * tint of `foreground` is one step off whatever the background is, in either
+ * theme, without a single fixed colour.
+ *
+ * Monochrome on purpose. Four saturated fills — teal, emerald, violet, navy —
+ * made this the loudest thing on a page whose accent already changes per
+ * service, and the colours carried no meaning: they were not keyed to anything,
+ * so they read as decoration competing with the numbers.
  */
-const NAVY = 'bg-[#15246d]'
-const TEAL = 'bg-[#00c2be]'
+const statCard =
+  'group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-foreground/[0.04] p-4 ring-1 ring-foreground/[0.07] transition-[background-color,box-shadow] duration-300 hover:bg-foreground/[0.07] hover:shadow-xl hover:shadow-foreground/5 sm:p-5 dark:bg-white/[0.06] dark:ring-white/[0.07] dark:hover:bg-white/[0.1]'
+
+/** Small/large card heights. Trimmed — the old ones ran a third taller. */
+const cardSm = 'min-h-[118px] sm:min-h-[142px]'
+const cardLg = 'min-h-[256px] sm:min-h-[300px]'
+
+/** The one accent left: the fill on the breakdown bars, so they read as data. */
+const BAR = 'bg-primary dark:bg-secondary'
 
 const StatsSection: React.FC = () => {
   const [barsRef, barsInView] = useInView<HTMLDivElement>(0.25)
@@ -239,127 +161,138 @@ const StatsSection: React.FC = () => {
   const totalProjects = projectTypes.reduce((sum, p) => sum + p.count, 0)
 
   return (
-    <section className="bg-muted/30 py-20">
+    <section className="bg-muted/30 py-16 sm:py-20" aria-labelledby="numbers-heading">
       <div className="container">
-        <div className="grid gap-3 sm:gap-4 lg:grid-cols-12">
-          {/* ── Left cluster: two small cards over one wide card.
-              grid-cols-2 is unprefixed so the pair stays side by side on mobile. ── */}
-          <div className="grid gap-3 sm:gap-4 lg:col-span-7 lg:grid-rows-2">
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {/* Client satisfaction */}
-              <Reveal>
-                <div className={`${statCard} ${TEAL} ${cardSm} h-full text-black`}>
-                  <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10 transition-transform duration-500 group-hover:scale-150" />
-                  <Heart className="h-5 w-5 opacity-80 sm:h-6 sm:w-6" />
-                  <div>
-                    <div className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-                      <AnimatedCounter end={98} suffix="%" />
-                    </div>
-                    <div className="mt-1 text-xs font-medium opacity-80 sm:text-sm">
-                      Client Satisfaction
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
+        {/* Same inner box and left edge as the pitch section above, so the two
+            bentos line up rather than each finding their own margin. */}
+        <div className="mx-auto w-full max-w-6xl">
+          <Reveal className="mb-8 sm:mb-10">
+            <h2
+              id="numbers-heading"
+              className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl"
+            >
+              The numbers <span className="text-primary">behind it</span>
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              What we have delivered, who we have delivered it for, and how long we have been at it.
+            </p>
+          </Reveal>
 
-              {/* Support */}
-              <Reveal delay={80}>
-                <div className={`${statCard} ${cardSm} h-full bg-emerald-600 text-white`}>
-                  <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10 transition-transform duration-500 group-hover:scale-150" />
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
-                    </span>
-                    <span className="text-xs font-medium opacity-90">Online now</span>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-                      <AnimatedCounter end={24} suffix="/7" />
+          <div className="grid gap-3 sm:gap-4 lg:grid-cols-12">
+            {/* ── Left cluster: two small cards over one wide card.
+              grid-cols-2 is unprefixed so the pair stays side by side on mobile. ── */}
+            <div className="grid gap-3 sm:gap-4 lg:col-span-7 lg:grid-rows-2">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {/* Client satisfaction */}
+                <Reveal>
+                  <div className={`${statCard} ${cardSm} h-full`}>
+                    <Heart className="h-4 w-4 text-muted-foreground sm:h-5 sm:w-5" />
+                    <div>
+                      <div className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+                        <AnimatedCounter end={98} suffix="%" />
+                      </div>
+                      <div className="mt-1 text-xs font-medium text-muted-foreground sm:text-sm">
+                        Client Satisfaction
+                      </div>
                     </div>
-                    <div className="mt-1 text-xs font-medium opacity-80 sm:text-sm">
-                      Support Available
+                  </div>
+                </Reveal>
+
+                {/* Support */}
+                <Reveal delay={80}>
+                  <div className={`${statCard} ${cardSm} h-full`}>
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                      </span>
+                      <span className="text-xs font-medium text-muted-foreground">Online now</span>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+                        <AnimatedCounter end={24} suffix="/7" />
+                      </div>
+                      <div className="mt-1 text-xs font-medium text-muted-foreground sm:text-sm">
+                        Support Available
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              </div>
+
+              {/* Experience — wide card */}
+              <Reveal delay={160}>
+                <div
+                  className={`${statCard} ${cardSm} h-full flex-row items-end justify-between gap-4`}
+                >
+                  <div className="relative">
+                    <Clock className="mb-3 h-4 w-4 text-muted-foreground sm:mb-4 sm:h-5 sm:w-5" />
+                    <div className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+                      <AnimatedCounter end={10} suffix="+" />
+                    </div>
+                    <div className="mt-1 text-xs font-medium leading-snug text-muted-foreground sm:text-sm">
+                      Years Combined Experience
+                    </div>
+                  </div>
+
+                  <div className="relative flex shrink-0 gap-4 sm:gap-6">
+                    <div>
+                      <div className="text-xl font-bold sm:text-2xl">
+                        <AnimatedCounter end={4} />
+                      </div>
+                      <div className="text-[10px] text-muted-foreground sm:text-xs">
+                        Disciplines
+                      </div>
                     </div>
                   </div>
                 </div>
               </Reveal>
             </div>
 
-            {/* Experience — wide card */}
-            <Reveal delay={160}>
-              <div
-                className={`${statCard} ${cardSm} h-full flex-row items-end justify-between gap-4 bg-violet-600 text-white`}
-              >
-                <div className="absolute -bottom-10 -left-6 h-32 w-32 rounded-full bg-white/5 transition-transform duration-500 group-hover:scale-150" />
+            {/* ── Right: tall card with the project-type breakdown ── */}
+            <Reveal delay={240} className="lg:col-span-5">
+              <div ref={barsRef} className={`${statCard} ${cardLg} h-full`}>
                 <div className="relative">
-                  <Clock className="mb-3 h-5 w-5 opacity-80 sm:mb-4 sm:h-6 sm:w-6" />
-                  <div className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-                    <AnimatedCounter end={10} suffix="+" />
+                  <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                    <Briefcase className="h-4 w-4" />
+                    Delivered to date
                   </div>
-                  <div className="mt-1 text-xs font-medium leading-snug opacity-80 sm:text-sm">
-                    Years Combined Experience
+                  <div className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+                    <AnimatedCounter end={50} suffix="+" />
+                  </div>
+                  <div className="mt-1 text-sm font-medium text-muted-foreground">
+                    Projects Delivered
                   </div>
                 </div>
 
-                <div className="relative flex shrink-0 gap-4 sm:gap-6">
-                  <div>
-                    <div className="text-xl font-bold sm:text-2xl">
-                      <AnimatedCounter end={4} />
+                {/* Breakdown by type — bars fill once scrolled into view */}
+                <div className="relative mt-6 space-y-3">
+                  {projectTypes.map((type, i) => (
+                    <div key={type.label}>
+                      <div className="mb-1.5 flex items-baseline justify-between text-xs">
+                        <span className="font-medium">{type.label}</span>
+                        <span className="font-bold tabular-nums text-muted-foreground">
+                          {type.count}
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
+                        <div
+                          className={`h-full rounded-full ${BAR} transition-[width] duration-1000 ease-out`}
+                          style={{
+                            width: barsInView ? `${(type.count / maxCount) * 100}%` : '0%',
+                            transitionDelay: `${i * 120}ms`,
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className="text-[10px] opacity-70 sm:text-xs">Disciplines</div>
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold sm:text-2xl">
-                      <AnimatedCounter end={3} />
-                    </div>
-                    <div className="text-[10px] opacity-70 sm:text-xs">Branches</div>
+                  ))}
+                  <div className="pt-1 text-xs text-muted-foreground">
+                    {totalProjects} tracked across {projectTypes.length} service lines
                   </div>
                 </div>
               </div>
             </Reveal>
           </div>
-
-          {/* ── Right: tall card with the project-type breakdown ── */}
-          <Reveal delay={240} className="lg:col-span-5">
-            <div ref={barsRef} className={`${statCard} ${NAVY} ${cardLg} h-full text-white`}>
-              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/5 transition-transform duration-500 group-hover:scale-125" />
-
-              <div className="relative">
-                <div className="flex items-center gap-2 text-xs font-medium opacity-70">
-                  <Briefcase className="h-4 w-4" />
-                  Delivered to date
-                </div>
-                <div className="mt-3 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-                  <AnimatedCounter end={50} suffix="+" />
-                </div>
-                <div className="mt-1 text-sm font-medium opacity-80">Projects Delivered</div>
-              </div>
-
-              {/* Breakdown by type — bars fill once scrolled into view */}
-              <div className="relative mt-8 space-y-3.5">
-                {projectTypes.map((type, i) => (
-                  <div key={type.label}>
-                    <div className="mb-1.5 flex items-baseline justify-between text-xs">
-                      <span className="font-medium opacity-90">{type.label}</span>
-                      <span className="font-bold tabular-nums opacity-70">{type.count}</span>
-                    </div>
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/15">
-                      <div
-                        className={`h-full rounded-full ${TEAL} transition-[width] duration-1000 ease-out`}
-                        style={{
-                          width: barsInView ? `${(type.count / maxCount) * 100}%` : '0%',
-                          transitionDelay: `${i * 120}ms`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-                <div className="pt-1 text-xs opacity-60">
-                  {totalProjects} tracked across {projectTypes.length} service lines
-                </div>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </div>
     </section>
@@ -374,15 +307,6 @@ export default function HomeClient({
   showcase?: ShowcaseItem[]
   testimonials?: Testimonial[]
 }) {
-  /*
-   * The main CTA wears whatever colour the page is currently wearing. In
-   * practice that is the brand navy by the time anyone has scrolled down to it
-   * — the opening loop hands the accent back as soon as it leaves the screen —
-   * but it means this button can never be the one thing left in the wrong
-   * colour when it is on screen alongside a coloured wash.
-   */
-  const { tokens } = useAccent()
-
   return (
     <>
       {/* Opening screen — one sentence at a time, cycling through what we do.
@@ -393,66 +317,73 @@ export default function HomeClient({
           margin and cut its gradient off in a hard line at the header. */}
       <HeroIntro />
 
-      {/* Social proof, straight off the back of the opening loop. Outside the
-          wrapper below for the same reason the hero is: `overflow-x-hidden`
-          resolves to `overflow: hidden auto`, and this section's own vertical
-          mask is easier to reason about outside that scroll container. */}
-      <TestimonialsSection items={testimonials} />
+      {/*
+       * `overflow-x-clip`, not `-hidden`. Both stop the reviews' columns and
+       * the carousel's fly-in from widening the page, but `hidden` on one axis
+       * forces the other to `auto` — which made this a scroll container and cut
+       * off anything a child placed above its top edge. The showcase's backdrop
+       * lettering needs to rise into the hero, and `clip` is the one value that
+       * leaves the vertical axis visible.
+       */}
+      <div className="min-h-screen overflow-x-clip">
+        {/* Website showcase — live client sites, four across on a desktop, with
+          three of them touring themselves at a time and the one under the
+          pointer held still. Opens the page under the hero now, so the work
+          makes the case before anything is claimed about it. Managed in the
+          CMS; renders nothing at all when none are published, in which case the
+          hero flows straight into the pitch below. */}
+        <WebsiteShowcaseSection items={showcase} />
 
-      <div className="min-h-screen overflow-x-hidden">
-        {/* Hero */}
+        {/* The pitch, after the proof. */}
         {/* At least one screen tall, but no longer squeezed into exactly one:
           the carousel, the headline and the service cards each get room to
           breathe and the section grows past the fold if it needs to. svh rather
           than vh so mobile browser chrome doesn't push the cards off. */}
-        <section className="relative flex flex-col items-center justify-center bg-white py-14 text-center dark:bg-transparent sm:bg-transparent sm:py-20 lg:py-24">
+        <section className="relative flex flex-col items-center justify-center bg-white py-14 text-left dark:bg-transparent sm:bg-transparent sm:py-20 lg:py-24">
+          {/* `z-0`, not `-z-10` like the showcase's: this section paints its own
+              white background below `sm`, and a negative layer would sit behind
+              that rather than on it. The content above already carries `z-10`. */}
+          <OutlineWord className="-top-[12vw] z-0">ONLINE</OutlineWord>
+
+          {/* One inner box at the bento's own width, holding the heading, the
+              buttons and the grid. They all share its left edge — with the
+              heading centred in the container and the grid capped at max-w-6xl,
+              the two started at different places on any screen wide enough for
+              the cap to bite. */}
           <Reveal className="container z-10 flex w-full flex-col items-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
-              <span>Ready to go </span>
-              <span className={tokens.accent}>online?</span>
-            </h1>
+            <div className="mx-auto w-full max-w-6xl">
+              {/* Deliberately outside the live accent, unlike the button below
+                it: this is the page's h1, and a heading that changes colour
+                depending on which hero slide happened to be showing reads as a
+                glitch rather than as a theme. `text-primary` is navy on light
+                and the teal on dark, both fixed. */}
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
+                <span>Ready to go </span>
+                <span className="text-primary">online?</span>
+              </h1>
 
-            <div className="mb-10 mt-7 flex flex-row gap-2 sm:mb-14 sm:gap-3">
-              <Link
-                href="/contact"
-                className={cn(
-                  'inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-base font-medium shadow-lg transition-colors duration-500',
-                  tokens.cta,
-                  tokens.ctaText,
-                )}
-              >
-                Start a Project <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/our-works"
-                className="inline-flex items-center justify-center rounded-xl border border-border px-6 py-2.5 text-base font-medium transition-colors hover:bg-muted"
-              >
-                View Our Work
-              </Link>
-            </div>
+              <div className="mb-10 mt-7 flex flex-row gap-2 sm:mb-14 sm:gap-3">
+                {/* Fixed brand fill, like the heading above it. This section is
+                  the page's own pitch, not a service's, so it keeps the brand
+                  colour whatever the hero happens to be wearing. */}
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
+                >
+                  Start a Project <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/our-works"
+                  className="inline-flex items-center justify-center rounded-xl border border-border px-6 py-2.5 text-base font-medium transition-colors hover:bg-muted"
+                >
+                  View Our Work
+                </Link>
+              </div>
 
-            <div className="grid w-full max-w-6xl grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
-              {services.map((service) => {
-                const Icon = service.icon
-                const colors = colorClasses[service.color]
-                return (
-                  <Link
-                    key={service.title}
-                    href={service.href}
-                    className={`group block h-full rounded-xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-1 sm:p-7 ${colors.hover}`}
-                  >
-                    <div
-                      className={`mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-lg sm:mb-4 sm:h-12 sm:w-12 ${colors.bg}`}
-                    >
-                      <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${colors.text}`} />
-                    </div>
-                    <h3 className="text-sm font-bold leading-tight sm:text-lg">
-                      <span className="block">{service.title}</span>
-                      <span className="block font-light opacity-80">{service.titleAccent}</span>
-                    </h3>
-                  </Link>
-                )
-              })}
+              {/* The bento, in place of the four flat service cards that were here.
+                Same four services and two more besides, in shapes that say which
+                of them carries the most weight. */}
+              <WhatWeDoGrid />
             </div>
           </Reveal>
 
@@ -465,12 +396,13 @@ export default function HomeClient({
           </div>
         </section>
 
-        {/* Website showcase — live client sites in a three-column grid, one card
-          scrolling itself at a time and everything holding still while a
-          pointer is in the grid. Managed in the CMS; renders nothing at all
-          when none are published, so the hero flows straight into the stats as
-          it did before. */}
-        <WebsiteShowcaseSection items={showcase} />
+        {/* Social proof, straight off the back of the work it is about — the
+            live sites are directly above it, so the quotes have a subject.
+
+            Inside the wrapper, unlike the hero: its columns start well outside
+            their own box on the way in, and the wrapper's `overflow-x-hidden`
+            is what keeps that off the page's scroll width. */}
+        <TestimonialsSection items={testimonials} />
 
         {/*
          * Our work — the cards fly in from both edges and assemble into the
@@ -483,7 +415,10 @@ export default function HomeClient({
          * "flying in" if there is nothing crowding the edges.
          */}
         <section
-          className="relative pb-20 pt-10 sm:pb-28 sm:pt-14 lg:pb-32 lg:pt-16"
+          // Light on top: the showcase above already ends in a deep
+          // pb-24/32/40, so the two pads were stacking into a gap wider than
+          // either section meant on its own.
+          className="relative pb-20 pt-4 sm:pb-28 sm:pt-6 lg:pb-32 lg:pt-8"
           aria-labelledby="our-work-heading"
         >
           <div className="container">
@@ -511,157 +446,53 @@ export default function HomeClient({
           one tall card on the right carrying the project breakdown. */}
         <StatsSection />
 
-        {/* Features */}
-        <section className="py-16 sm:py-24">
+        {/* Why us — the numbered sheet. */}
+        <section className="py-16 sm:py-20" aria-labelledby="why-us-heading">
           <div className="container">
-            <Reveal className="mb-10 sm:mb-16 text-center">
-              <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Why Choose Us?</h2>
-              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                We combine creativity with technology to deliver results.
-              </p>
-            </Reveal>
-            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4 [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-span-1">
-              {features.map((feature, i) => {
-                const Icon = feature.icon
-                return (
-                  <Reveal
-                    key={feature.title}
-                    delay={i * 80}
-                    className="h-full rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/30 hover:shadow-lg sm:p-6"
-                  >
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 sm:mb-4 sm:h-12 sm:w-12">
-                      <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
-                    </div>
-                    <h3 className="mb-1.5 text-sm font-bold leading-snug sm:mb-2 sm:text-lg">
-                      {feature.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground sm:text-sm">
-                      {feature.description}
-                    </p>
-                  </Reveal>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Dashboard */}
-        <section className="bg-linear-to-br from-primary/5 via-transparent to-secondary/5 py-16 sm:py-24">
-          <div className="container">
-            <Reveal className="mb-10 sm:mb-16 text-center">
-              <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Powerful Dashboard</h2>
-              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                Get real-time insights and make data-driven decisions.
-              </p>
-            </Reveal>
-            <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-              <Reveal className="space-y-6">
-                {dashboardItems.map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <div
-                      key={item.title}
-                      className="flex gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/20"
-                    >
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                        <Icon className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="mb-1 font-bold">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </div>
-                  )
-                })}
-              </Reveal>
-              <Reveal delay={120} className="relative">
-                <div className="overflow-hidden rounded-2xl border border-border shadow-2xl">
-                  <Image
-                    src="/assets/home-page-01.svg"
-                    alt="Dashboard"
-                    className="h-auto w-full"
-                    width={600}
-                    height={400}
-                  />
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* Ventures */}
-        <section className="py-16 sm:py-24">
-          <div className="container">
-            <Reveal className="mb-10 sm:mb-16 text-center">
-              <h2 className="mb-4 text-3xl font-bold sm:text-5xl">Our Branches</h2>
-              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                Specialized branches delivering excellence.
-              </p>
-            </Reveal>
-            <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1">
-              {ventures.map((venture, i) => (
-                <Reveal key={venture.name} delay={i * 80} className="h-full">
-                  <a
-                    href={venture.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex h-full flex-col rounded-2xl border border-border bg-card p-4 text-center transition-all hover:border-primary/30 hover:shadow-xl sm:p-8"
-                  >
-                    <div className="mb-3 flex h-10 items-center justify-center sm:mb-4 sm:h-16">
-                      <Image
-                        src={venture.light}
-                        alt={venture.name}
-                        className="h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:hidden"
-                        width={120}
-                        height={48}
-                      />
-                      <Image
-                        src={venture.dark}
-                        alt={venture.name}
-                        className="hidden h-8 w-auto transition-transform group-hover:scale-105 sm:h-12 dark:block"
-                        width={120}
-                        height={48}
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground sm:text-sm">
-                      {venture.description}
-                    </p>
-                  </a>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="bg-linear-to-r from-primary to-accent py-16 sm:py-24">
-          <div className="container">
-            <div className="mx-auto max-w-4xl text-center">
-              <Reveal>
-                <h2 className="mb-6 text-3xl font-bold text-white sm:text-5xl">
-                  Ready to Exceed Your Goals?
+            {/* Same inner box and left edge as the pitch and the stats above. */}
+            <div className="mx-auto w-full max-w-6xl">
+              <Reveal className="mb-10 sm:mb-14">
+                <h2
+                  id="why-us-heading"
+                  className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl"
+                >
+                  Why teams <span className="text-primary">stay</span>
                 </h2>
-                <p className="mx-auto mb-8 max-w-2xl text-lg text-white/80">
-                  Let us work together to build something amazing.
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                  Four things clients tell us they did not get last time.
                 </p>
-                <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 text-lg font-medium text-primary shadow-lg transition-colors hover:bg-white/90"
-                  >
-                    Get Started <ArrowRight className="h-5 w-5" />
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="inline-flex items-center justify-center rounded-xl border border-white px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-white/10"
-                  >
-                    Learn More
-                  </Link>
-                </div>
               </Reveal>
+
+              {/*
+               * A rule above every row and one under the last, so the set reads
+               * as a sheet rather than as four separated bars. The numeral sits
+               * in its own column at every width — it is the thing the eye
+               * tracks down, and letting it reflow under the title on mobile
+               * would lose the spine the whole layout hangs on.
+               */}
+              <ul className="border-b border-border">
+                {reasons.map((reason, i) => (
+                  <Reveal key={reason.title} delay={Math.min(i * 70, 280)}>
+                    <li className="group grid grid-cols-[auto_1fr] items-baseline gap-x-5 border-t border-border py-6 transition-colors duration-300 hover:bg-foreground/[0.02] sm:grid-cols-[auto_minmax(0,18rem)_1fr] sm:gap-x-8 sm:py-7">
+                      <span className="font-mono text-sm tabular-nums text-muted-foreground/60 transition-colors duration-300 group-hover:text-primary">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <h3 className="text-base font-semibold tracking-[-0.01em] sm:text-lg">
+                        {reason.title}
+                      </h3>
+                      <p className="col-start-2 mt-2 text-sm leading-relaxed text-muted-foreground sm:col-start-3 sm:mt-0">
+                        {reason.description}
+                      </p>
+                    </li>
+                  </Reveal>
+                ))}
+              </ul>
             </div>
           </div>
         </section>
+
+        {/* The ask, once the reasons have been given. */}
+        <LetsTalkSection />
       </div>
     </>
   )

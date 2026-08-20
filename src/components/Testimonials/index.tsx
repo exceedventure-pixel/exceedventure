@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 import { Reveal } from '@/components/Reveal'
+import { OutlineWord } from '@/components/OutlineWord'
 import { cn } from '@/utilities/ui'
 import { TestimonialsColumn } from '@/components/ui/testimonials-columns-1'
 import type { Testimonial } from './types'
@@ -242,8 +243,19 @@ export const TestimonialsSection: React.FC<{ items?: Testimonial[] }> = ({ items
     return () => observer.disconnect()
   }, [])
 
+  /*
+   * The deep top padding is deliberate and is what the backdrop lettering lives
+   * in. The pitch above ends on a row of service cards and this opens on a
+   * small badge, so without a band between them the two run together as one
+   * undifferentiated stack.
+   */
   return (
-    <section className="pb-16 pt-8 sm:pb-24 sm:pt-12" aria-labelledby="testimonials-heading">
+    <section
+      className="relative isolate pb-16 pt-28 sm:pb-24 sm:pt-36 lg:pt-44"
+      aria-labelledby="testimonials-heading"
+    >
+      <OutlineWord className="-top-[5vw] -z-10">REVIEWS</OutlineWord>
+
       <div className="container">
         <Reveal className="mx-auto flex max-w-2xl flex-col items-center text-center">
           <span className="rounded-lg border border-border px-4 py-1 text-sm text-muted-foreground">

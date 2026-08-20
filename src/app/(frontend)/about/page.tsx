@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Users } from 'lucide-react'
 import React from 'react'
 
 import { getPageSEO } from '@/utilities/getPageSEO'
@@ -42,7 +43,13 @@ export default async function AboutPage() {
       />
 
       <PageHero
-        title="About Exceed Venture"
+        badge="Who we are"
+        icon={Users}
+        title="About "
+        titleAccent="Exceed Venture"
+        outlineWord="About"
+        primaryCta={{ label: 'Start a project', href: '/contact' }}
+        secondaryCta={{ label: 'See our work', href: '/our-works' }}
         subtitle="We are a team of innovators, creators, and strategists dedicated to empowering businesses through technology."
       />
 
