@@ -8,3 +8,4 @@
  */
 
 export const WEBSITE_SHOWCASE_TAG = 'website-showcase'
+export const TESTIMONIALS_TAG = 'testimonials'

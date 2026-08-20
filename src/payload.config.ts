@@ -10,6 +10,7 @@ import { PageSEO } from './collections/PageSEO'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { WebsiteShowcase } from './collections/WebsiteShowcase'
+import { Testimonials } from './collections/Testimonials'
 import { CrmAccounts } from './collections/crm/Accounts'
 import { ClientAccounts } from './collections/crm/ClientAccounts'
 import { Clients } from './collections/crm/Clients'
@@ -67,6 +68,7 @@ export default buildConfig({
     Media,
     Categories,
     WebsiteShowcase,
+    Testimonials,
     Users,
     // ─── CRM + client dashboard ────────────────────────────────────────────
     // Hidden from this admin and managed through /crm. `admin.user` stays

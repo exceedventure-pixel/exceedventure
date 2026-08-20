@@ -31,6 +31,8 @@ import { Reveal } from '@/components/Reveal'
 import { StackedCarousel } from '@/components/StackedCarousel'
 import { WebsiteShowcaseSection } from '@/components/WebsiteShowcase'
 import type { ShowcaseItem } from '@/components/WebsiteShowcase/types'
+import { TestimonialsSection } from '@/components/Testimonials'
+import type { Testimonial } from '@/components/Testimonials/types'
 
 // ─── Animated counter (dependency-free) ──────────────────────────────────────
 const AnimatedCounter = ({
@@ -364,8 +366,14 @@ const StatsSection: React.FC = () => {
   )
 }
 
-/** `showcase` defaults to empty so the page still renders without the prop. */
-export default function HomeClient({ showcase = [] }: { showcase?: ShowcaseItem[] }) {
+/** Both lists default to empty so the page still renders without the props. */
+export default function HomeClient({
+  showcase = [],
+  testimonials = [],
+}: {
+  showcase?: ShowcaseItem[]
+  testimonials?: Testimonial[]
+}) {
   /*
    * The main CTA wears whatever colour the page is currently wearing. In
    * practice that is the brand navy by the time anyone has scrolled down to it
@@ -385,26 +393,23 @@ export default function HomeClient({ showcase = [] }: { showcase?: ShowcaseItem[
           margin and cut its gradient off in a hard line at the header. */}
       <HeroIntro />
 
+      {/* Social proof, straight off the back of the opening loop. Outside the
+          wrapper below for the same reason the hero is: `overflow-x-hidden`
+          resolves to `overflow: hidden auto`, and this section's own vertical
+          mask is easier to reason about outside that scroll container. */}
+      <TestimonialsSection items={testimonials} />
+
       <div className="min-h-screen overflow-x-hidden">
         {/* Hero */}
         {/* At least one screen tall, but no longer squeezed into exactly one:
           the carousel, the headline and the service cards each get room to
           breathe and the section grows past the fold if it needs to. svh rather
           than vh so mobile browser chrome doesn't push the cards off. */}
-        <section className="relative flex min-h-[calc(100svh-var(--header-h))] flex-col items-center justify-center bg-white py-14 text-center dark:bg-transparent sm:bg-transparent sm:py-20 lg:py-24">
-          {/* Stacked carousel — kept outside the container so it stays full-bleed.
-            It keeps its own vertical padding now; the negative margin that used
-            to claw it back was there only to win height for the one-screen fit. */}
-          <div className="z-10 w-full overflow-visible">
-            <StackedCarousel />
-          </div>
-
+        <section className="relative flex flex-col items-center justify-center bg-white py-14 text-center dark:bg-transparent sm:bg-transparent sm:py-20 lg:py-24">
           <Reveal className="container z-10 flex w-full flex-col items-center">
-            {/* The carousel's dots hang 32px below its own box, so the top margin
-              has to clear those before it starts buying any real separation. */}
-            <h1 className="mt-16 text-3xl font-bold tracking-tight sm:mt-20 sm:text-4xl lg:text-5xl xl:text-6xl">
-              <span>Building Digital </span>
-              <span className="text-primary">Excellence.</span>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
+              <span>Ready to go </span>
+              <span className={tokens.accent}>online?</span>
             </h1>
 
             <div className="mb-10 mt-7 flex flex-row gap-2 sm:mb-14 sm:gap-3">
@@ -466,6 +471,41 @@ export default function HomeClient({ showcase = [] }: { showcase?: ShowcaseItem[
           when none are published, so the hero flows straight into the stats as
           it did before. */}
         <WebsiteShowcaseSection items={showcase} />
+
+        {/*
+         * Our work — the cards fly in from both edges and assemble into the
+         * stack the first time this scrolls into view.
+         *
+         * Given a whole screen's worth of room rather than being tucked under
+         * something else: the assembly is the most deliberate piece of motion
+         * on the page and it needs air above and below to land, and the wings
+         * start two thirds of a viewport out to each side, which only reads as
+         * "flying in" if there is nothing crowding the edges.
+         */}
+        <section
+          className="relative pb-20 pt-10 sm:pb-28 sm:pt-14 lg:pb-32 lg:pt-16"
+          aria-labelledby="our-work-heading"
+        >
+          <div className="container">
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <span className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
+                Our work
+              </span>
+              <h2
+                id="our-work-heading"
+                className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
+              >
+                A look at what we <span className="text-primary">make</span>
+              </h2>
+            </Reveal>
+          </div>
+
+          {/* Outside the container so the stack stays full-bleed. The dots hang
+              56px below the track, which is what the foot padding clears. */}
+          <div className="mt-16 w-full pb-20 sm:mt-20">
+            <StackedCarousel />
+          </div>
+        </section>
 
         {/* Stats — bento grid: two small cards + a wide one on the left,
           one tall card on the right carrying the project breakdown. */}

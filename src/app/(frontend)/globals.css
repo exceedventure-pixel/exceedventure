@@ -131,14 +131,18 @@
      Deliberately neutral (zero chroma): tinting these with the navy --primary
      mixed to a mauve cast in oklch.
 
-     Dark and translucent in *both* themes, paired with a backdrop blur on the
-     panel: smoked glass over the page rather than a panel sitting on it. Kept
-     identical light and dark so the trigger, the corner fillet and the panel
-     always agree — the fillet paints its colour with a spread shadow and cannot
-     carry a blur of its own, so any difference between them shows up as a seam. */
-  --menu-surface: oklch(18% 0 0deg / 74%);
-  --menu-surface-hover: oklch(100% 0 0deg / 10%);
-  --menu-border: oklch(100% 0 0deg / 12%);
+     Translucent, paired with a backdrop blur on the panel: smoked glass over
+     the page rather than a panel sitting on it. Light glass here, dark glass
+     under [data-theme='dark'] — they no longer have to match, because the panel
+     stopped forcing the dark token set on itself and now reads whatever the
+     page is using, exactly as the trigger and the corner fillet do.
+
+     The three still have to agree *within* a theme: the fillet paints its
+     colour with a spread shadow and cannot carry a blur of its own, so any
+     difference between them shows up as a seam at the join. */
+  --menu-surface: oklch(99% 0 0deg / 85%);
+  --menu-surface-hover: oklch(20% 0 0deg / 6%);
+  --menu-border: oklch(20% 0 0deg / 10%);
 }
 
 [data-theme='dark'] {
@@ -178,9 +182,8 @@
   --warning: oklch(35% 0.08 70deg);
   --error: oklch(45% 0.1 25deg);
 
-  /* Identical to light on purpose — see the note there. The panel forces the
-     dark token set on itself, so if these two differed the trigger (light vars)
-     and the panel (dark vars) would meet in a visible step. */
+  /* Dark glass — the values light mode used to carry too. See the note there
+     for why the two themes are now allowed to differ. */
   --menu-surface: oklch(18% 0 0deg / 74%);
   --menu-surface-hover: oklch(100% 0 0deg / 10%);
   --menu-border: oklch(100% 0 0deg / 12%);
@@ -317,7 +320,6 @@ html.mobile-menu-open .mobile-menu-drawer {
     transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     visibility 0s linear 0s;
 }
-
 
 .mobile-drawer-backdrop {
   position: fixed;
@@ -456,30 +458,79 @@ html[data-theme='light'] {
 }
 
 /* ============================
+   Testimonials marquee
+   ============================ */
+
+/* Each column renders its reviews twice and travels exactly half its own
+   height, so the second copy lands precisely where the first began — the loop
+   has no seam and no reset frame. Column length is set per column via an inline
+   animation-duration; only the shape of the movement lives here.
+
+   A transform, so it runs on the compositor: this is several cards' worth of
+   text moving continuously, and animating anything that triggers layout would
+   be felt on a phone. */
+@keyframes testimonial-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+/* The global reduce-motion rule below caps every animation at one 0.01ms run,
+   which would snap the track straight to -50% and park it on the duplicate
+   copy. Stopping it outright leaves the first copy in place instead, which is
+   the whole list, statically. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-[testimonial-marquee_linear_infinite] {
+    animation: none !important;
+  }
+}
+
+/* ============================
    StackedCarousel styles
    ============================ */
+/* Cards are built from the theme's own tokens rather than a hard-coded #111
+   and black shadows. The old values were a dark-mode design sitting on a page
+   that is light by default: a near-black card with a white hairline border and
+   a 50%-opacity drop shadow, which read as heavy on white and invisible against
+   the dark theme's own background. */
 .card-card {
-  transition: all 400ms ease;
+  transition:
+    transform 400ms ease,
+    box-shadow 400ms ease,
+    border-color 400ms ease;
   cursor: pointer;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 1.5rem;
   height: var(--carousel-h);
   position: relative;
-  background-color: #111;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background-color: var(--card);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 4%),
+    0 18px 40px -18px rgb(0 0 0 / 20%);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   user-select: none;
   -webkit-user-select: none;
 }
 
+/* A dark page swallows a shadow tuned for white, so it goes deeper rather than
+   lighter — the card is lifted by contrast against the background either way. */
+[data-theme='dark'] .card-card {
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 30%),
+    0 24px 50px -20px rgb(0 0 0 / 70%);
+}
+
 .image-section {
   position: relative;
   /* The image is the point of the card — the caption below is kept to the
      minimum that still fits its two lines. */
-  height: 80%;
+  height: 82%;
   width: 100%;
   overflow: hidden;
 }
@@ -490,69 +541,87 @@ html[data-theme='light'] {
 }
 
 .text-section {
-  height: 20%;
+  height: 18%;
   width: 100%;
   padding: 0.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: background-color 0.3s ease;
 }
 
+/* The centre card is marked by depth and a tinted edge, not by a 2px accent
+   border and a glow. It is already the largest, sharpest, unveiled card on
+   screen; anything louder competes with the artwork inside it. */
 .center-slide .card-card {
-  border: 2px solid var(--secondary);
+  border-color: color-mix(in oklch, var(--secondary) 45%, var(--border));
   box-shadow:
-    0 0 20px color-mix(in oklch, var(--secondary) 40%, transparent),
-    0 10px 30px rgba(0, 0, 0, 0.5);
+    0 2px 4px rgb(0 0 0 / 5%),
+    0 30px 60px -24px color-mix(in oklch, var(--secondary) 35%, transparent),
+    0 22px 44px -20px rgb(0 0 0 / 22%);
 }
 
+[data-theme='dark'] .center-slide .card-card {
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / 35%),
+    0 34px 70px -26px color-mix(in oklch, var(--secondary) 40%, transparent),
+    0 26px 56px -22px rgb(0 0 0 / 70%);
+}
+
+/* Side cards recede toward the page rather than being blacked out: a veil in
+   the background's own colour plus a drop in saturation, so they read as
+   out-of-focus in both themes instead of "the same image, darker". */
 .card-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  transition: all 400ms ease;
+  background: color-mix(in oklch, var(--background) 45%, transparent);
+  backdrop-filter: saturate(0.55);
+  transition: opacity 400ms ease;
   z-index: 1;
 }
 
 .card-wrapper:not(.center-slide) .card-card:hover {
-  transform: scale(1.05);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow:
-    0 0 15px rgba(255, 255, 255, 0.1),
-    0 10px 30px rgba(0, 0, 0, 0.5);
+  transform: scale(1.04);
+  border-color: color-mix(in oklch, var(--secondary) 35%, var(--border));
 }
 
 .card-button {
   position: absolute;
-  top: 43%;
+  top: 50%;
+  transform: translateY(-50%);
   width: 44px;
   height: 44px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: color-mix(in oklch, var(--background) 72%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  color: var(--foreground);
   border-radius: 50%;
   cursor: pointer;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px -6px rgb(0 0 0 / 18%);
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    transform 300ms ease;
 }
 
 .card-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+  background-color: var(--background);
+  border-color: color-mix(in oklch, var(--secondary) 45%, var(--border));
+  transform: translateY(-50%) scale(1.08);
 }
 
 .card-button.left {
-  left: -80px;
+  left: -72px;
 }
 
 .card-button.right {
-  right: -80px;
+  right: -72px;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1320px) {
   .card-button.left {
     left: 10px;
   }

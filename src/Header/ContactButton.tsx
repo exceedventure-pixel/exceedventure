@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Phone, MessageCircle, Mail, SendHorizontal, X } from 'lucide-react'
 import { cn } from '@/utilities/ui'
-import { useAccent } from '@/providers/Accent'
 import { ContactChat } from '@/components/ContactChat'
 import type { ContactChannels } from '@/utilities/getSiteSettings'
 
@@ -27,7 +26,6 @@ export const ContactButton: React.FC<{ channels: ContactChannels }> = ({ channel
   // createPortal needs document, which does not exist during the server render.
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
-  const { accent, tokens } = useAccent()
   const wrapRef = useRef<HTMLDivElement>(null)
   const menuId = useId()
   const pathname = usePathname()
@@ -97,16 +95,12 @@ export const ContactButton: React.FC<{ channels: ContactChannels }> = ({ channel
   }, [open])
 
   /*
-   * Takes the accent on its border and its text, not as a fill.
-   *
-   * This is deliberately the quieter of the two header buttons — the account
-   * pill beside it is the solid one — and filling both would leave the header
-   * with two equally loud actions and no obvious primary.
+   * Deliberately left out of the live accent, unlike the account pill beside
+   * it: this is the header's quiet action, and it stays neutral so the filled
+   * button next to it is unambiguously the primary one.
    */
-  const triggerClass = cn(
-    'inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors duration-500 hover:bg-muted sm:gap-2 sm:px-4',
-    accent === 'brand' ? 'border-border' : cn(tokens.ring, tokens.accent),
-  )
+  const triggerClass =
+    'inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted sm:gap-2 sm:px-4'
 
   /** Pulsing dot — reads as an "available now" status indicator. */
   const dot = (

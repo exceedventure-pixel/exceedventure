@@ -48,7 +48,7 @@ const DropdownRow: React.FC<{ child: NavChild; active: boolean; onNavigate: () =
         className="group flex items-start gap-3 px-2.5 py-2.5"
       >
         <span
-          className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-background"
+          className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted"
           aria-hidden="true"
         >
           {Icon ? (
@@ -202,9 +202,8 @@ export const HeaderNav: React.FC = () => {
                 'flex flex-col items-start gap-0.5 px-3.5',
                 isOpen
                   ? // Open: square off the bottom and run the glass to the very
-                    // edge, so it meets the panel below with no seam. Text goes
-                    // light because the surface is dark in both themes.
-                    'rounded-t-xl py-2 bg-(--menu-surface) text-white backdrop-blur-xl'
+                    // edge, so it meets the panel below with no seam.
+                    'rounded-t-xl py-2 bg-(--menu-surface) text-foreground backdrop-blur-xl'
                   : clsx(
                       // Closed: no fill at all, just a colour shift. The margin
                       // still matches the open state's extra padding so the row
@@ -256,13 +255,6 @@ export const HeaderNav: React.FC = () => {
                 <div
                   id={panelId}
                   aria-labelledby={triggerId}
-                  /*
-                   * The surface is dark in both themes, so the panel switches to
-                   * the dark token set rather than having every child overridden
-                   * one by one — text, muted text, icon tiles and row hovers all
-                   * come out legible on glass for free.
-                   */
-                  data-theme="dark"
                   className={clsx(
                     // Borderless: the shared surface plus a layered shadow carries
                     // the edge, so nothing outlines the join with the trigger.
@@ -278,7 +270,7 @@ export const HeaderNav: React.FC = () => {
                   >
                     <span className="flex items-center gap-2.5">
                       {item.icon && (
-                        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-background">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted">
                           <item.icon
                             className="h-3.5 w-3.5 text-muted-foreground group-hover/all:text-foreground"
                             aria-hidden="true"

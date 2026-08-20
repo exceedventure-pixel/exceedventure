@@ -74,6 +74,7 @@ export interface Config {
     media: Media;
     categories: Category;
     'website-showcase': WebsiteShowcase;
+    testimonials: Testimonial;
     users: User;
     clients: Client;
     'crm-accounts': CrmAccount;
@@ -106,6 +107,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'website-showcase': WebsiteShowcaseSelect<false> | WebsiteShowcaseSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     clients: ClientsSelect<false> | ClientsSelect<true>;
     'crm-accounts': CrmAccountsSelect<false> | CrmAccountsSelect<true>;
@@ -516,6 +518,45 @@ export interface WebsiteShowcase {
     lastCapturedAt?: string | null;
     error?: string | null;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Client reviews for the strip under the homepage hero. Publish at least four and the section switches from the built-in placeholder reviews to yours — it is all or nothing, so a half-filled section can never ship by accident.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  /**
+   * What they said, in their words. Two or three sentences — the cards are narrow and they scroll past, so anything longer is never finished.
+   */
+  quote: string;
+  /**
+   * Who said it. e.g. "Briana Patton".
+   */
+  name: string;
+  /**
+   * Their title and company, shown under the name. e.g. "Operations Manager".
+   */
+  role?: string | null;
+  /**
+   * Stars, 1 to 5.
+   */
+  rating: number;
+  /**
+   * Optional. Without one the card shows their initials in the accent colour.
+   */
+  avatar?: (number | null) | Media;
+  /**
+   * Unpublished reviews are invisible to the public API, not just the page.
+   */
+  published?: boolean | null;
+  /**
+   * Lower numbers come first. Ties fall back to newest.
+   */
+  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1407,6 +1448,10 @@ export interface PayloadLockedDocument {
         value: number | WebsiteShowcase;
       } | null)
     | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1734,6 +1779,21 @@ export interface WebsiteShowcaseSelect<T extends boolean = true> {
         lastCapturedAt?: T;
         error?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  quote?: T;
+  name?: T;
+  role?: T;
+  rating?: T;
+  avatar?: T;
+  published?: T;
+  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -60,8 +60,27 @@ const CAROUSEL_DATA: CarouselItem[] = [
 const AUTOPLAY_MS = 2200
 /** How long autoplay stays out of the way after a deliberate user action. */
 const RESUME_AFTER_INTERACTION_MS = 6000
-/** Slide transition length. */
+/** Slide transition length, once the carousel is live. */
 const TRANSITION_MS = 400
+
+/**
+ * The assembly — cards flying in from both edges to form the stack.
+ *
+ * Runs once, the first time the section is scrolled into view. Long and heavily
+ * eased, because it is the one moment this component is a piece of motion
+ * rather than a control: 950ms out of the gate hard and settling slow, with the
+ * wings arriving a beat behind the centre so the stack builds outwards instead
+ * of snapping into place all at once.
+ */
+const ASSEMBLE_MS = 950
+/** Per-rank delay. Rank 0 is the centre card, which lands first. */
+const ASSEMBLE_STAGGER_MS = 90
+const EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)'
+
+/** How far off-screen a wing starts, in viewport widths. */
+const FLY_IN_VW = 68
+
+type Phase = 'idle' | 'assembling' | 'live'
 
 export const StackedCarousel = () => {
   const data = CAROUSEL_DATA
@@ -74,6 +93,13 @@ export const StackedCarousel = () => {
   const [docVisible, setDocVisible] = useState(true)
   const [reducedMotion, setReducedMotion] = useState(false)
 
+  /**
+   * Cards sit off-screen until the section is scrolled to, then assemble once
+   * and never again. Autoplay is held off until 'live', so the first slide
+   * cannot advance out from under the animation that is still introducing it.
+   */
+  const [phase, setPhase] = useState<Phase>('idle')
+  const trackRef = useRef<HTMLDivElement>(null)
   const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const goTo = useCallback(
@@ -120,6 +146,51 @@ export const StackedCarousel = () => {
     return () => mq.removeEventListener('change', update)
   }, [])
 
+  /**
+   * Trigger the assembly the first time the stack is meaningfully on screen.
+   *
+   * A low threshold on purpose: the cards start two thirds of a viewport out to
+   * each side, so waiting until the track itself is half visible would mean the
+   * wings fly in from somewhere the reader has already scrolled past.
+   */
+  useEffect(() => {
+    if (reducedMotion) {
+      // The fly-in is exactly the kind of movement the setting exists to stop,
+      // and a stack that never assembles would simply never appear.
+      setPhase('live')
+      return
+    }
+
+    const el = trackRef.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        observer.disconnect()
+        setPhase('assembling')
+      },
+      {
+        // Tall elements satisfy a small threshold the instant their top edge
+        // clears the bottom of the window, which ran the whole animation while
+        // the reader was still scrolling toward it. The negative bottom margin
+        // pulls the trip line a fifth of the way up the window instead, so it
+        // starts when the section is actually being looked at.
+        threshold: 0.2,
+        rootMargin: '0px 0px -20% 0px',
+      },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [reducedMotion])
+
+  // Hand over to normal carousel behaviour once every card has landed.
+  useEffect(() => {
+    if (phase !== 'assembling') return
+    const timer = setTimeout(() => setPhase('live'), ASSEMBLE_MS + ASSEMBLE_STAGGER_MS * 3)
+    return () => clearTimeout(timer)
+  }, [phase])
+
   // Don't cycle in a tab nobody is looking at.
   useEffect(() => {
     const onVisibility = () => setDocVisible(!document.hidden)
@@ -128,7 +199,7 @@ export const StackedCarousel = () => {
     return () => document.removeEventListener('visibilitychange', onVisibility)
   }, [])
 
-  const paused = hovering || focused || cooldown || !docVisible || reducedMotion
+  const paused = hovering || focused || cooldown || !docVisible || reducedMotion || phase !== 'live'
 
   // Autoplay. Keyed on activeIndex so any move — auto or manual — restarts the
   // dwell time rather than leaving a partially elapsed timer to fire early.
@@ -150,23 +221,50 @@ export const StackedCarousel = () => {
 
   const getCardStyles = (offset: number): React.CSSProperties => {
     const abs = Math.abs(offset)
+    const zIndex = 100 - Math.round(abs * 10)
+
+    /*
+     * Waiting to be assembled: parked off the edge it will arrive from, turned
+     * a few degrees and scaled back, so the fly-in reads as cards being dealt
+     * rather than panels sliding along a rail. The centre card has no side to
+     * come from, so it rises instead.
+     *
+     * No transition at all here — this is a resting position the browser paints
+     * once, and the movement belongs entirely to the change out of it.
+     */
+    if (phase === 'idle') {
+      const dir = Math.sign(offset)
+      return {
+        transform: dir
+          ? `translateX(${dir * FLY_IN_VW}vw) rotate(${dir * 7}deg) scale(0.86)`
+          : 'translateY(3.5rem) scale(0.9)',
+        zIndex,
+        opacity: 0,
+        transition: 'none',
+      }
+    }
+
     return {
       transform: `translateX(${offset * 55}%) scale(${Math.max(0.7, 1 - abs * 0.12)})`,
-      zIndex: 100 - Math.round(abs * 10),
+      zIndex,
       opacity: abs > 2.4 ? 0 : 1,
       visibility: abs > 3 ? 'hidden' : 'visible',
       transition: reducedMotion
         ? 'none'
-        : `transform ${TRANSITION_MS}ms ease-out, opacity ${TRANSITION_MS}ms ease-out`,
+        : phase === 'assembling'
+          ? `transform ${ASSEMBLE_MS}ms ${EASE_OUT} ${abs * ASSEMBLE_STAGGER_MS}ms, opacity ${ASSEMBLE_MS}ms ease-out ${abs * ASSEMBLE_STAGGER_MS}ms`
+          : `transform ${TRANSITION_MS}ms ease-out, opacity ${TRANSITION_MS}ms ease-out`,
+      willChange: phase === 'assembling' ? 'transform, opacity' : undefined,
     }
   }
 
   return (
-    <div className="relative isolate z-0 flex w-full items-center justify-center bg-transparent py-2 md:py-8">
+    <div className="relative isolate z-0 flex w-full items-center justify-center bg-transparent">
       {/* Track height follows the card height (--carousel-h) plus headroom for
           the scaled-up centre slide, so the whole hero can fit one screen. */}
       <div
-        className="relative flex h-[calc(var(--carousel-h)+40px)] w-full max-w-5xl items-center justify-center overflow-visible outline-none"
+        ref={trackRef}
+        className="relative flex h-[calc(var(--carousel-h)+40px)] w-full max-w-6xl items-center justify-center overflow-visible outline-none"
         tabIndex={0}
         role="group"
         aria-roledescription="carousel"
@@ -213,24 +311,20 @@ export const StackedCarousel = () => {
                       draggable={false}
                       fill
                       sizes="(max-width: 768px) 280px, (max-width: 1024px) 340px, 400px"
-                      // The centre slide is the page's LCP element — the carousel
-                      // sits above the hero heading — so it must not be lazy.
-                      // Off-centre slides stay lazy.
-                      priority={isCenter}
+                      // Lazy, all of them. This used to be the page's LCP
+                      // element when the carousel sat above the hero heading;
+                      // it now lives well below the fold, where `priority`
+                      // would preload an image nobody has scrolled to yet.
+                      loading="lazy"
                     />
-                    {!isCenter && (
-                      <div
-                        className="card-overlay"
-                        style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}
-                      />
-                    )}
+                    {!isCenter && <div className="card-overlay" />}
                   </div>
 
-                  <div className="text-section bg-background">
+                  <div className="text-section">
                     {/* A slide label, not document structure. As an <h3> these
                         preceded the page's <h1> (the hero heading sits below the
                         carousel), giving the homepage an H3-before-H1 outline. */}
-                    <div className="truncate text-base font-bold uppercase leading-tight tracking-wide text-foreground md:text-lg">
+                    <div className="truncate text-xs font-semibold uppercase leading-tight tracking-[0.16em] text-foreground md:text-sm">
                       {item.text}
                     </div>
                     <div
@@ -248,14 +342,14 @@ export const StackedCarousel = () => {
         </div>
 
         <button className="card-button left" onClick={prev} aria-label="Previous slide">
-          <ChevronLeft size={36} className="text-white" strokeWidth={1.5} />
+          <ChevronLeft size={20} strokeWidth={1.75} />
         </button>
         <button className="card-button right" onClick={next} aria-label="Next slide">
-          <ChevronRight size={36} className="text-white" strokeWidth={1.5} />
+          <ChevronRight size={20} strokeWidth={1.75} />
         </button>
 
         {/* Dots */}
-        <div className="absolute -bottom-12 left-1/2 flex -translate-x-1/2 gap-1">
+        <div className="absolute -bottom-14 left-1/2 flex -translate-x-1/2 gap-1">
           {data.map((item, index) => (
             <button
               key={item.id}

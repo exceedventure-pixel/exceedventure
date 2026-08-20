@@ -126,7 +126,7 @@ export const HeaderClient: React.FC<{ channels: ContactChannels }> = ({ channels
        */}
       <div className="container grid grid-cols-[1fr_auto_1fr] items-center py-3 sm:py-4">
         <Link href="/" className="flex items-center justify-self-start">
-          <Logo className="max-w-30 sm:max-w-none" />
+          <Logo loading="eager" priority="high" className="max-w-30 sm:max-w-none" />
         </Link>
 
         <div className="hidden lg:flex">
