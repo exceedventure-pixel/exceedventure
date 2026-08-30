@@ -112,12 +112,18 @@ export const SplitHero: React.FC<SplitHeroProps> = ({
      * The page's own name, hollow, across the foot of the hero — the same
      * backdrop lettering the homepage uses between its sections.
      *
-     * Inside the hero rather than rising out of the section below it, because
-     * this section clips its overflow to keep the glow off its neighbours. The
-     * radial mask fades the word to nothing well before its edges anyway, so
-     * sitting flush reads the same as bleeding past.
+     * Hung past the foot of the hero so the section's own clip takes the
+     * bottom off the letters: the word runs out of the screen at the fold
+     * rather than ending inside it, which is what makes the first screen read
+     * as a crop of something larger instead of a slide with a word on it.
+     *
+     * The offset is in `vw`, like the type size it is cropping — 4vw puts the
+     * cut a couple of vw into the letterforms at every width, where the
+     * component's radial mask is still carrying most of its stroke. In `vh` it
+     * would drift: the same number would shave the word on a laptop and behead
+     * it on a phone.
      */}
-    <OutlineWord className="bottom-[6vh] -z-10">
+    <OutlineWord className="-bottom-[4vw] -z-10">
       {outlineWord ?? badge.trim().split(' ')[0]}
     </OutlineWord>
 
