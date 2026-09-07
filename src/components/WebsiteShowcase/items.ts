@@ -98,4 +98,18 @@ export const SHOWCASE_ITEMS: ShowcaseItem[] = [
     canEmbed: true,
     viewportHeight: 2600,
   },
+  {
+    id: 7,
+    title: 'Vorexo',
+    url: 'https://vorexo.netlify.app/',
+    host: 'vorexo.netlify.app',
+    displayUrl: 'vorexo.netlify.app',
+    category: 'Website',
+    posterUrl: '/assets/showcase/vorexo.jpg',
+    // Full page is taller than MAX_SHOT_HEIGHT (5200) — the screenshot is
+    // clipped there and the card never scrolls past it.
+    posterHeight: 5200,
+    canEmbed: true,
+    viewportHeight: 2600,
+  },
 ]
