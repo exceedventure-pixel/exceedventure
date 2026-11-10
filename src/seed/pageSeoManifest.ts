@@ -48,16 +48,6 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "Connect AI tools into your existing systems so they actually support daily work.",
   },
   {
-    pageSlug: "automation-ai/ai-integration-services/chatbot-integration",
-    title: "Chatbot Integration",
-    description: "Assistants that answer real questions using your own content.",
-  },
-  {
-    pageSlug: "automation-ai/ai-integration-services/customer-support-automation",
-    title: "Customer Support Automation",
-    description: "Automate the repetitive half of support and route the rest properly.",
-  },
-  {
     pageSlug: "automation-ai/workflow-automation",
     title: "Workflow Automation",
     description: "Automate repetitive tasks and create smoother handoffs across teams and tools.",
@@ -66,11 +56,6 @@ export const pageSeoSeed: PageSeoSeed[] = [
     pageSlug: "automation-ai/workflow-automation/crm-automation-setup",
     title: "CRM Automation Setup",
     description: "A CRM that updates itself instead of relying on someone remembering.",
-  },
-  {
-    pageSlug: "automation-ai/workflow-automation/internal-process-automation",
-    title: "Internal Process Automation",
-    description: "Connect the tools you already use so work moves without copy-paste.",
   },
   {
     pageSlug: "blog",
@@ -128,39 +113,14 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "Brand identities built to stay recognisable across every touchpoint.",
   },
   {
-    pageSlug: "creative-branding/brand-design/corporate-identity-development",
-    title: "Corporate Identity Development",
-    description: "A consistent corporate identity across teams, offices and documents.",
-  },
-  {
     pageSlug: "creative-branding/brand-materials",
     title: "Brand Materials",
     description: "Create the assets that help your brand show up polished, professional, and ready for growth.",
   },
   {
-    pageSlug: "creative-branding/brand-materials/brand-guidelines-internal-paperwork",
-    title: "Brand Guidelines & Internal Paperwork",
-    description: "The rules that keep your brand consistent when you",
-  },
-  {
-    pageSlug: "creative-branding/brand-materials/brochures-flyers-leaflets",
-    title: "Brochures, Flyers & Leaflets",
-    description: "Print collateral designed to be handed over and kept.",
-  },
-  {
-    pageSlug: "creative-branding/brand-materials/business-cards-corporate-stationery",
-    title: "Business Cards & Corporate Stationery",
-    description: "Cards and stationery that match the rest of your brand.",
-  },
-  {
     pageSlug: "creative-branding/content-supply",
     title: "Content Supply",
     description: "A reliable pipeline of on-brand content, produced at the volume and cadence your channels demand.",
-  },
-  {
-    pageSlug: "creative-branding/content-supply/content-creation-services",
-    title: "Content Creation Services",
-    description: "A steady supply of on-brand content across the formats you need.",
   },
   {
     pageSlug: "creative-branding/content-supply/seo-content-services",
@@ -198,11 +158,6 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "A design team for products, dashboards and genuinely complex interfaces.",
   },
   {
-    pageSlug: "creative-branding/ui-ux-design/user-experience-design-services",
-    title: "User Experience Design Services",
-    description: "Research-led UX that removes friction before it ever reaches your users.",
-  },
-  {
     pageSlug: "digital-marketing",
     title: "Digital Marketing",
     description: "Drive qualified traffic, stronger visibility, and measurable business growth across the digital funnel.",
@@ -218,34 +173,9 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "UK-focused Facebook and Instagram buying with local audience insight.",
   },
   {
-    pageSlug: "digital-marketing/media-buying/facebook-advertising-agency",
-    title: "Facebook Advertising Agency",
-    description: "Facebook campaigns built around measurable return rather than vanity reach.",
-  },
-  {
-    pageSlug: "digital-marketing/media-buying/google-ads-marketing-agency",
-    title: "Google Ads Marketing Agency",
-    description: "Search, shopping and display campaigns managed against your cost per lead.",
-  },
-  {
     pageSlug: "digital-marketing/niche-marketing",
     title: "Niche Marketing",
     description: "Target the right market with focused messaging built around industries, locations, and audience needs.",
-  },
-  {
-    pageSlug: "digital-marketing/niche-marketing/automotive-marketing-agency",
-    title: "Automotive Marketing Agency",
-    description: "Marketing for dealers, garages and automotive service businesses.",
-  },
-  {
-    pageSlug: "digital-marketing/niche-marketing/fitness-marketing-agency",
-    title: "Fitness Marketing Agency",
-    description: "Marketing for gyms, studios and coaches who need a full timetable.",
-  },
-  {
-    pageSlug: "digital-marketing/niche-marketing/law-firm-marketing-agency",
-    title: "Law Firm Marketing Agency",
-    description: "Compliant marketing for firms competing on high-value search terms.",
   },
   {
     pageSlug: "digital-marketing/smm-va",
@@ -253,19 +183,9 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "Keep your brand active and your operations moving with steady social and virtual support.",
   },
   {
-    pageSlug: "digital-marketing/smm-va/administrative-operational-support",
-    title: "Administrative & Operational Support",
-    description: "Trained assistants handling the admin that keeps pulling you away from the work.",
-  },
-  {
     pageSlug: "digital-marketing/smm-va/booking-reservation-management",
     title: "Booking & Reservation Management",
     description: "Someone managing your diary, bookings and confirmations from end to end.",
-  },
-  {
-    pageSlug: "digital-marketing/smm-va/client-portal-invoice-generation",
-    title: "Client Portal Access & Invoice Generation",
-    description: "Client-facing admin handled: portal access, invoices raised and payment chased.",
   },
   {
     pageSlug: "digital-marketing/web-growth-seo",
@@ -388,34 +308,9 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "Bespoke web systems and internal tools built around how your business actually runs.",
   },
   {
-    pageSlug: "websites-softwares/custom-web-systems/custom-client-portal-solutions",
-    title: "Custom Client Portal Solutions",
-    description: "Private portals where clients track progress, approve work and reach their files.",
-  },
-  {
-    pageSlug: "websites-softwares/custom-web-systems/headless-payload-cms-architectures",
-    title: "Headless Payload CMS Architectures",
-    description: "Headless Payload CMS setups that separate content from how it gets presented.",
-  },
-  {
-    pageSlug: "websites-softwares/custom-web-systems/kanban-team-management-dashboards",
-    title: "Kanban & Team Management Dashboards",
-    description: "Internal boards and dashboards that give a team one shared view of the work.",
-  },
-  {
     pageSlug: "websites-softwares/custom-websites",
     title: "Custom Websites",
     description: "Bespoke websites shaped around your product, audience, and business process.",
-  },
-  {
-    pageSlug: "websites-softwares/custom-websites/bespoke-web-design-agency",
-    title: "Bespoke Web Design Agency",
-    description: "Websites designed from scratch around your goals, not adapted from a template.",
-  },
-  {
-    pageSlug: "websites-softwares/custom-websites/nextjs-react-development",
-    title: "Next.js & React Development",
-    description: "Modern front-ends built with Next.js and React for speed and flexibility.",
   },
   {
     pageSlug: "websites-softwares/custom-websites/single-page-apps",
@@ -433,11 +328,6 @@ export const pageSeoSeed: PageSeoSeed[] = [
     description: "Developers who build storefronts that stay fast under real traffic.",
   },
   {
-    pageSlug: "websites-softwares/e-commerce/ecommerce-website-design-uk",
-    title: "Ecommerce Website Design UK",
-    description: "Online stores designed for UK retailers, with the trust signals shoppers expect.",
-  },
-  {
     pageSlug: "websites-softwares/e-commerce/single-product-sme-stores",
     title: "Single Product & SME Stores",
     description: "Lean stores for a single product or a small range, without enterprise overhead.",
@@ -446,16 +336,6 @@ export const pageSeoSeed: PageSeoSeed[] = [
     pageSlug: "websites-softwares/pay-monthly-websites",
     title: "Pay Monthly Websites",
     description: "Flexible website plans that make launching and improving your digital presence easier.",
-  },
-  {
-    pageSlug: "websites-softwares/pay-monthly-websites/pay-monthly-website-design",
-    title: "Pay Monthly Website Design",
-    description: "Design, build and maintenance bundled into one predictable monthly payment.",
-  },
-  {
-    pageSlug: "websites-softwares/pay-monthly-websites/pay-monthly-websites-uk",
-    title: "Pay Monthly Websites UK",
-    description: "Professional websites for UK businesses on a fixed monthly fee.",
   },
   {
     pageSlug: "websites-softwares/shopify",
@@ -476,11 +356,6 @@ export const pageSeoSeed: PageSeoSeed[] = [
     pageSlug: "websites-softwares/wordpress",
     title: "WordPress",
     description: "Flexible, SEO-friendly WordPress websites built for content, visibility, and long-term growth.",
-  },
-  {
-    pageSlug: "websites-softwares/wordpress/wordpress-development-agency-london",
-    title: "WordPress Development Agency London",
-    description: "A London-based WordPress team for builds, migrations and ongoing support.",
   },
   {
     pageSlug: "websites-softwares/wordpress/wordpress-ecommerce",

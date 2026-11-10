@@ -3,9 +3,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, FileText, Heart, Clock, Briefcase, type LucideIcon } from 'lucide-react'
+import { ArrowRight, Briefcase, Clock, FileText, Heart, type LucideIcon } from 'lucide-react'
 
-import { HeroIntro } from '@/components/HeroIntro'
 import { Reveal } from '@/components/Reveal'
 import { StackedCarousel } from '@/components/StackedCarousel'
 import { WebsiteShowcaseSection } from '@/components/WebsiteShowcase'
@@ -309,41 +308,10 @@ export default function HomeClient({
 }) {
   return (
     <>
-      {/* Opening screen — one sentence at a time, cycling through what we do.
-          Everything below is unchanged; this simply arrives before it.
-
-          Deliberately outside the wrapper below: `overflow-x-hidden` computes
-          to `overflow: hidden auto`, which clips this section's negative top
-          margin and cut its gradient off in a hard line at the header. */}
-      <HeroIntro />
-
-      {/*
-       * `overflow-x-clip`, not `-hidden`. Both stop the reviews' columns and
-       * the carousel's fly-in from widening the page, but `hidden` on one axis
-       * forces the other to `auto` — which made this a scroll container and cut
-       * off anything a child placed above its top edge. The showcase's backdrop
-       * lettering needs to rise into the hero, and `clip` is the one value that
-       * leaves the vertical axis visible.
-       */}
       <div className="min-h-screen overflow-x-clip">
-        {/* Website showcase — live client sites, four across on a desktop, with
-          three of them touring themselves at a time and the one under the
-          pointer held still. Opens the page under the hero now, so the work
-          makes the case before anything is claimed about it. Managed in the
-          CMS; renders nothing at all when none are published, in which case the
-          hero flows straight into the pitch below. */}
-        <WebsiteShowcaseSection items={showcase} />
-
-        {/* The pitch, after the proof. */}
-        {/* At least one screen tall, but no longer squeezed into exactly one:
-          the carousel, the headline and the service cards each get room to
-          breathe and the section grows past the fold if it needs to. svh rather
-          than vh so mobile browser chrome doesn't push the cards off. */}
-        <section className="relative flex flex-col items-center justify-center bg-white py-14 text-left dark:bg-transparent sm:bg-transparent sm:py-20 lg:py-24">
-          {/* `z-0`, not `-z-10` like the showcase's: this section paints its own
-              white background below `sm`, and a negative layer would sit behind
-              that rather than on it. The content above already carries `z-10`. */}
-          <OutlineWord className="-top-[12vw] z-0">ONLINE</OutlineWord>
+        {/* Ready to go online? */}
+        <section className="relative flex flex-col items-center justify-center bg-white pb-16 pt-16 text-left dark:bg-transparent sm:bg-transparent sm:pb-20 sm:pt-24 lg:pb-24 lg:pt-28">
+          <OutlineWord className="top-[2vw] z-0">ONLINE</OutlineWord>
 
           {/* One inner box at the bento's own width, holding the heading, the
               buttons and the grid. They all share its left edge — with the
@@ -352,11 +320,6 @@ export default function HomeClient({
               the cap to bite. */}
           <Reveal className="container z-10 flex w-full flex-col items-center">
             <div className="mx-auto w-full max-w-6xl">
-              {/* Deliberately outside the live accent, unlike the button below
-                it: this is the page's h1, and a heading that changes colour
-                depending on which hero slide happened to be showing reads as a
-                glitch rather than as a theme. `text-primary` is navy on light
-                and the teal on dark, both fixed. */}
               <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
                 <span>Ready to go </span>
                 <span className="text-primary">online?</span>
@@ -441,6 +404,9 @@ export default function HomeClient({
             <StackedCarousel />
           </div>
         </section>
+
+        {/* Proof — live client sites showcase */}
+        <WebsiteShowcaseSection items={showcase} />
 
         {/* Stats — bento grid: two small cards + a wide one on the left,
           one tall card on the right carrying the project breakdown. */}

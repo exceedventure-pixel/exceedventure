@@ -65,7 +65,7 @@ export const ensureAdminUser = async (payload: Payload): Promise<void> => {
         data: { password, role: 'superAdmin', isEnvManaged: true },
         overrideAccess: true,
       })
-      payload.logger.info(`Primary admin "" reconciled from environment.`)
+      payload.logger.info(`Primary admin "${email}" reconciled from environment.`)
       return
     }
 
