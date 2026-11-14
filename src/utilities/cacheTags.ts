@@ -7,5 +7,4 @@
  * building the collection. That cycle resolves to undefined at hook time.
  */
 
-export const WEBSITE_SHOWCASE_TAG = 'website-showcase'
 export const TESTIMONIALS_TAG = 'testimonials'

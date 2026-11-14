@@ -141,7 +141,7 @@ export const ShowcaseCard: React.FC<{
                    * everyone warns about — but that warning is about framing a
                    * SAME-origin document, which could then reach out and strip
                    * its own sandbox attribute. These frames are cross-origin
-                   * (getWebsiteShowcase refuses to embed our own origin), so this
+                   * (every entry in items.ts is an external client site), so this
                    * restores the embedded site's own origin and gains it nothing
                    * over us. Without it, storage and cookie access throw and a
                    * large share of real sites render blank.

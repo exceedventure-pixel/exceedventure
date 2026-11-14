@@ -73,7 +73,6 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
-    'website-showcase': WebsiteShowcase;
     testimonials: Testimonial;
     users: User;
     clients: Client;
@@ -106,7 +105,6 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    'website-showcase': WebsiteShowcaseSelect<false> | WebsiteShowcaseSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     clients: ClientsSelect<false> | ClientsSelect<true>;
@@ -444,82 +442,6 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
-}
-/**
- * Live client sites shown under the homepage hero. Add the URL and publish it, then run `pnpm capture:showcase` to fetch the screenshot and check whether the site allows being embedded. A site with no screenshot yet is skipped rather than shown broken.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "website-showcase".
- */
-export interface WebsiteShowcase {
-  id: number;
-  /**
-   * Shown on the card. e.g. "Create A Content".
-   */
-  title: string;
-  /**
-   * The card links here and the live preview loads it.
-   */
-  url: string;
-  /**
-   * Optional. What the fake browser bar shows. Defaults to the hostname.
-   */
-  displayUrl?: string | null;
-  /**
-   * Chip shown on the card.
-   */
-  category?: ('website' | 'webApp' | 'ecommerce' | 'landing' | 'content' | 'other') | null;
-  /**
-   * Filled in by `pnpm capture:showcase` — a full-page screenshot at 1440px wide. This is both the placeholder and the fallback, so a site with no poster is not shown at all.
-   */
-  poster?: (number | null) | Media;
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Off until you are happy with the screenshot.
-   */
-  published?: boolean | null;
-  /**
-   * Sorts to the front, above the order number.
-   */
-  featured?: boolean | null;
-  /**
-   * Controls the hover-scroll live preview. Status and page height are written by the capture script — you only need to touch the mode.
-   */
-  embed: {
-    /**
-     * Switch to "Screenshot only" for any site with a cookie banner, a full-screen hero, or heavy ads — those look wrong inside a small frame. The screenshot still scrolls, so the card loses nothing visually.
-     */
-    mode: 'auto' | 'live' | 'poster';
-    /**
-     * From the site’s X-Frame-Options / CSP headers at capture time.
-     */
-    status?: ('unknown' | 'allowed' | 'blocked') | null;
-    /**
-     * Which header produced that verdict.
-     */
-    reason?: string | null;
-    checkedAt?: string | null;
-    /**
-     * How tall the embedded page renders, in pixels — and therefore how far the hover scroll can travel. Lower it to about 1500 for sites whose hero fills the whole screen, otherwise the preview shows nothing but that hero.
-     */
-    viewportHeight?: number | null;
-    /**
-     * Real height of the full page at 1440px wide, measured during capture.
-     */
-    pageHeight?: number | null;
-  };
-  /**
-   * Written by `pnpm capture:showcase`.
-   */
-  capture?: {
-    lastCapturedAt?: string | null;
-    error?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * Client reviews for the strip under the homepage hero. Publish at least four and the section switches from the built-in placeholder reviews to yours — it is all or nothing, so a half-filled section can never ship by accident.
@@ -1206,6 +1128,9 @@ export interface Form {
       )[]
     | null;
   submitButtonLabel?: string | null;
+  /**
+   * Choose whether to display an on-page message or redirect to a different page after they submit the form.
+   */
   confirmationType?: ('message' | 'redirect') | null;
   confirmationMessage?: {
     root: {
@@ -1225,6 +1150,9 @@ export interface Form {
   redirect?: {
     url: string;
   };
+  /**
+   * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
+   */
   emails?:
     | {
         emailTo?: string | null;
@@ -1233,6 +1161,9 @@ export interface Form {
         replyTo?: string | null;
         emailFrom?: string | null;
         subject: string;
+        /**
+         * Enter the message that should be sent in this email.
+         */
         message?: {
           root: {
             type: string;
@@ -1433,10 +1364,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
-      } | null)
-    | ({
-        relationTo: 'website-showcase';
-        value: number | WebsiteShowcase;
       } | null)
     | ({
         relationTo: 'testimonials';
@@ -1737,38 +1664,6 @@ export interface CategoriesSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "website-showcase_select".
- */
-export interface WebsiteShowcaseSelect<T extends boolean = true> {
-  title?: T;
-  url?: T;
-  displayUrl?: T;
-  category?: T;
-  poster?: T;
-  sortOrder?: T;
-  published?: T;
-  featured?: T;
-  embed?:
-    | T
-    | {
-        mode?: T;
-        status?: T;
-        reason?: T;
-        checkedAt?: T;
-        viewportHeight?: T;
-        pageHeight?: T;
-      };
-  capture?:
-    | T
-    | {
-        lastCapturedAt?: T;
-        error?: T;
       };
   updatedAt?: T;
   createdAt?: T;

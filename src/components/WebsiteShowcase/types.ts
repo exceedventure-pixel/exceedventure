@@ -2,9 +2,8 @@
  * The showcase DTO — deliberately narrow and fully serializable.
  *
  * No runtime imports, so this file is safe on both sides of the server/client
- * boundary. The client never receives whole Payload documents: every decision
- * that can be made on the server (can this be framed? what is the hostname?) is
- * resolved in `getWebsiteShowcase` and arrives here as a plain value.
+ * boundary. Every decision (can this be framed? what is the hostname?) is
+ * resolved up front in `items.ts` and arrives here as a plain value.
  */
 
 export type ShowcaseItem = {

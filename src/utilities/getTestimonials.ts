@@ -11,7 +11,7 @@ export { TESTIMONIALS_TAG }
 /**
  * Published client reviews, as the homepage needs them.
  *
- * Cached like `getWebsiteShowcase`: a handful of rows that change a few times a
+ * Cached like `getSiteSettings`: a handful of rows that change a few times a
  * year, rendered on the busiest page on the site. The tag lets a CMS save clear
  * it immediately (see the collection's afterChange hook).
  *

@@ -9,7 +9,6 @@ import { Media } from './collections/Media'
 import { PageSEO } from './collections/PageSEO'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
-import { WebsiteShowcase } from './collections/WebsiteShowcase'
 import { Testimonials } from './collections/Testimonials'
 import { CrmAccounts } from './collections/crm/Accounts'
 import { ClientAccounts } from './collections/crm/ClientAccounts'
@@ -67,7 +66,6 @@ export default buildConfig({
     Posts,
     Media,
     Categories,
-    WebsiteShowcase,
     Testimonials,
     Users,
     // ─── CRM + client dashboard ────────────────────────────────────────────

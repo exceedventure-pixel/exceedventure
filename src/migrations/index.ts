@@ -10,6 +10,7 @@ import * as migration_20260812_120000_user_roles from './20260812_120000_user_ro
 import * as migration_20260818_100000_website_showcase from './20260818_100000_website_showcase'
 import * as migration_20260819_120000_showcase_uniform_grid from './20260819_120000_showcase_uniform_grid'
 import * as migration_20260906_120000_testimonials from './20260906_120000_testimonials'
+import * as migration_20260907_120000_remove_website_showcase from './20260907_120000_remove_website_showcase'
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20260906_120000_testimonials.up,
     down: migration_20260906_120000_testimonials.down,
     name: '20260906_120000_testimonials',
+  },
+  {
+    up: migration_20260907_120000_remove_website_showcase.up,
+    down: migration_20260907_120000_remove_website_showcase.down,
+    name: '20260907_120000_remove_website_showcase',
   },
 ]

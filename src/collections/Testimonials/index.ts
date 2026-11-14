@@ -8,7 +8,7 @@ import { revalidateTestimonial, revalidateTestimonialDelete } from './hooks/reva
  *
  * Deliberately small: a quote, who said it, and how many stars. A testimonial
  * that needs more fields than that has stopped being a testimonial and become a
- * case study, which is what `WebsiteShowcase` and `/our-works` are for.
+ * case study, which is what the homepage showcase and `/our-works` are for.
  *
  * The avatar is optional on purpose. Most clients never send a headshot, and a
  * missing one falls back to their initials in the accent colour rather than a
